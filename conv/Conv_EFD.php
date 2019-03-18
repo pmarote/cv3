@@ -33,20 +33,20 @@ function leitura_efd($arquivo_efd) {
 CREATE TABLE descri_reg (reg text, proc text, nivel int, descri text);
 CREATE INDEX descri_reg_reg ON descri_reg (reg ASC);
 ";
-	create_table_from_txt($db, $createtable, 'res\tabelas\EFD_Reg_Descri.txt', 'descri_reg');	
+	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/EFD_Reg_Descri.txt', 'descri_reg');	
   
 	// Tabela 4.1.1 - Tipos de Documentos Fiscais - Ver arquivo Tab4.1.1.txt em _sistema/res/tabelas
 	$createtable = "
 CREATE TABLE tab4_1_1 (cod text, descri text, mod text);
 CREATE INDEX tab4_1_1_cod ON tab4_1_1 (cod ASC);
 ";
-	create_table_from_txt($db, $createtable, 'res\tabelas\Tab4.1.1.txt', 'tab4_1_1');	
+	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/Tab4.1.1.txt', 'tab4_1_1');	
 
 	// Tabela tab_munic
 	$createtable = "
 CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 ";
-	create_table_from_txt($db, $createtable, 'res/tabelas/Tabela_Municípios.txt', 'tab_munic');	
+	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/Tabela_Municípios.txt', 'tab_munic');	
   
   
 	$db->query('CREATE TABLE o000 (
@@ -79,6 +79,11 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	  fone text,
 	  fax text,
 	  email text )
+	');
+
+	// DADOS DO CONTRIBUINTE SUBSTITUTO OU RESPONSÁVEL PELO ICMS DESTINO
+	$db->query('CREATE TABLE o015 (
+	  ord int primary key, uf_st text, ie_st text )
 	');
 
 	// Dados do Contabilista
@@ -274,6 +279,12 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	  vl_pis real, vl_cofins real, vl_pis_st real, vl_cofins_st real )
 	');
 
+	// C101 = INFORMAÇÃO COMPLEMENTAR DOS DOCUMENTOS FISCAIS QUANDO DAS OPERAÇÕES INTERESTADUAIS DESTINADAS A CONSUMIDOR FINAL NÃO CONTRIBUINTE EC 87/15 (CÓDIGO 55) 
+	$db->query('CREATE TABLE C101 (
+	  ord int primary key, ordC100 int, 
+	  vl_fcp_uf_dest real, vl_icms_uf_dest real, vl_icms_uf_rem real)
+	');
+
 	// C110 = informação complementar da nota fiscal 
 	$db->query('CREATE TABLE C110 (
 	  ord int primary key, ordC100 int, 
@@ -367,13 +378,13 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 
 	//  observaçoes do lançamento fiscal (código 01, 1B E 55) (C195)
 	$db->query('CREATE TABLE C195 (
-	  ord int primary key, ordC100 int,
+	  ord int primary key, ordC190 int,
 	  cod_obs, txt_compl )
 	');
 
 	//  OUTRAS OBRIGAÇÕES TRIBUTÁRIAS, AJUSTES E INFORMAÇÕES DE VALORES PROVENIENTES DE DOCUMENTO FISCAL (C197)
 	$db->query('CREATE TABLE C197 (
-	  ord int primary key, ordC100 int, ordC195 int,
+	  ord int primary key, ordC190 int, ordC195 int,
 	  cod_aj text, descr_compl_aj text, cod_item int, vl_bc_icms real, aliq_icms real, vl_icms real, vl_outros real )
 	');
 
@@ -492,6 +503,18 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	$db->query('CREATE TABLE D190 (
 	  ord int primary key, ordD100 int,
 	  cst_icms int, cfop int, aliq_icms real, vl_opr real, vl_bc_icms real, vl_icms real, vl_red_bc real, cod_obs text)
+	');
+
+	//  D195: OBSERVAÇÕES DO LANÇAMENTO FISCAL (CÓDIGO 07, 08, 8B, 09, 10, 11, 26, 27, 57, 63 e 67)
+	$db->query('CREATE TABLE D195 (
+	  ord int primary key, ordD190 int,
+	  cod_obs, txt_compl )
+	');
+
+	//  D197: OUTRAS OBRIGAÇÕES TRIBUTÁRIAS, AJUSTES E INFORMAÇÕES DE VALORES PROVENIENTES DE DOCUMENTO FISCAL
+	$db->query('CREATE TABLE D197 (
+	  ord int primary key, ordD190 int, ordD195 int,
+	  cod_aj text, descr_compl_aj text, cod_item int, vl_bc_icms real, aliq_icms real, vl_icms real, vl_outros real )
 	');
 
 	// D500 - nota fiscal de Serviço de Comunicação (Código 21) e Telecomunicação (Código 22)
@@ -673,6 +696,7 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	$ordC100 = 0;
 	$ordC140 = 0;
 	$ordC170 = 0;
+	$ordC190 = 0;
 	$ordC195 = 0;
 	$ordC110 = 0;
 	$ordC400 = 0;
@@ -682,6 +706,8 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	$ordC800 = 0;
 	$ordC860 = 0;
 	$ordD100 = 0;
+	$ordD190 = 0;
+	$ordD195 = 0;
 	$ordE100 = 0;
 	$ordE110 = 0;
 	$ordE111 = 0;
@@ -735,6 +761,15 @@ INSERT INTO o005 VALUES(
 '{$iord}', '{$campos[2]}', '{$campos[3]}', '{$campos[4]}', 
 '{$campos[5]}', '{$campos[6]}', '{$campos[7]}', '{$campos[8]}',
 '{$campos[9]}', '{$campos[10]}'
+ )
+EOD;
+		$db->query($insert_query);
+	  }
+
+	  	  if ($campos[1] == '0015') {
+		$insert_query = <<<EOD
+INSERT INTO o015 VALUES(
+'{$iord}', '{$campos[2]}', '{$campos[3]}'
  )
 EOD;
 		$db->query($insert_query);
@@ -1069,6 +1104,18 @@ EOD;
 		$ordC100 = $iord;
 	  }
 
+	  if ($campos[1] == 'C101') {
+		$campos[2] = str_replace(',','.',str_replace('.','',$campos[2]));
+		$campos[3] = str_replace(',','.',str_replace('.','',$campos[3]));
+		$campos[4] = str_replace(',','.',str_replace('.','',$campos[4]));
+		$insert_query = <<<EOD
+INSERT INTO C101 VALUES(
+'{$iord}', '{$ordC100}', '{$campos[2]}', '{$campos[3]}', '{$campos[4]}'
+ )
+EOD;
+		$db->query($insert_query);
+	  }
+
 	  if ($campos[1] == 'C110') {
 		$insert_query = <<<EOD
 INSERT INTO C110 VALUES(
@@ -1279,12 +1326,13 @@ INSERT INTO C190 VALUES(
  )
 EOD;
 		$db->query($insert_query);
+		$ordC190 = $iord;
 	  }
 
 	  if ($campos[1] == 'C195') {
 		$insert_query = <<<EOD
 INSERT INTO C195 VALUES(
-'{$iord}', '{$ordC100}', '{$campos[2]}', '{$campos[3]}'
+'{$iord}', '{$ordC190}', '{$campos[2]}', '{$campos[3]}'
  )
 EOD;
 		$db->query($insert_query);
@@ -1298,7 +1346,7 @@ EOD;
 		$campos[8] = str_replace(',','.',str_replace('.','',$campos[8]));
 		$insert_query = <<<EOD
 INSERT INTO C197 VALUES(
-'{$iord}', '{$ordC100}', '{$ordC195}', '{$campos[2]}', '{$campos[3]}', '{$campos[4]}', '{$campos[5]}', '{$campos[6]}', '{$campos[7]}', '{$campos[8]}'
+'{$iord}', '{$ordC190}', '{$ordC195}', '{$campos[2]}', '{$campos[3]}', '{$campos[4]}', '{$campos[5]}', '{$campos[6]}', '{$campos[7]}', '{$campos[8]}'
  )
 EOD;
 		$db->query($insert_query);
@@ -1562,7 +1610,33 @@ INSERT INTO D190 VALUES(
  )
 EOD;
 		$db->query($insert_query);
+		$ordD190 = $iord;
 	  }
+
+	  if ($campos[1] == 'D195') {
+		$insert_query = <<<EOD
+INSERT INTO D195 VALUES(
+'{$iord}', '{$ordD190}', '{$campos[2]}', '{$campos[3]}'
+ )
+EOD;
+		$db->query($insert_query);
+		$ordD195 = $iord;
+	  }
+
+	  if ($campos[1] == 'D197') {
+		$campos[5] = str_replace(',','.',str_replace('.','',$campos[5]));
+		$campos[6] = str_replace(',','.',str_replace('.','',$campos[6]));
+		$campos[7] = str_replace(',','.',str_replace('.','',$campos[7]));
+		$campos[8] = str_replace(',','.',str_replace('.','',$campos[8]));
+		$insert_query = <<<EOD
+INSERT INTO D197 VALUES(
+'{$iord}', '{$ordD190}', '{$ordD195}', '{$campos[2]}', '{$campos[3]}', '{$campos[4]}', '{$campos[5]}', '{$campos[6]}', '{$campos[7]}', '{$campos[8]}'
+ )
+EOD;
+		$db->query($insert_query);
+	  }
+
+
 
 	  if ($campos[1] == 'D500') {
 		$campos[12] = str_replace(',','.',str_replace('.','',$campos[12]));

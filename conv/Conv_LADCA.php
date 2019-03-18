@@ -31,34 +31,34 @@ function leitura_ladca($arquivo_ladca) {
 CREATE TABLE descri_reg (reg text, proc text, nivel int, descri text, obrig text, ocorr text);
 CREATE INDEX descri_reg_reg ON descri_reg (reg ASC);
 ";
-	create_table_from_txt($db, $createtable, 'res\tabelas\LADCA_Reg_Descri.txt', 'descri_reg');	
+	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/LADCA_Reg_Descri.txt', 'descri_reg');	
   
 	// Tabela 4.1.1 - Tipos de Documentos Fiscais - Ver arquivo Tab4.1.1.txt em _sistema/res/tabelas
 	$createtable = "
 CREATE TABLE tab4_1_1 (cod text, descri text, mod text);
 CREATE INDEX tab4_1_1_cod ON tab4_1_1 (cod ASC);
 ";
-	create_table_from_txt($db, $createtable, 'res\tabelas\Tab4.1.1.txt', 'tab4_1_1');	
+	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/Tab4.1.1.txt', 'tab4_1_1');	
 
 	// Tabela 4.1 - GÊNERO DO ITEM E DA OPERAÇÃO - Ver arquivo LADCA_Tab4.1.txt em _sistema/res/tabelas
 	$createtable = "
 CREATE TABLE tab4_1 (cod text, descri text);
 CREATE INDEX tab4_1_cod ON tab4_1 (cod ASC);
 ";
-	create_table_from_txt($db, $createtable, 'res\tabelas\LADCA_Tab4.1.txt', 'tab4_1');	
+	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/LADCA_Tab4.1.txt', 'tab4_1');	
 
 	// Tabela 6.1 - TABELA DE CODIFICAÇÃO DOS LANÇAMENTOS - Ver arquivo LADCA_Tab6.1.txt em _sistema/res/tabelas
 	$createtable = "
 CREATE TABLE tab6_1 (cod text, descri text);
 CREATE INDEX tab6_1_cod ON tab6_1 (cod ASC);
 ";
-	create_table_from_txt($db, $createtable, 'res\tabelas\LADCA_Tab6.1.txt', 'tab6_1');	
+	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/LADCA_Tab6.1.txt', 'tab6_1');	
 
 	// Tabela tab_munic
 	$createtable = "
 CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 ";
-	create_table_from_txt($db, $createtable, 'res/tabelas/Tabela_Municípios.txt', 'tab_munic');	
+	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/Tabela_Municípios.txt', 'tab_munic');	
   
   
 	$db->query('CREATE TABLE o000 (
