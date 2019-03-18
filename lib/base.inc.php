@@ -471,7 +471,7 @@ function cria_tabela_cfopd($db) {
 CREATE TABLE cfopd (cfop int, dfi text, st text, classe text, g1 text, c3 text, g2 text, g3 text, descri_simplif text, descri text, pod_creditar text);
 CREATE INDEX cfopd_cfop ON cfopd (cfop ASC);
 ";
-	create_table_from_txt($db, $createtable, 'res/tabelas/cfopd.txt', 'cfopd');
+	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/cfopd.txt', 'cfopd');
 
 }
 

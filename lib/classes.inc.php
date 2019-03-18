@@ -89,13 +89,13 @@ class Pr {
 	foreach ($this->options as $indice => $valor) {
 	  if (! is_array($this->options[$indice])) $asave[$indice] = $valor;
 	}
-	if(! file_put_contents('res/options.conf', serialize($asave))) wecho("Alerta... Não foi possível gravar o arquivo de configurações de opções options.conf");
+	if(! file_put_contents(PR_RES . '/options.conf', serialize($asave))) wecho("Alerta... Não foi possível gravar o arquivo de configurações de opções options.conf");
   }
 
   public function read_options() {
 	// Lê opções somente se estiver disponível o arquivo res/options.conf
-	if (file_exists('res/options.conf')) {
-	  $aread = unserialize(file_get_contents('res/options.conf'));
+	if (file_exists(PR_RES . '/options.conf')) {
+	  $aread = unserialize(file_get_contents(PR_RES . '/options.conf'));
 	  //debug_log(print_r($aread, True));
 	  foreach ($aread as $indice => $valor) $this->options[$indice] = $valor;
 	}
@@ -350,8 +350,8 @@ class Pr {
 	  $this->excel->Sheets("Plan3")->Select;
 	  $this->excel->ActiveWindow->SelectedSheets->Delete();
    
-	  if ($this->ver_excel == '11.0') $nomarq = PR_PATH . "\\Resultados\\" . $this->nomarq . '.xls';
-		else $nomarq = PR_PATH . "\\Resultados\\" . $this->nomarq . '.xlsx';
+	  if ($this->ver_excel == '11.0') $nomarq = PR_RESULTADOS . "\\" . $this->nomarq . '.xls';
+		else $nomarq = PR_RESULTADOS . "\\" . $this->nomarq . '.xlsx';
 	  if (file_exists($nomarq)) unlink($nomarq);
 	  // caso não consiga apagar (ex: excel aberto), vai inserindo '_' até achar um nome livre
 	  $s_underlines = '';
@@ -377,15 +377,15 @@ class Pr {
 
 	  if ($this->options['aut_excel']) {
 		$shell = new COM('WScript.Shell');
-		if ($this->ver_excel == '11.0') $shell->Run('excel ..\\Resultados\\' . $this->nomarq . $s_underlines . ".xls");
-		  else $shell->Run('excel ' . str_replace("/", "\\", PN_PATH). '\\Resultados\\' . $this->nomarq . $s_underlines . ".xlsx");
+		if ($this->ver_excel == '11.0') $shell->Run('excel ' . str_replace("/", "\\", PR_RESULTADOS). '\\' . $this->nomarq . $s_underlines . ".xls");
+		  else $shell->Run('excel ' . str_replace("/", "\\", PR_RESULTADOS). '\\' . $this->nomarq . $s_underlines . ".xlsx");
 		unset($shell);
 	  }
 
 
 	}
 	if ($this->options['tiparqaud'] <> 1) { 	// Fechando tipo de arquivo txt...
-	  $nomdir = PN_PATH . "/Resultados/{$this->nomarq}";
+	  $nomdir = PR_RESULTADOS . "/{$this->nomarq}";
 	  recursiveDelete($nomdir);
 	  // caso não consiga apagar pasta (ex: excel aberto), vai inserindo '_' até achar um nome livre
 	  while (is_dir($nomdir)) {
