@@ -74,7 +74,7 @@ while (Gtk::events_pending()) {  // redraw de splash screen
   // Leituras
   $numarqs = 0;
   wecho("\n\nLeitura dos arquivos presentes na pasta Fontes e subpastas:\n");
-  $arqs = listdir_semConsultaNFes(PR_PATH . "/Fontes"); // em base.inc.php - \Fontes\ConsultaNFes, caso exista, é lido em leituraConsultaNFes() mais abaixo
+  $arqs = listdir_semConsultaNFes(PR_FONTES); // em base.inc.php - \Fontes\ConsultaNFes, caso exista, é lido em leituraConsultaNFes() mais abaixo
   // primeiro unzip todos os arquivos .sped ou .zip
   $zip = new ZipArchive;
   $novolistdir = False;
@@ -102,7 +102,7 @@ while (Gtk::events_pending()) {  // redraw de splash screen
   }
   
   // Leituras dos arquivos... os que estavam zipados, já foram descompactados
-  if ($novolistdir) $arqs = listdir(PR_PATH . "/Fontes"); // se descompactou arquivo SPED ou ZIP, lê tudo novamente...
+  if ($novolistdir) $arqs = listdir(PR_FONTES); // se descompactou arquivo SPED ou ZIP, lê tudo novamente...
   foreach ($arqs as $key => $entry) {
 	if (strtolower(substr($entry, -4)) != '.xml') {
 	  // é arquivo Sped ?
@@ -201,7 +201,7 @@ while (Gtk::events_pending()) {  // redraw de splash screen
   }
 
   $existenfe = False;
-  if (findxml(PR_PATH . "/Fontes")) {  // função em base.inc.php
+  if (findxml(PR_FONTES)) {  // função em base.inc.php
 	$existenfe = True;
 	leitura_nfe();
 	wecho("\n\n-->Gerando nfe.xls ");

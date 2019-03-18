@@ -21,25 +21,31 @@ define('PR_PATH', dirname( dirname( dirname(__FILE__) ) ) );
 
 // Main Consts
 // Configuration Files
-define("PR_ETC",  PR_PATH . "/etc");
+// Resources - Helpers, docs, resources, etc
+define("PR_RES",  PR_PATH . "/res/cv3");
+configCreateFolderIfNotExists(PR_RES);
 
-// TODO - Tranfer above to /etc?
-
-
-// Original Files (not processed pdfs)
-define("PR_ORIG", PR_PATH . "/orig");
-// Resources - Processed pdfs and databases
-define("PR_RES",  PR_PATH . "/res");
-// Variable files—files whose content is expected to continually change during normal operation of the system
-define("PR_VAR",  PR_PATH . "/var");
-// Variable files - System databases
-define("PR_DB3",  PR_PATH . "/var/db3");
-// Variable files - Logs
-define("PR_LOG",  PR_PATH . "/var/log");
-// Variable files - Temporary Files
-define("PR_TMP",  PR_PATH . "/var/tmp");
 // applications
 define("PR_USR",  PR_PATH . "/usr");
+configCreateFolderIfNotExists(PR_USR);
+
+// Variable files—files whose content is expected to continually change during normal operation of the system
+define("PR_VAR",  PR_PATH . "/var/cv3");
+configCreateFolderIfNotExists(PR_VAR);
+// Variable files - System databases
+define("PR_DB3",  PR_VAR . "/db3");
+configCreateFolderIfNotExists(PR_DB3);
+// Variable files - Logs
+define("PR_LOG",  PR_VAR . "/log");
+configCreateFolderIfNotExists(PR_LOG);
+// Variable files - Temporary Files
+define("PR_TMP",  PR_VAR . "/tmp");
+configCreateFolderIfNotExists(PR_TMP);
+// cv3 Fontes e Resultados
+define("PR_FONTES",  PR_VAR . "/_Fontes");
+configCreateFolderIfNotExists(PR_FONTES);
+define("PR_RESULTADOS",  PR_VAR . "/_Resultados");
+configCreateFolderIfNotExists(PR_RESULTADOS);
 
 //define('PR_ENVIRONMENT', 'production');
 define('PR_ENVIRONMENT', 'development');
@@ -47,6 +53,12 @@ define('PR_ENVIRONMENT', 'development');
 
 // set php's error log place
 ini_set('error_log', PR_LOG . '/prError.log');
+
+
+function configCreateFolderIfNotExists($folder) {
+  if (!is_dir($folder)) 
+	 if (!mkdir($folder)) werro_die('Pasta {$folder} faltando. E também não foi possível criá-la. Está protegida contra gravação ?');
+}
 
 
 ?>

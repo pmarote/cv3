@@ -103,14 +103,6 @@ if (!class_exists('gtk')) {
 	werro_die("Erro - Não foi possível carregar o GTK\r\n");
 }
 
-// Devem existir duas pastas padrão: Fontes e Resultados; se não estiverem lá, cria...
-if (!is_dir(PR_PATH . '/Fontes')) 
-	if (!mkdir(PR_PATH . '/Fontes')) 
-	  werro_die('Pasta Fontes faltando. E também não foi possível criá-la. Está protegida contra gravação ?');
-if (!is_dir(PR_PATH . '/Resultados')) 
-	if (!mkdir(PR_PATH . '/Resultados')) 
-	  werro_die('Pasta Resultados faltando. E também não foi possível criá-la. Está protegida contra gravação ?');
-
 // Construção da Janela Principal
 $wnd = new GtkWindow();
 $wnd->set_title('Conversor3');
@@ -160,7 +152,7 @@ $scrolledwindow->add($scrolledwindow->viewer);
 
 $btnOk		= new GtkButton('Inicia _Conversão');
 $btnCancel	= new GtkButton('_Sair !');
-$btnDB3s	= new GtkButton('_DB3s');
+$btnDB3s	= new GtkButton('_Db3s e Tmp');
 $btnModelos	= new GtkButton('_Modelos');
 $btnFontes	= new GtkButton('_Fontes');
 $btnResult	= new GtkButton('_Resultados');
@@ -184,7 +176,7 @@ $btnOk->connect_simple('clicked', 'clickok', $wnd);
 $btnAjuda->connect_simple('clicked', 'clickAjuda', $wnd);
 $btnFontes->connect_simple('clicked', 'clickFontes', $wnd);
 $btnResult->connect_simple('clicked', 'clickResult', $wnd);
-$btnDB3s->connect_simple('clicked', 'clickDB3', $wnd);
+$btnDB3s->connect_simple('clicked', 'clickDb3_Tmp', $wnd);
 $btnModelos->connect_simple('clicked', 'clickModelos', $wnd);
 $btnOptions->connect_simple('clicked', 'clickOptions', $wnd);
 
@@ -225,22 +217,22 @@ function clickNovo(GtkWindow $wnd)
 
   if ($answer == Gtk::RESPONSE_YES) {
 	wecho("\n\nApagando todos os arquivos da pasta Fontes e da pasta Resultados... Aguarde...\n");
-	recursiveDelete(PR_PATH . '/Fontes');
-	if (is_dir(PR_PATH . '/Fontes')) 
+	recursiveDelete(PR_FONTES);
+	if (is_dir(PR_FONTES)) 
 	  werro("Falha ao apagar a pasta Fontes... Possivelmente há arquivos abertos nessa pasta...\n\n");
-	else mkdir(PR_PATH . '/Fontes');
+	else mkdir(PR_FONTES);
 
-	recursiveDelete(PR_PATH . '/Resultados');
-	if (is_dir(PR_PATH . '/Resultados')) 
+	recursiveDelete(PR_RESULTADOS);
+	if (is_dir(PR_RESULTADOS)) 
 	  werro("Falha ao apagar a pasta Resultados... Possivelmente há arquivos abertos nessa pasta...\n\n");
-	else mkdir(PR_PATH . '/Resultados');
+	else mkdir(PR_RESULTADOS);
    
 	// Talvez o código abaixo seja repetitivo... é que ocorreram alguns erros ao clicar em Novo. Então, lá vai a criação mais uma vez...
-	if (!is_dir(PR_PATH . '/Fontes')) 
-	 if (!mkdir(PR_PATH . '/Fontes')) 
+	if (!is_dir(PR_FONTES)) 
+	 if (!mkdir(PR_FONTES)) 
 		werro_die('Pasta Fontes faltando. E também não foi possível criá-la. Está protegida contra gravação ?');
-	if (!is_dir(PR_PATH . '/Resultados')) 
-	  if (!mkdir(PR_PATH . '/Resultados')) 
+	if (!is_dir(PR_RESULTADOS)) 
+	  if (!mkdir(PR_RESULTADOS)) 
 		werro_die('Pasta Resultados faltando. E também não foi possível criá-la. Está protegida contra gravação ?');
 
 	wecho("\nFinalizado !\n");
@@ -281,6 +273,13 @@ function clickDesenv_aud(GtkWindow $wnd) {
   $shell->Run('php-win xtras/DesenvAud.php');
   unset($shell);
 }
+
+function clickSublimeText(GtkWindow $wnd) {
+  $shell = new COM('WScript.Shell');
+  $shell->Run(str_replace('/', '\\', PR_USR) . '\Sublime\sublime_text.exe');
+  unset($shell);
+}
+
 
 function clickNotepadPlus(GtkWindow $wnd) {
   $shell = new COM('WScript.Shell');
@@ -385,17 +384,17 @@ Ressarcimento (Portaria Cat 17/99)
 Tem mais coisas também...
 ");
     $shell = new COM('WScript.Shell');
-    $shell->Run('explorer "' . str_replace('/', '\\', PR_PATH) . '\Fontes"');
+    $shell->Run('explorer "' . str_replace('/', '\\', PR_FONTES) . '"');
     unset($shell);
 }
 
 function clickResult(GtkWindow $wnd) {
     $shell = new COM('WScript.Shell');
-    $shell->Run('explorer "' . str_replace('/', '\\', PR_PATH) . '\Resultados"');
+    $shell->Run('explorer "' . str_replace('/', '\\', PR_RESULTADOS) . '"');
     unset($shell);
 }
 
-function clickDB3(GtkWindow $wnd) {
+function clickDb3_Tmp(GtkWindow $wnd) {
   $shell = new COM('WScript.Shell');
   $shell->Run('explorer "' . str_replace('/', '\\', PR_TMP) . '"');
   unset($shell);
@@ -426,44 +425,6 @@ function clickSQLiteMan(GtkWindow $wnd) {
   usleep(1); // Será que isto garante que o SQLiteMan vai abrir mesmo com o CurrentDirectory db3 ?
   $shell->CurrentDirectory = PR_PATH;
   unset($shell);
-}
-
-function clickColarSQLiteExcel(GtkWindow $wnd) {
-
-  global $pr;
-  
-  $i = 1;
-  if ($pr->ver_excel == '11.0') {
-	while (file_exists(PR_PATH . "/Resultados/ColaSqliteMan{$i}.xls")) $i++;
-	copy("ColaSqliteMan.xls", PR_PATH . "/Resultados;ColaSqliteMan{$i}.xls");
-	$shell = new COM('WScript.Shell');
-	$shell->Run('excel ' . PR_PATH . "/Resultados/ColaSqliteMan{$i}.xls");
-	unset($shell);
-  } else {
-	while (file_exists(PR_PATH . "/Resultados/ColaSqliteMan2010_{$i}.xlsm")) $i++;
-	copy("ColaSqliteMan2010.xlsm", PR_PATH . "/Resultados/ColaSqliteMan2010_{$i}.xlsm");
-	$shell = new COM('WScript.Shell');
-	$shell->Run('excel ' . PR_PATH . "/Resultados/ColaSqliteMan2010_{$i}.xlsm");
-	unset($shell);
-  }
-}
-
-function clickSQLiteStudio(GtkWindow $wnd) {
-//  if (is_dir('db3')) { } else {
-//	if (!mkdir('db3'))
-//	  werro_die('Falha na pasta _sistema\db3... Possivelmente não há permissão para gravação nessa pasta');
-//  }
-//  $shell = new COM('WScript.Shell');
-//  $shell->CurrentDirectory = $shell->CurrentDirectory . "\db3";
-//  $fh = opendir('.');
-//  if(($file = readdir($fh)) === false) $file = '';
-//  if($file == '.') { if(($file = readdir($fh)) === false) $file = ''; }
-//  if($file == '..') { if(($file = readdir($fh)) === false) $file = ''; }
-//  if($file == 'cad.db3') { if(($file = readdir($fh)) === false) $file = 'cad.db3'; }
-//  $shell->Run('..\sqlitestudio.exe');
-//  usleep(1);
-//  $shell->CurrentDirectory = substr($shell->CurrentDirectory, 0, -4);
-//  unset($shell);
 }
 
 function clickPonto_para_Virgula_Clipboard(GtkWindow $wnd) {
@@ -689,10 +650,10 @@ function setup_menu($vbox) {
   global $pr;
   
   $menus = array(
-    '_Arquivo' => array('_Novo', '<hr>', '_Converter', '<hr>', '_Fontes', '_Resultados', '_Bancos de Dados', '_Modelos', '<hr>', '_Sair'),
+    '_Arquivo' => array('_Novo', '<hr>', '_Converter', '<hr>', '_Fontes', '_Resultados', '_Db3s e tmp', '_Modelos', '<hr>', '_Sair'),
     '_Utilitários' => array('_Tabelas', '_Opções', 'Arq_Diet', '_Junta PDFs', '<hr>',
 							'Desenvolvimento de _Auditorias', '<hr>',
-							'_SQLiteStudio', 'SQLite_Man', '_Colar do SQLiteman no Excel', 'NoteP_ad++', '<hr>', 'Visualiza _Logs',
+							'_Sublime Text', 'SQLite_Man', 'NoteP_ad++', '<hr>', 'Visualiza _Logs',
 							'_Forçar Encerramento de todas as janelas do Excel'),
     'Au_ditorias' => array('_Parâmetros'),
     'A_juda' => array('_Ajuda', 'Visualiza _Histórico de Versões', '_Sobre...')
@@ -781,7 +742,7 @@ function on_menu_select($menu_item) {
   if ($item == '_Converter') clickok($wnd);
   if ($item == '_Fontes') clickFontes($wnd);
   if ($item == '_Resultados') clickResult($wnd);
-  if ($item == '_Bancos de Dados') clickDB3($wnd);
+  if ($item == '_Db3s e tmp') clickDb3_Tmp($wnd);
   if ($item == '_Modelos') clickModelos($wnd);
   if ($item == '_Tabelas') clickTabelas($wnd);
   if ($item == '_Opções') clickOptions($wnd);
@@ -790,8 +751,7 @@ function on_menu_select($menu_item) {
   if (file_exists('xtras/JuntaPDFs.php')) { if ($item == '_Junta PDFs') juntaPDFs($wnd); }
   if ($item == '_Ponto->Virgula Clipboard') clickPonto_para_Virgula_Clipboard($wnd);
   if ($item == 'SQLite_Man') clickSQLiteMan($wnd);
-  if ($item == '_SQLiteStudio') clickSQLiteStudio($wnd);
-  if ($item == '_Colar do SQLiteman no Excel') clickColarSQLiteExcel($wnd);
+  if ($item == '_Sublime Text') clickSublimeText($wnd);
   if ($item == 'NoteP_ad++') clickNotepadPlus($wnd);
   if ($item == 'Visualiza _Logs') clickVisualizaLogs($wnd);
   if ($item == '_Forçar Encerramento de todas as janelas do Excel') clickKillExcel($wnd);
@@ -824,7 +784,7 @@ function on_drop_view1($widget, $context, $x, $y, $data, $info, $time, $view) {
 	  if (strlen($filename) > 2) {
 		wecho("Copiando o arquivo " . $filename . " para a pasta Fontes...");
 		$caminho = explode('/', $filename);
-		$newfile = PR_PATH . '/Fontes/' . $caminho[count($caminho)-1];
+		$newfile = PR_FONTES . '/' . $caminho[count($caminho)-1];
 		if (!copy($filename, $newfile)) wecho(" FALHA NA CÓPIA !!!\n"); else wecho(" Sucesso !\n");
 	  }
 	}
