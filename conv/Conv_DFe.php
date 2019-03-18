@@ -19,7 +19,7 @@ function abredb3_dfe() {
 		$createtable = "
 CREATE TABLE cfop_entsai (cfop_dfe INT PRIMARY KEY, cfop_res INT, descri_dfe TEXT, descri_res TEXT);
 ";
-		create_table_from_txt($db, $createtable, 'res\tabelas\cfop_entsai.txt', 'cfop_entsai');	
+		create_table_from_txt($db, $createtable, PR_RES . '/tabelas/cfop_entsai.txt', 'cfop_entsai');	
 		
 
 		$db->exec("
