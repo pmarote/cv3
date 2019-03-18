@@ -463,8 +463,13 @@ SELECT
 );
   $pr->abre_excel_sql('RegSaidaC490_C405_C400', 'RegSaidaC490_C405_C400', $sql, $col_format, $cabec, $form_final);
   
+	$pr->aud_prepara("
+-- índice para acelerar
+CREATE INDEX IF NOT EXISTS c101_ordC100 ON c101 (ordC100 ASC);
+");
 
-  // Planilha RegEntSaidaC190_C100_0150
+
+  // Planilha RegEntSaidaC190_C100_C101_0150
   $sql = "
 SELECT 
 	  c190.* ,
@@ -474,21 +479,26 @@ SELECT
 	  c100.ind_frt, c100.vl_frt, c100.vl_seg, c100.vl_out_da,
 	  c100.vl_bc_icms, c100.vl_icms, c100.vl_bc_icms_st, c100.vl_icms_st, c100.vl_ipi,
 	  c100.vl_pis, c100.vl_cofins, c100.vl_pis_st, c100.vl_cofins_st, 
+	  c101.*,
 	  o150.*, 
 	  round(c190.ord / 10000000 - 0.49) * 10000000 AS ordmin, round(c190.ord / 10000000 + 0.5) * 10000000 AS ordmax
   FROM c190
   LEFT OUTER JOIN c100 ON c100.ord = c190.ordC100
+  LEFT OUTER JOIN c101 ON c101.ordC100 = c100.ord
   LEFT OUTER JOIN o150 ON o150.cod_part = c100.cod_part AND o150.ord > ordmin AND o150.ord < ordmax;
 ";
   $col_format = array(
 	"A:B" => "0",
 	"E:L" => "#.##0,00",
+	"P:P" => "0",
 	"X:X" => "#.##0,00",
 	"Z:AA" => "#.##0,00",
 	"AC:AO" => "#.##0,00",
-	"AP:AP" => "0",
-	"AT:AV" => "0",
-	"BC:BD" => "0"
+	"AP:AQ" => "0",
+	"AR:AT" => "#.##0,00",
+	"AU:AV" => "0",
+	"AY:BA" => "0",
+	"BH:BI" => "0"
 );
   $cabec = array(
 	'OrdC190' => "Número da Linha do Registro C190",
@@ -556,6 +566,11 @@ Indicador do tipo do frete:
 	'vl_cofins' => "Valor total da COFINS",
 	'vl_pis_st' => "Valor total do PIS retido por substituição tributária",
 	'vl_cofins_st' => "Valor total da COFINS retido por substituição tributária",
+	'OrdC101' => "Número da Linha do Registro C101",
+	'OrdC100_C101' => "Número da Linha do Registro C100 relacionado ao C101",
+	'vl_fcp_uf_dest' => "valor total relativo ao fundo de combate à pobreza (fcp) da uf de destino",
+	'vl_icms_uf_dest' => "valor total do icms interestadual para a uf de destino",
+	'vl_icms_uf_rem' => "valor total do icms interestadual para a uf do remetente",
 	'Ord0150' => "Número da Linha do Registro 0150",
 	'cod_part_0150' => "Código de identificação do participante no arquivo",
 	'nome' => "Nome pessoal ou empresarial do participante",
@@ -572,7 +587,7 @@ Indicador do tipo do frete:
 	'ordmin' => "Uso interno do conversor, para fins de relacionamento entre tabelas",
 	'ordmax' => "Uso interno do conversor, para fins de relacionamento entre tabelas"
 );
-  $pr->abre_excel_sql('RegEntSaidaC190_C100_0150', 'LivroEntradasSaidasBaseC190_C100_0150', $sql, $col_format, $cabec, $form_final);
+  $pr->abre_excel_sql('RegEntSaidaC190_C100_C101_0150', 'LivroEntradasSaidasBaseC190_C100_C101_0150', $sql, $col_format, $cabec, $form_final);
   
   $pr->finaliza_excel();
 }

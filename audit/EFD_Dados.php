@@ -130,7 +130,43 @@ SELECT *
 6 - Outros"
 );
   $pr->abre_excel_sql("D500", "D500 - nota fiscal de Serviço de Comunicação (Código 21) e Telecomunicação (Código 22)", $sql, $col_format, $cabec, $form_final);
+
+
+  $sql = "
+SELECT * FROM D197;
+";
+  $col_format = array(
+	"A:C" => "0",
+	"G:J" => "#.##0,00"
+);
+  $cabec = array(
+	'OrdD197' => "Número da Linha do Registro D197",
+	'OrdD195' => "Número da Linha do Registro D195",
+	'OrdD190' => "Número da Linha do Registro D190",
+	'COD_AJ' => "Código do ajustes/benefício/incentivo, conforme tabela indicada no item 5.3",
+	'DESCR_COMPL_AJ' => "Descrição complementar do ajuste do documento fiscal",
+	'COD_ITEM' => "Código do item (campo 02 do Registro 0200)",
+	'VL_BC_ICMS' => "Base de cálculo do ICMS ou do ICMS ST ",
+	'ALIQ_ICMS' => "Alíquota do ICMS",
+	'VL_ICMS' => "Valor do ICMS ou do ICMS ST",
+	'VL_OUTROS' => "Outros valores"
+);
+  $pr->abre_excel_sql("D197", "D197 - OUTRAS OBRIGAÇÕES TRIBUTÁRIAS, AJUSTES E INFORMAÇÕES DE VALORES PROVENIENTES DE DOCUMENTO FISCAL", $sql, $col_format, $cabec, $form_final);
   
+
+  $sql = "
+SELECT * FROM D195;
+";
+  $col_format = array(
+	"A:B" => "0"
+);
+  $cabec = array(
+	'OrdD195' => "Número da Linha do Registro D195",
+	'OrdD190' => "Número da Linha do Registro D190",
+	'COD_OBS' => "Código da observação do lançamento fiscal (campo 02 do Registro 0460)",
+	'TXT_COMPL' => "Descrição complementar do código de observação."
+);
+  $pr->abre_excel_sql("D195", "D195 - OBS DO LANÇTO FISCAL (CÓD 07, 08, 8B, 09, 10, 11, 26, 27, 57, 63 e 67)", $sql, $col_format, $cabec, $form_final);  
 
   $sql = "
 SELECT * FROM D190;
@@ -587,8 +623,8 @@ SELECT * FROM C197;
 );
   $cabec = array(
 	'OrdC197' => "Número da Linha do Registro C197",
-	'OrdC100' => "Número da Linha do Registro C100",
 	'OrdC195' => "Número da Linha do Registro C195",
+	'OrdC190' => "Número da Linha do Registro C190",
 	'COD_AJ' => "Código do ajustes/benefício/incentivo, conforme tabela indicada no item 5.3",
 	'DESCR_COMPL_AJ' => "Descrição complementar do ajuste do documento fiscal",
 	'COD_ITEM' => "Código do item (campo 02 do Registro 0200)",
@@ -608,7 +644,7 @@ SELECT * FROM C195;
 );
   $cabec = array(
 	'OrdC195' => "Número da Linha do Registro C195",
-	'OrdC100' => "Número da Linha do Registro C100",
+	'OrdC190' => "Número da Linha do Registro C190",
 	'COD_OBS' => "Código da observação do lançamento fiscal (campo 02 do Registro 0460)",
 	'TXT_COMPL' => "Descrição complementar do código de observação."
 );
@@ -954,12 +990,26 @@ SELECT * FROM C110;
   $col_format = array(
 	"A:B" => "0");
   $cabec = array(
-		'Ord' => "Número da Linha do Registro C141",
+		'Ord' => "Número da Linha do Registro C110",
 		'OrdC100' => "Número da Linha do Registro C100",
 		'cod_inf' => "Código da informação complementar do documento fiscal (campo 02 do Registro 0450)", 
 		'txt_compl' => "Descrição complementar do código de referência."
 );
   $pr->abre_excel_sql("C110", "C110 - Complemento de Documento - Informação Complementar da Nota Fiscal (código 01, 1B, 55)", $sql, $col_format, $cabec, $form_final);
+  
+  $sql = "
+SELECT * FROM C101;
+";
+  $col_format = array(
+	"A:B" => "0");
+  $cabec = array(
+		'Ord' => "Número da Linha do Registro C101",
+		'OrdC100' => "Número da Linha do Registro C100",
+		'vl_fcp_uf_dest' => "valor total relativo ao fundo de combate à pobreza (fcp) da uf de destino",
+		'vl_icms_uf_dest' => "valor total do icms interestadual para a uf de destino",
+		'vl_icms_uf_rem' => "valor total do icms interestadual para a uf do remetente"
+);
+  $pr->abre_excel_sql("C101", "C101 - INF.COMPL.DOS DOCS FISCAIS QD DAS OPER INTERESTADUAIS DEST A CONS FINAL NÃO CONTRIBUINTE EC 87/15)", $sql, $col_format, $cabec, $form_final);
   
 
   $sql = "
@@ -2047,6 +2097,19 @@ SELECT * FROM o100;
 );
   $pr->abre_excel_sql("o100", "0100 - DADOS DO CONTABILISTA", $sql, $col_format, $cabec, $form_final);
 
+
+  $sql = "
+SELECT * FROM o015;
+";
+  $col_format = array(
+	"A:A" => "0",
+	"C:C" => "0");
+  $cabec = array(
+	'Ord' => "Número da Linha do Registro 0015",
+	'uf_st' => "Sigla da unidade da federação do contribuinte substituído ou unidade de federação do consumidor final não contribuinte - ICMS Destino EC 87/15.",
+	'ie_st' => "Inscrição Estadual do contribuinte substituto na unidade da federação do contribuinte substituído ou unidade de federação do consumidor final não contribuinte - ICMS Destino EC 87/15."
+);
+  $pr->abre_excel_sql("o015", "0015 - DADOS DO CONTRIBUINTE SUBSTITUTO OU RESPONSÁVEL PELO ICMS DESTINO", $sql, $col_format, $cabec, $form_final);
 
   $sql = "
 SELECT * FROM o005;
