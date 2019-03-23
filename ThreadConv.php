@@ -143,10 +143,10 @@ while (Gtk::events_pending()) {  // redraw de splash screen
 			  if (substr($linha, 0, 5) == '0000|') {
 			    if (substr($linha, 0, 11) == '0000|LADCA|') {
 				  // é Crédito Acumulado
-				  wecho("\n-->Leitura do arquivo Crédito Acumulado " . str_replace('../', '', $entry) . " ");
+				  wecho("\n-->Leitura do arquivo Crédito Acumulado Custeio Cat83 " . str_replace('../', '', $entry) . " hash=" . hash_file('md5', $entry) . " ");
 				  leitura_ladca($entry);
-				} else {
-				  // deve ser Portaria Cat 42 (e-ressarcimento)
+				} elseif (substr($linha, 0, 11) != '0000|LASIMCA|') { // ou seja, ainda não está disponível Cred Acumulado Simplif Cat207
+				  // deve ser Portaria Cat 42 (e-ressarcimento) (ela não tem identificador, após 0000| vem o período. exemplo: 0000|012019|)
 				  wecho("\n-->Leitura do arquivo Cat 42 (e-ressarcimento) " . str_replace('../', '', $entry) . " ");
 				  leitura_cat42($entry);
 				}

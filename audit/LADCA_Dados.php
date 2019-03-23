@@ -51,7 +51,7 @@ SELECT * FROM s595;
 	'Ords590' => "Número da Linha do Registro 5590",
 	'COD_INS' => "Código do insumo conforme Registro 0200.",
 	'QUANT_INS' => "Quantidade do insumo utilizado",
-	'CUST_INS' => "Custo do insumo",
+	'CUST_INS' => "Custo do insumo de entrada, excluídos os tributos e contribuições recuperáveis",
 	'ICMS_INS' => "Valor do ICMS do insumo"
 );
   $pr->abre_excel_sql("s595", "5595 - INVENTÁRIO POR MATERIAL COMPONENTE - FICHA 5G", $sql, $col_format, $cabec, $form_final);
@@ -118,6 +118,21 @@ SELECT * FROM s380;
 	'ICMS_GERA_ITEM' => "Crédito Acumulado Gerado na Operação com o item"
 );
   $pr->abre_excel_sql("s380", "5380 - OPERAÇÕES GERADORAS DE CRÉDITO ACUMULADO", $sql, $col_format, $cabec, $form_final);
+
+  $sql = "
+SELECT * FROM s370;
+";
+  $col_format = array(
+	"A:B" => "0",
+	"C:D" => "#.##0,00");
+  $cabec = array(
+	'Ord' => "Número da Linha do Registro s370",
+	'Ords365_1:1' => "Número da Linha do Registro s365 (1:1)",
+	'VAL_IPI' => "Valor do IPI, quando recuperável.",
+	'VAL_TRIB' => "Valor de outros tributos e contribuições não-cumulativos."
+);
+  $pr->abre_excel_sql("s370", "5370 - IPI E OUTROS TRIBUTOS NA ENTRADA", $sql, $col_format, $cabec, $form_final);
+
   
   $sql = "
 SELECT * FROM s365;
@@ -138,12 +153,19 @@ SELECT * FROM s365;
 	'CFOP' => "CFOP da Operação",
 	'NUM_DI' => "Número da DI ou DSI",
 	'COD_PART' => "Código do participante conforme registro 0150.",
-	'COD_LANC' => "Código do lançamento, utilizar a tabela 6.1.",
+	'COD_LANC' => "Código do lançamento, utilizar a tabela 6.1.
+Dígito Descrição
+1º Número do Módulo de Origem
+2º Letra da Ficha de Origem - Convertido em Número
+3º Número do Módulo de Destino
+4º Letra da Ficha de Destino - Convertido em Número
+5º Identificação do Lançamento
+6º Identificação do Lançamento",
 	'IND' => "Indicador do Movimento - preencher com:
 0 – Entrada
 1 - Saída.",
 	'QUAN' => "Quantidade do item.",
-	'CUST_ITEM' => "Custo do item.",
+	'CUST_ITEM' => "Custo do item de entrada, excluídos os tributos e contribuições recuperáveis",
 	'VL_ICMS' => "Valor do ICMS do item.",
 	'PERC_CRDOUT' => "Percentual de Crédito Outorgado relativo ao item",
 	'VALOR_CRDOUT' => "Valor do Crédito Outorgado relativo ao item",
@@ -243,12 +265,19 @@ SELECT * FROM s315;
 	'NUM_DOC' => "Número do documento",
 	'CFOP' => "CFOP da Operação",
 	'COD_PART' => "Código do participante conforme registro 0150.",
-	'COD_LANC' => "Código do lançamento, utilizar a tabela 6.1.",
+	'COD_LANC' => "Código do lançamento, utilizar a tabela 6.1.
+Dígito Descrição
+1º Número do Módulo de Origem
+2º Letra da Ficha de Origem - Convertido em Número
+3º Número do Módulo de Destino
+4º Letra da Ficha de Destino - Convertido em Número
+5º Identificação do Lançamento
+6º Identificação do Lançamento",
 	'IND' => "Indicador do Movimento - preencher com:
 0 – Entrada
 1 - Saída.",
 	'QUAN' => "Quantidade do item.",
-	'CUST_ITEM' => "Custo do item.",
+	'CUST_ITEM' => "Custo do item de entrada, excluídos os tributos e contribuições recuperáveis",
 	'VL_ICMS' => "Valor do ICMS do item.",
 	'PERC_CRDOUT' => "Percentual de Crédito Outorgado relativo ao item",
 	'VALOR_CRDOUT' => "Valor do Crédito Outorgado relativo ao item",
@@ -294,13 +323,20 @@ SELECT * FROM s160;
 	'TIP_DOC' => "Tipo do documento conforme a coluna Código Chave da tabela 4.2 ou Campo 02 do Registro 0400.",
 	'SER' => "Série do documento.",
 	'NUM_DOC' => "Número do documento",
-	'COD_LANC' => "Código do lançamento, utilizar a tabela 6.1.",
+	'COD_LANC' => "Código do lançamento, utilizar a tabela 6.1.
+Dígito Descrição
+1º Número do Módulo de Origem
+2º Letra da Ficha de Origem - Convertido em Número
+3º Número do Módulo de Destino
+4º Letra da Ficha de Destino - Convertido em Número
+5º Identificação do Lançamento
+6º Identificação do Lançamento",
 	'IND' => "Indicador do Movimento - preencher com:
 0 – Entrada
 1 - Saída.",
 	'COD_ITEM' => "Código do item movimentado conforme Registro 0200.",
 	'QUAN' => "Quantidade do item.",
-	'CUST_ITEM' => "Custo do item.",
+	'CUST_ITEM' => "Custo do item de entrada, excluídos os tributos e contribuições recuperáveis",
 	'VL_ICMS' => "Valor do ICMS do item."
 );
   $pr->abre_excel_sql("s160", "5160 - MOVIMENTAÇÃO DE ITENS DA FICHA 2A", $sql, $col_format, $cabec, $form_final);
@@ -317,7 +353,7 @@ SELECT * FROM s155;
 	'Ords150' => "Número da Linha do Registro s150",
 	'COD_INS' => "Código do insumo, conforme Registro 0200.",
 	'QUANT_INS' => "Quantidade de insumo utilizada",
-	'CUST_UNIT' => "Custo Unitário do Insumo por unidade de produto",
+	'CUST_UNIT' => "Custo Unitário do Insumo por unidade de produto de entrada, excluídos os tributos e contribuições recuperáveis",
 	'ICMS_UNIT' => "Valor Unitário do ICMS do Insumo por unidade de produto",
 	'PERD_NORM' => "Quantidade de perda normal no processo produtivo",
 	'GANHO_NORM' => "Quantidade de ganho normal no processo produtivo"
@@ -354,7 +390,7 @@ SELECT * FROM s020;
 	"C:D" => "#.##0,00");
   $cabec = array(
 	'Ord' => "Número da Linha do Registro s020",
-	'Ords015' => "Número da Linha do Registro s015",
+	'Ords015_1:1' => "Número da Linha do Registro s015 (1:1)",
 	'VAL_IPI' => "Valor do IPI, quando recuperável.",
 	'VAL_TRIB' => "Valor de outros tributos e contribuições não-cumulativos."
 );
@@ -380,13 +416,20 @@ SELECT * FROM s015;
 	'CFOP' => "CFOP da Operação",
 	'NUM_DI' => "Número da DI ou DSI",
 	'COD_PART' => "Código do participante conforme registro 0150.",
-	'COD_LANC' => "Código do lançamento, utilizar a tabela 6.1.",
+	'COD_LANC' => "Código do lançamento, utilizar a tabela 6.1.
+Dígito Descrição
+1º Número do Módulo de Origem
+2º Letra da Ficha de Origem - Convertido em Número
+3º Número do Módulo de Destino
+4º Letra da Ficha de Destino - Convertido em Número
+5º Identificação do Lançamento
+6º Identificação do Lançamento",
 	'IND' => "Indicador do Movimento – preencher com:
 0 – Entrada
 1 - Saída.",
 	'COD_ITEM_OUTRA_TAB' => "Código do item controlado na ficha de origem ou destino conforme Registro 0200.",
 	'QUAN' => "Quantidade do item.",
-	'CUST_MERC' => "Custo do item.",
+	'CUST_MERC' => "Custo do item de entrada, excluídos os tributos e contribuições recuperáveis",
 	'VL_ICMS' => "Valor do ICMS do item."
 );
   $pr->abre_excel_sql("s015", "5015 - MOVIMENTAÇÃO DE ITENS", $sql, $col_format, $cabec, $form_final);
@@ -576,6 +619,7 @@ SELECT * FROM tab6_1;
 	"B:B" => "@");
   $cabec = array(
 		'cod' => "Código da Tabela 6.1",
+		'ori_des' => "Helper para Ficha de Origem ou Destino",
 		'descri' => "Histórico"
 );
   $pr->abre_excel_sql("Tab_6_1", "Tabela 6.1 - TABELA DE CODIFICAÇÃO DOS LANÇAMENTOS", $sql, $col_format, $cabec, $form_final);

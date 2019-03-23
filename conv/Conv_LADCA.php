@@ -49,7 +49,7 @@ CREATE INDEX tab4_1_cod ON tab4_1 (cod ASC);
 
 	// Tabela 6.1 - TABELA DE CODIFICAÇÃO DOS LANÇAMENTOS - Ver arquivo LADCA_Tab6.1.txt em _sistema/res/tabelas
 	$createtable = "
-CREATE TABLE tab6_1 (cod text, descri text);
+CREATE TABLE tab6_1 (cod text, ori_des text, descri text);
 CREATE INDEX tab6_1_cod ON tab6_1 (cod ASC);
 ";
 	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/LADCA_Tab6.1.txt', 'tab6_1');	
@@ -217,6 +217,12 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	  num_di, cod_part, cod_lanc int, ind int, 
 	  quan real, cust_merc real, vl_icms real,
 	  perc_crdout real, valor_crdout real, valor_desp real)
+	');
+
+    // 5370 - IPI E OUTROS TRIBUTOS NA ENTRADA
+	$db->query('CREATE TABLE s370 (
+	  ord int primary key, ords365 int,
+	  val_ipi real, val_trib real)
 	');
 
 	// s380 - OPERAÇÕES GERADORAS DE CRÉDITO ACUMULADO
@@ -580,6 +586,17 @@ INSERT INTO s365 VALUES(
 EOD;
 		$db->query($insert_query);
 		$ords365 = $iord;
+	  }
+
+	  if ($campos[1] == '5370') {
+		$campos[2] = str_replace(',','.',str_replace('.','',$campos[2]));
+		$campos[3] = str_replace(',','.',str_replace('.','',$campos[3]));
+		$insert_query = <<<EOD
+INSERT INTO s370 VALUES(
+'{$iord}', '{$ords365}', '{$campos[2]}', '{$campos[3]}'
+ )
+EOD;
+		$db->query($insert_query);
 	  }
 
 	  if ($campos[1] == '5380') {
