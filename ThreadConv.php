@@ -8,6 +8,7 @@ $pr->inicia_log(PR_LOG . '/ThreadConv.log');
 require __DIR__ . '/lib/TabAux.php';
 require __DIR__ . '/conv/Conv_EFD.php';
 require __DIR__ . '/conv/Conv_LADCA.php';
+require __DIR__ . '/conv/Conv_LASIMCA.php';
 require __DIR__ . '/conv/Conv_CAT42.php';
 //require 'Conv_ECD.php';
 //require 'Conv_P32.php';
@@ -145,7 +146,10 @@ while (Gtk::events_pending()) {  // redraw de splash screen
 				  // é Crédito Acumulado
 				  wecho("\n-->Leitura do arquivo Crédito Acumulado Custeio Cat83 " . str_replace('../', '', $entry) . " hash=" . hash_file('md5', $entry) . " ");
 				  leitura_ladca($entry);
-				} elseif (substr($linha, 0, 11) != '0000|LASIMCA|') { // ou seja, ainda não está disponível Cred Acumulado Simplif Cat207
+				} elseif (substr($linha, 0, 13) == '0000|LASIMCA|') { 
+				  wecho("\n-->Leitura do arquivo Crédito Acumulado Simplificado Cat207 " . str_replace('../', '', $entry) . " hash=" . hash_file('md5', $entry) . " ");
+				  leitura_lasimca($entry);
+				} else {
 				  // deve ser Portaria Cat 42 (e-ressarcimento) (ela não tem identificador, após 0000| vem o período. exemplo: 0000|012019|)
 				  wecho("\n-->Leitura do arquivo Cat 42 (e-ressarcimento) " . str_replace('../', '', $entry) . " ");
 				  leitura_cat42($entry);

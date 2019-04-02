@@ -637,7 +637,7 @@ function clickOptions(GtkWindow $wnd) {
 	  }
 	}
 	if ($pr->options['savopt']) $pr->save_options();
-	//else if (file_exists('res/options.conf')) unlink('res/options.conf');
+	//else if (file_exists(PR_RES . '/options.conf')) unlink(PR_RES . '/options.conf');
   }
 
   $dialog->destroy();
