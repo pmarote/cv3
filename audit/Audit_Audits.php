@@ -828,11 +828,11 @@ function gera_espelhos_nfe() {
 	$tempo_inicio = time();
 
 	do {
-		if (is_dir('../Resultados/DANFes')) 
-			recursiveDelete('../Resultados/DANFes');
-		if (is_dir('../Resultados/DANFes')) $b_pronto = False; else $b_pronto = True;
+		if (is_dir(PR_RESULTADOS . '/DANFes')) 
+			recursiveDelete(PR_RESULTADOS . '/DANFes');
+		if (is_dir(PR_RESULTADOS . '/DANFes')) $b_pronto = False; else $b_pronto = True;
 		if ($b_pronto) {
-			mkdir('../Resultados/DANFes'); 
+			mkdir(PR_RESULTADOS . '/DANFes'); 
 		} else {
 			if ($tentativas++ < 4) { 
 				sleep(2);
@@ -883,7 +883,7 @@ SELECT nfe.*, nfe_danfe.*, conc_dfe_res.*
 			}
 			// começa um novo
 			$chav_ace = $linha['chav_ace'];
-			$nomarqhtml = "../Resultados/DANFes/{$linha['chav_ace']}.html";
+			$nomarqhtml = PR_RESULTADOS . "/DANFes/{$linha['chav_ace']}.html";
 			$html = gera_nfe_html_inicio($linha, $nome_emp);
 		}
 		$html .= gera_nfe_html_item($linha);

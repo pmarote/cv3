@@ -15,7 +15,6 @@ function dfe_audit() {
 ';
 
 	// Planilha índices
-	$tabela = 'dgca_analit_indices';
 	$sql = "
 SELECT substr(dhEmi, 1, 4) || substr(dhEmi, 6, 2) AS aaaamm, UFIni, UFFim, pICMS, sum(vTPrest) AS vTPrest, sum(vBC) AS vBC, sum(vICMS) AS vICMS FROM cte
    GROUP BY aaaamm, UFIni, UFFim, pICMS;
