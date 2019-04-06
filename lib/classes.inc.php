@@ -10,6 +10,8 @@ class Pr {
   public $db_disponiveis = '';		// string contendo a lista dos dbs disponíveis
   public $mens_final_conf = '';		// mensagem a ser mostrada ao final da conversão
 
+  public $dicdados = array();		// dicionário de dados - alpha - por enquanto, só pra gerar txt em lasimca
+
   // Propriedades - Seção Parâmetros (utilizados nos Sqls das Auditorias)
   public $sql_params = array();		// contém sempre dois índices: O primeiro, nome do db3 (nfe, p32, etc...)
 									// o segundo, o nome do parâmetro
@@ -93,7 +95,7 @@ class Pr {
   }
 
   public function read_options() {
-	// Lê opções somente se estiver disponível o arquivo res/options.conf
+	// Lê opções somente se estiver disponível o arquivo PR_RES . /options.conf
 	if (file_exists(PR_RES . '/options.conf')) {
 	  $aread = unserialize(file_get_contents(PR_RES . '/options.conf'));
 	  //debug_log(print_r($aread, True));
@@ -116,6 +118,29 @@ class Pr {
   public function exec_log($sql) {
 	file_put_contents(PR_LOG . '/SQLs.log', str_replace("\n", "\r\n", $sql), FILE_APPEND);
 	return $this->db->exec($sql);
+  }
+
+  public function carrega_dicdados() {
+  	if (count($this->dicdados) > 0) return;	// só carrega uma vez...
+
+  	$cabec = True;
+  	$txt_file = PR_RES . '/tabelas/dicdados.txt';
+	$dados = file_get_contents(utf8_decode($txt_file));
+	$linhas = explode("\n", $dados);
+	foreach($linhas as $key => $value) {
+		// Se $cabec = True é porque há linha de cabeçalho, que deve ser pulada!
+		if ($cabec) {
+			$cabec = False;
+		} else {
+			$campos = explode("\t", trim($value, " \n\r"));
+			$this->dicdados[$campos[0]][$campos[1]][$campos[3]]['nro']   = $campos[2];
+			$this->dicdados[$campos[0]][$campos[1]][$campos[3]]['descri']= $campos[4];
+			$this->dicdados[$campos[0]][$campos[1]][$campos[3]]['tipo']  = $campos[5];
+			$this->dicdados[$campos[0]][$campos[1]][$campos[3]]['tam']   = $campos[6];
+			$this->dicdados[$campos[0]][$campos[1]][$campos[3]]['dec']   = $campos[7];
+		}
+	}
+
   }
 
   // ** Seção Parâmetros
@@ -177,6 +202,7 @@ class Pr {
 		  if (strtolower(substr($file, 0, 3)) == "txt") $this->db_disponiveis .= strpos($lbltexto, "txt") > 0 ? "" : "[txt] ";
 		  if (strtolower(substr($file, 0, 5)) == "audit") $this->db_disponiveis .= strpos($lbltexto, "audit") > 0 ? "" : "[audit] ";
 		  if (strtolower(substr($file, 0, 5)) == "ladca") $this->db_disponiveis .= strpos($lbltexto, "ladca") > 0 ? "" : "[ladca] ";
+		  if (strtolower(substr($file, 0, 7)) == "lasimca") $this->db_disponiveis .= strpos($lbltexto, "lasimca") > 0 ? "" : "[lasimca] ";
 		  if (strtolower(substr($file, 0, 5)) == "cat42") $this->db_disponiveis .= strpos($lbltexto, "cat42") > 0 ? "" : "[cat42] ";
 		}
 	  }

@@ -6,7 +6,8 @@ require __DIR__ . '/../cv3.config.php';
 set_time_limit(0); // Desabilita o limite padrao de 60 segundos para processamento
 
 function versao() {
-	return "3.1.0 - 03/2019";
+	return "3.1.1 - 03/2019";
+// 3.1.1 - 03/2019 - Leitura de LASIMCA
 // 3.1.0 - 03/2019 - Combinei com todos meus softwares em /pn, habilitando para GitHub
 //                   db3 agora ficam em tmp... a parta db3 agora é perene, não se apaga
 // 3.0.8 - 03/2019 - Importação de Arquivos .csv (ainda muito lento)
