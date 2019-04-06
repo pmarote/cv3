@@ -33,21 +33,21 @@ CREATE INDEX descri_reg_reg ON descri_reg (reg ASC);
 ";
 	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/LADCA_Reg_Descri.txt', 'descri_reg');	
   
-	// Tabela 4.1.1 - Tipos de Documentos Fiscais - Ver arquivo Tab4.1.1.txt em _sistema/res/tabelas
+	// Tabela 4.1.1 - Tipos de Documentos Fiscais - Ver arquivo Tab4.1.1.txt em PR_RES . '/tabelas'
 	$createtable = "
 CREATE TABLE tab4_1_1 (cod text, descri text, mod text);
 CREATE INDEX tab4_1_1_cod ON tab4_1_1 (cod ASC);
 ";
 	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/Tab4.1.1.txt', 'tab4_1_1');	
 
-	// Tabela 4.1 - GÊNERO DO ITEM E DA OPERAÇÃO - Ver arquivo LADCA_Tab4.1.txt em _sistema/res/tabelas
+	// Tabela 4.1 - GÊNERO DO ITEM E DA OPERAÇÃO - Ver arquivo LADCA_Tab4.1.txt PR_RES . '/tabelas'
 	$createtable = "
 CREATE TABLE tab4_1 (cod text, descri text);
 CREATE INDEX tab4_1_cod ON tab4_1 (cod ASC);
 ";
 	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/LADCA_Tab4.1.txt', 'tab4_1');	
 
-	// Tabela 6.1 - TABELA DE CODIFICAÇÃO DOS LANÇAMENTOS - Ver arquivo LADCA_Tab6.1.txt em _sistema/res/tabelas
+	// Tabela 6.1 - TABELA DE CODIFICAÇÃO DOS LANÇAMENTOS - Ver arquivo LADCA_Tab6.1.txt em PR_RES . '/tabelas'
 	$createtable = "
 CREATE TABLE tab6_1 (cod text, ori_des text, descri text);
 CREATE INDEX tab6_1_cod ON tab6_1 (cod ASC);
@@ -136,7 +136,7 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	$db->query('CREATE TABLE s015 (
 	  ord int primary key, ords010 int,
 	  num_lanc int, dt_mov, hist, tip_doc int, ser, num_doc int, cfop int,
-	  num_di, cod_part, cod_lanc int, ind int, cod_item_outra_tab, 
+	  num_di, cod_part text, cod_lanc int, ind int, cod_item_outra_tab, 
 	  quan real, cust_merc real, vl_icms real)
 	');
 
@@ -178,7 +178,7 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	$db->query('CREATE TABLE s315 (
 	  ord int primary key, ords310 int,
 	  num_lanc int, dt_mov, hist, tip_doc int, ser, num_doc int, cfop int,
-	  cod_part, cod_lanc int, ind int, 
+	  cod_part text, cod_lanc int, ind int, 
 	  quan real, cust_merc real, vl_icms real,
 	  perc_crdout real, valor_crdout real, valor_desp real)
 	');
@@ -214,7 +214,7 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	$db->query('CREATE TABLE s365 (
 	  ord int primary key, ords360 int,
 	  num_lanc int, dt_mov, hist, tip_doc int, ser, num_doc int, cfop int,
-	  num_di, cod_part, cod_lanc int, ind int, 
+	  num_di, cod_part text, cod_lanc int, ind int, 
 	  quan real, cust_merc real, vl_icms real,
 	  perc_crdout real, valor_crdout real, valor_desp real)
 	');

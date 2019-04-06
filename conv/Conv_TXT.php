@@ -290,10 +290,12 @@ function leitura_txt($arquivo_txt) {
 	    $db->query($insert_query);
 
 	    if ($ilidos % 20000 == 0) {
+            $db->query('COMMIT;'); // Conforme faq do Sqlite, acelera Insert (questao 19)
 			if ($ldebug) {
 				wecho("\nLidas {$ilidos} linhas em ");
 				wecho(time() - $tempo_inicio . " segundos");
 			} else wecho("*");
+            $db->query('BEGIN;'); 	// Conforme faq do Sqlite, acelera Insert (questao 19)
 		}
 	  }
 	}

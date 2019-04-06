@@ -35,7 +35,7 @@ CREATE INDEX descri_reg_reg ON descri_reg (reg ASC);
 ";
 	create_table_from_txt($db, $createtable, PR_RES . '/tabelas/EFD_Reg_Descri.txt', 'descri_reg');	
   
-	// Tabela 4.1.1 - Tipos de Documentos Fiscais - Ver arquivo Tab4.1.1.txt em _sistema/res/tabelas
+	// Tabela 4.1.1 - Tipos de Documentos Fiscais - Ver arquivo Tab4.1.1.txt em PR_RES . '/tabelas'
 	$createtable = "
 CREATE TABLE tab4_1_1 (cod text, descri text, mod text);
 CREATE INDEX tab4_1_1_cod ON tab4_1_1 (cod ASC);
