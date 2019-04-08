@@ -13,12 +13,385 @@ function gera_tabelas_auxiliares() {
   $pr->carrega_db_disponiveis();  
   
   if (strpos($pr->db_disponiveis, 'txt') > 0) gera_tabelas_auxiliares_txt();
-  //if (strpos($pr->db_disponiveis, 'ecd') > 0) gera_tabelas_auxiliares_ecd();
+  if (strpos($pr->db_disponiveis, 'xml') > 0) gera_tabelas_auxiliares_xml();
+  if (strpos($pr->db_disponiveis, 'ecd') > 0) gera_tabelas_auxiliares_ecd();
   if (strpos($pr->db_disponiveis, 'efd') > 0) gera_tabelas_auxiliares_efd();
   //if (strpos($pr->db_disponiveis, 'nfe') > 0) gera_tabelas_auxiliares_nfe();
   //if (strpos($pr->db_disponiveis, 'p32') > 0) gera_tabelas_auxiliares_p32();
   if (strpos($pr->db_disponiveis, 'p17') > 0) gera_tabelas_auxiliares_p17();
   if (strpos($pr->db_disponiveis, 'cat42') > 0) gera_tabelas_auxiliares_cat42();
+
+}
+
+
+
+function gera_tabelas_auxiliares_ecd($segunda_vez = False) {
+
+  global $pr;
+
+  $pr->aud_abre_db_e_attach('ecd');
+  
+  // Preenchimento de Parâmetros
+  $paraux = $pr->aud_sql2array("
+  -- Seção 1 - O que está abaixo é só para descobrir a conta de resultado
+SELECT cod_cta, max(contagem) FROM 
+      (SELECT diario.cod_cta AS cod_cta, count(diario.cod_cta) AS contagem
+            FROM diario
+            LEFT OUTER JOIN contas ON contas.cod_cta = diario.cod_cta
+            WHERE substr(dt_lcto, 9, 2) = '31' AND contas.cod_nat + 0 = 3
+            GROUP BY diario.cod_cta);
+  -- Seção 1 - Fim
+");
+  $pr->sql_params['ecd']['cta_res'] = $paraux[0]['cod_cta'];  // Código da Conta de Patrimônio Líquido utilizada para
+                                // Resultado do Período
+
+  if (! $segunda_vez) {
+
+  $paraux = $pr->aud_sql2array("
+  SELECT max(nivel) AS max_nivel FROM contas;
+");
+  $pr->sql_params['ecd']['max_nivel'] = $paraux[0]['max_nivel'];    // Nível máximo do Plano de Contas
+
+  $paraux = $pr->aud_sql2array("
+  SELECT min(nivel) AS min_nivel FROM contas WHERE ind_cta = 'A';
+");
+  $pr->sql_params['ecd']['min_nivel_cta_analit'] = $paraux[0]['min_nivel'];   // Nível mínimo onde há Contas Analiticas
+
+  }
+
+  $paraux = $pr->aud_sql2array("
+  SELECT count(*) AS qtd FROM
+   (SELECT DISTINCT  num_lcto FROM lancto);
+");
+  $pr->sql_params['ecd']['qtd_lcto'] = $paraux[0]['qtd'];   // Quantidade de Lançamentos (pode ser maior que count(*) I200,
+                                // no caso de lançamentos criados com soluções
+
+  $paraux = $pr->aud_sql2array("
+  SELECT count(*) AS qtd FROM
+   (SELECT DISTINCT  num_lcto FROM lancto WHERE nro_deb > 1 AND nro_cred > 1);
+");
+  $pr->sql_params['ecd']['qtd_lcto_4form'] = $paraux[0]['qtd'];   // Quantidade de Lançamentos da 4ª Formula
+
+  $erros = $pr->aud_sql2array("
+  SELECT count(*) AS contagem FROM lancto WHERE nro_deb > 1 AND nro_cred > 1;
+");
+  $pr->sql_params['ecd']['erros_ndeb_mcred'] = $erros[0]['contagem'];   // Quantidade de Erros de lançamentos lançamentos com muitos n débitos por m créditos
+
+  $qtd_i200 = $pr->aud_sql2array("
+  SELECT count(*) AS contagem FROM i200;
+");
+
+  if ($pr->sql_params['ecd']['erros_ndeb_mcred'] > 0) {
+    $alerta = "\n\n**ATENÇÃO**\n\nOriginalmente, este ECD tem {$qtd_i200[0]['contagem']} lançamentos (quantidade de Regs. I200). ";
+  if ($pr->sql_params['ecd']['qtd_lcto'] != $qtd_i200[0]['contagem']) 
+    $alerta .= "Com os processamentos de Identificação de Contrapartidas, o número de lançamentos aumentou para {$pr->sql_params['ecd']['qtd_lcto']}. ";
+  $alerta .= "Mesmo após o processamento, ainda há {$pr->sql_params['ecd']['qtd_lcto_4form']} lançamentos da 4ª Fórmula, ou seja, situação de vários débitos para vários créditos (N Débitos x M Créditos), com um total de {$erros[0]['contagem']} partidas, que foram decodificadas com Solução 0 (contrapartida em débito ou crédito para contas de compensação de código 'NSddddcccc').\n";
+    $alerta .= "Soluções podem ser tentadas no menu Auditoria, opção Roteiro Contábil - Decodificação de Lançamentos N Débitos x M Créditos\n";
+  wecho($alerta);
+  $pr->mens_final_conf .= $alerta;
+
+  $dta_ini = $pr->aud_sql2array("
+    SELECT min(dt_alt) AS min_dt_alt FROM contas;
+  ");
+  
+  // Inclui as Contas de Compensação criadas em contasndebmcred na tabela contas
+  $cod_cta_n = array();
+  $cod_cta_n[1] = "'NSddddcccc'";
+  if ($pr->sql_params['ecd']['max_nivel'] > 2) $cod_cta_n[2] = "'NSddddccccN2'"; else $cod_cta_n[2] = "Null";
+  if ($pr->sql_params['ecd']['max_nivel'] > 3) $cod_cta_n[3] = "'NSddddccccN3'"; else $cod_cta_n[3] = "Null";
+  if ($pr->sql_params['ecd']['max_nivel'] > 4) $cod_cta_n[4] = "'NSddddccccN4'"; else $cod_cta_n[4] = "Null";
+  if ($pr->sql_params['ecd']['max_nivel'] > 5) $cod_cta_n[5] = "'NSddddccccN5'"; else $cod_cta_n[5] = "Null";
+  if ($pr->sql_params['ecd']['max_nivel'] > 6) $cod_cta_n[6] = "'NSddddccccN6'"; else $cod_cta_n[6] = "Null";
+  if ($pr->sql_params['ecd']['max_nivel'] > 7) $cod_cta_n[7] = "'NSddddccccN7'"; else $cod_cta_n[7] = "Null";
+  $cod_cta_n[8] = "Null";
+  $cod_cta_n[$pr->sql_params['ecd']['max_nivel']] = "cod_cta";
+  $sql_cria_cta = "
+  INSERT INTO contas
+    SELECT cod_cta, '{$dta_ini[0]['min_dt_alt']}', '05', 'A', {$pr->sql_params['ecd']['max_nivel']},
+    {$cod_cta_n[$pr->sql_params['ecd']['max_nivel'] - 1]}, cta, Null, Null, Null, cod_cta,
+    {$cod_cta_n[1]}, {$cod_cta_n[2]}, {$cod_cta_n[3]}, {$cod_cta_n[4]},
+    {$cod_cta_n[5]}, {$cod_cta_n[6]}, {$cod_cta_n[7]}, {$cod_cta_n[8]}
+      FROM contasndebmcred GROUP BY cod_cta;
+";
+  // Preenche as contas superiores, desde o nível máximo até o nível 1
+  $cod_cta_n[0] = "Null";
+  for($i = $pr->sql_params['ecd']['max_nivel'] - 1; $i >= 1; $i--) {
+    $cod_cta_n[$i + 1] = "Null";
+    $sql_cria_cta .= "
+  INSERT INTO contas VALUES(
+      {$cod_cta_n[$i]}, '{$dta_ini[0]['min_dt_alt']}', '05', 'S', {$i},
+    {$cod_cta_n[$i - 1]}, 'Conta de CompensaÃ§Ã£o para NÃ£o SoluÃ§Ã£o de Casos de LanÃ§amentos com N DÃ©bitos x M CrÃ©ditos', Null, Null, Null, 'N{$i}',
+    {$cod_cta_n[1]}, {$cod_cta_n[2]}, {$cod_cta_n[3]}, {$cod_cta_n[4]},
+    {$cod_cta_n[5]}, {$cod_cta_n[6]}, {$cod_cta_n[7]}, {$cod_cta_n[8]} );
+";
+  }
+    // Preenche as saldos das contas de compensação com base em lançamentos
+    
+    $sql_cria_cta .= "
+INSERT INTO saldos
+   SELECT Null, Null, mes, cod_cta, Null, 0, 'D', sum(debitos) AS debitos, sum(creditos) AS creditos, 0, 'D'  FROM
+      (SELECT substr(dt_lcto, 1, 7) AS mes, cod_cta_d AS cod_cta, 
+         sum(valor) AS debitos, 0 AS creditos
+         FROM lancto WHERE cod_cta > 'NS00000000' AND cod_cta <= 'NS99999999'
+         GROUP BY mes, cod_cta
+      UNION ALL
+      SELECT substr(dt_lcto, 1, 7) AS mes, cod_cta_c AS cod_cta, 
+         0 AS debitos, sum(valor) AS creditos
+         FROM lancto WHERE cod_cta > 'NS00000000' AND cod_cta <= 'NS99999999'
+         GROUP BY mes, cod_cta)
+   GROUP BY mes, cod_cta;
+";
+  $pr->aud_prepara($sql_cria_cta);
+  
+  }
+
+  // Preenchimentos de Saldos nas contas sintéticas
+  if ($segunda_vez) {
+  $pr->db->exec("DELETE FROM saldos WHERE cod_cta IN (SELECT cod_cta FROM contas WHERE ind_cta = 'S');");
+  }
+  for($is = $pr->sql_params['ecd']['max_nivel'] + 0; $is >= 2; $is--) {
+  $pr->aud_prepara("
+  INSERT INTO saldos
+   SELECT Null, Null, mes, cod_cta_sup, cod_ccus, 
+      abs(vl_sld_ini) AS vl_sld_ini, CASE WHEN vl_sld_ini <= 0 THEN 'D' ELSE 'C' END AS ind_dc_ini,
+      vl_deb, vl_cred, abs(vl_sld_fin) AS vl_sld_fin, CASE WHEN vl_sld_fin <= 0 THEN 'D' ELSE 'C' END AS ind_dc_fin
+      FROM
+      (SELECT mes, contas.cod_cta_sup AS cod_cta_sup, saldos.cod_ccus AS cod_ccus,
+          sum(CASE WHEN ind_dc_ini = 'D' THEN -vl_sld_ini ELSE vl_sld_ini END) AS vl_sld_ini,
+    sum(vl_deb) AS vl_deb, 
+    sum(vl_cred) AS vl_cred,
+          sum(CASE WHEN ind_dc_fin = 'D' THEN -vl_sld_fin ELSE vl_sld_fin END) AS vl_sld_fin 
+          FROM saldos
+          LEFT OUTER JOIN contas ON contas.cod_cta = saldos.cod_cta
+    WHERE nivel = {$is}
+    GROUP BY cod_cta_sup, cod_ccus, mes);
+");
+  }
+
+  // Preenchimentos de Saldos das Contas de Resultados Antes do Encerramento das contas analíticas e sintéticas
+  $pr->aud_prepara("
+DROP TABLE IF EXISTS saldos_ant_enc;
+CREATE TABLE saldos_ant_enc AS 
+SELECT dt_res, cod_cta, cod_ccus, vl_cta, ind_dc
+     FROM i355
+     LEFT OUTER JOIN i350 ON i355.ordi350 = i350.ord;
+DROP INDEX IF EXISTS saldos_ant_enc_chapri;  
+CREATE INDEX saldos_ant_enc_chapri ON saldos_ant_enc (cod_cta ASC);
+");
+  for($is = $pr->sql_params['ecd']['max_nivel'] + 0; $is >= 2; $is--) {
+  $pr->aud_prepara("
+   INSERT INTO saldos_ant_enc      
+   SELECT dt_res, cod_cta_sup AS cod_cta, cod_ccus, 
+      abs(vl_cta_2) AS vl_cta, CASE WHEN vl_cta_2 <= 0 THEN 'D' ELSE 'C' END AS ind_dc
+      FROM
+      (SELECT dt_res, contas.cod_cta_sup AS cod_cta_sup, saldos_ant_enc.cod_ccus AS cod_ccus,
+          sum(CASE WHEN ind_dc = 'D' THEN -vl_cta ELSE vl_cta END) AS vl_cta_2
+          FROM  saldos_ant_enc    
+          LEFT OUTER JOIN contas ON contas.cod_cta = saldos_ant_enc.cod_cta
+    WHERE nivel = {$is}
+    GROUP BY cod_cta_sup, cod_ccus, dt_res);
+");
+  }
+
+  // if (! $segunda_vez) {
+  $pr->db->createFunction('sqlite_zera_acum', 'sqlite_zera_acum');
+  $pr->db->createFunction('sqlite_acum', 'sqlite_acum');
+  $pr->db->createFunction('sqlite_final_mes', 'sqlite_final_mes');
+  // }
+
+  // Construção dos Razões
+  $pr->aud_prepara("
+DROP TABLE IF EXISTS razoes;  
+CREATE TABLE razoes AS
+  SELECT * FROM
+  (SELECT cod_cta_d AS cod_cta_busca, cod_cta_c AS cod_ctapart, * FROM lancto
+  UNION ALL
+  SELECT cod_cta_c AS cod_cta_busca, cod_cta_d AS cod_ctapart, * FROM lancto
+  UNION ALL
+  SELECT distinct cod_cta AS cod_cta_busca, Null, '', Null, Null, '', Null, Null, Null, 0, 'ZeraAcum', Null, Null, Null, Null, Null FROM saldos
+  UNION ALL
+  SELECT cod_cta AS cod_cta_busca, Null, '' AS num_lcto, Null, Null, mes || '-01' AS dt_lcto, Null, 
+  CASE WHEN ind_dc_ini = 'D' THEN cod_cta ELSE Null END AS cod_cta_d, 
+  CASE WHEN ind_dc_ini = 'C' THEN cod_cta ELSE Null END AS cod_cta_c, 
+  vl_sld_ini AS valor, '##NT##Saldo Inicial Mensal' AS hist, Null, Null, Null, Null, Null
+  FROM saldos
+  UNION ALL
+  SELECT cod_cta AS cod_cta_busca, Null, '|' AS num_lcto, Null, Null, sqlite_final_mes(mes || '-01') AS dt_lcto, Null, 
+  CASE WHEN ind_dc_fin = 'C' THEN cod_cta ELSE Null END AS cod_cta_d, 
+  CASE WHEN ind_dc_fin = 'D' THEN cod_cta ELSE Null END AS cod_cta_c, 
+  vl_sld_fin AS valor, '##NC##Saldo Final Mensal' AS hist, Null, Null, Null, Null, Null
+  FROM saldos)
+  ORDER BY cod_cta_busca ASC, dt_lcto ASC, num_lcto ASC;
+DROP TABLE IF EXISTS razoes_aux;  
+CREATE TABLE razoes_aux AS 
+  SELECT cod_cta_busca, num_lcto, nro_deb, nro_cred, dt_lcto, ind_lcto, cod_cta_d, cod_cta_c, valor, hist, padrao_s, padrao_m, padrao_nr,
+  contas.cta AS contra_partida,
+  round(sqlite_acum(
+    CASE WHEN hist = 'ZeraAcum' THEN sqlite_zera_acum(0) ELSE 
+    CASE WHEN cod_cta_d = cod_cta_busca THEN -valor ELSE valor END
+  END
+  ), 2) AS saldo
+  FROM razoes
+  LEFT OUTER JOIN contas ON cod_ctapart = contas.cod_cta;
+");
+
+  // Saldos Diários, médio, mínimo e máximo
+  $pr->aud_prepara("
+DROP TABLE IF EXISTS salmedminmax;  
+CREATE TABLE salmedminmax AS   
+  SELECT cod_cta_busca, 
+     round(abs(avgsaldo), 2) AS medsaldo,
+     CASE WHEN avgsaldo < 0 THEN 'D' ELSE 'C' END AS medsaldo_dc,
+     abs(minsaldo) AS minsaldo,
+     CASE WHEN minsaldo < 0 THEN 'D' ELSE 'C' END AS minsaldo_dc,
+     abs(maxsaldo) AS maxsaldo,
+     CASE WHEN maxsaldo < 0 THEN 'D' ELSE 'C' END AS maxsaldo_dc
+     FROM
+     (SELECT cod_cta_busca, min(saldo) AS minsaldo, max(saldo) AS maxsaldo, avg(saldo) AS avgsaldo FROM
+      (SELECT cod_cta_busca, dt_lcto, saldo
+        FROM razoes_aux
+  LEFT OUTER JOIN contas ON contas.cod_cta = cod_cta_busca
+        WHERE  hist <> 'ZeraAcum' AND num_lcto <> '|' AND contas.nivel = 5
+          GROUP BY cod_cta_busca, dt_lcto)
+   GROUP BY cod_cta_busca);
+DROP INDEX IF EXISTS chav_salmedminmax;  
+CREATE INDEX chav_salmedminmax on salmedminmax (cod_cta_busca ASC);
+");
+
+  if (! $segunda_vez) {
+
+  // Construção dos Movimentos, para Comparação com Saldos (balancetes)
+  $pr->aud_prepara("
+DROP TABLE IF EXISTS movto;  
+DROP INDEX IF EXISTS chav_movto;
+CREATE TABLE movto AS
+   SELECT substr(dt_lcto, 1, 7) AS mes, cod_cta, 
+   sum(CASE WHEN ind_dc = 'D' THEN vl_dc ELSE 0 END) AS debitos,
+   sum(CASE WHEN ind_dc = 'C' THEN vl_dc ELSE 0 END) AS creditos,
+   sum(CASE WHEN ind_dc = 'D' THEN (CASE WHEN ind_lcto = 'N' THEN vl_dc ELSE 0 END) ELSE 0 END) AS n_debitos,
+   sum(CASE WHEN ind_dc = 'C' THEN (CASE WHEN ind_lcto = 'N' THEN vl_dc ELSE 0 END) ELSE 0 END) AS n_creditos,
+   sum(CASE WHEN ind_dc = 'D' THEN (CASE WHEN ind_lcto = 'E' THEN vl_dc ELSE 0 END) ELSE 0 END) AS e_debitos,
+   sum(CASE WHEN ind_dc = 'C' THEN (CASE WHEN ind_lcto = 'E' THEN vl_dc ELSE 0 END) ELSE 0 END) AS e_creditos 
+   FROM diario
+   GROUP BY mes, cod_cta;
+CREATE INDEX chav_movto on movto (mes ASC, cod_cta ASC);
+");
+  }
+  
+  $pr->salva_sql_params('ecd'); // Não esqueça de salvar... senão, se o usuário fechar e depois abrir de novo não estarão lá...
+
+}
+
+
+function gera_tabelas_auxiliares_xml() {
+
+  global $pr;
+
+  $db = abredb3_dfe();    // em Conv_DFe.php . Para criar, caso não exista. Em seguida, fecha
+  $pr->aud_abre_db_e_attach('dfe,xml,common');
+
+      $pr->aud_prepara("
+-- É necessário antes tirar repetições de arquivos
+DROP INDEX IF EXISTS xml.arqxmlchav_ace;
+CREATE INDEX IF NOT EXISTS xml.arqxmlchav_ace ON arqxml (chav_ace ASC, tipo ASC);
+DROP TABLE IF EXISTS xml.aux_arqxml;
+CREATE TABLE xml.aux_arqxml AS 
+SELECT rowid AS id, chav_ace, tipo FROM arqxml GROUP BY chav_ace, tipo;
+DROP INDEX IF EXISTS xml.aux_arqxmlid;
+CREATE INDEX IF NOT EXISTS xml.aux_arqxmlid ON aux_arqxml (id ASC);
+DROP TABLE IF EXISTS xml.aux_det;
+CREATE TABLE xml.aux_det AS
+SELECT aux_arqxml.chav_ace AS chav_ace, tag.html AS html
+            FROM tag
+            LEFT OUTER JOIN aux_arqxml ON aux_arqxml.id = tag.arqxmlrowid
+            WHERE aux_arqxml.tipo = 'NFe' AND tag.tag = '<det>';
+DROP INDEX IF EXISTS xml.aux_det_chav_ace;
+CREATE INDEX IF NOT EXISTS xml.aux_det_chav_ace ON aux_det (chav_ace ASC);
+");
+
+  $sql = <<<EOD
+-- Juntando os principais grupos de NFe, por chave de acesso
+SELECT aux1.*, aux_det.html AS det FROM 
+    (SELECT chav_ace, group_concat(ide, '') AS ide, group_concat(emit, '') AS emit, group_concat(dest, '') AS dest, 
+      group_concat(total, '') AS total, group_concat(transp, '') AS transp, group_concat(infAdic, '') AS infAdic FROM
+        (SELECT chav_ace,
+           CASE WHEN tag = '<ide>'   THEN html ELSE '' END AS ide,
+           CASE WHEN tag = '<emit>'  THEN html ELSE '' END AS emit,
+           CASE WHEN tag = '<dest>'  THEN html ELSE '' END AS dest,
+           CASE WHEN tag = '<total>'  THEN html ELSE '' END AS total,
+           CASE WHEN tag = '<transp>'  THEN html ELSE '' END AS transp,
+           CASE WHEN tag = '<infAdic>'  THEN html ELSE '' END AS infAdic
+           FROM
+           (SELECT aux_arqxml.chav_ace AS chav_ace, tag.tag AS tag, tag.html AS html
+                FROM tag
+                LEFT OUTER JOIN aux_arqxml ON aux_arqxml.rowid = tag.arqxmlrowid
+                WHERE aux_arqxml.tipo = 'NFe' AND tag.tag IN ('<ide>', '<emit>', '<dest>', '<infAdic>', '<total>', '<transp>') ) )
+    GROUP BY chav_ace) AS aux1
+LEFT OUTER JOIN aux_det ON aux_det.chav_ace = aux1.chav_ace
+LIMIT 1;
+EOD;
+
+  $res = $pr->query_log($sql);
+  $a_parametros = array();
+  while ($linha = $res->fetchArray(SQLITE3_ASSOC)) {
+    debug_log(print_r($linha, True));
+    $xml_ide     = simplexml_load_string($linha['ide']);
+    $xml_emit    = simplexml_load_string($linha['emit']);
+    $xml_dest    = simplexml_load_string($linha['dest']);
+    $xml_total   = simplexml_load_string($linha['total']);
+    $xml_transp  = simplexml_load_string($linha['transp']);
+    $xml_infAdic = simplexml_load_string($linha['infAdic']);
+    $xml_det     = simplexml_load_string($linha['det']);
+    debug_log(print_r($xml_ide, True) . print_r($xml_emit, True) . print_r($xml_dest, True) . print_r($xml_total, True) . print_r($xml_transp, True) . print_r($xml_infAdic, True) . print_r($xml_det, True) );
+    $dtaemi = substr($xml_ide->dhEmi, 0, 10);
+    $dtaentsai = substr($xml_ide->dhSaiEnt, 0, 10);
+    $insert_sql = <<<EOD
+INSERT INTO nfe_danfe VALUES(
+'{$xml_ide->mod}', '{$cnpj_origem}', '{$linha['chav_ace']}', '{$xml_ide->natOp}',
+'{$xml_emit->enderEmit->xLgr}', '{$xml_emit->enderEmit->nro}', '{$xml_emit->enderEmit->xCpl}', 
+'{$xml_emit->enderEmit->xBairro}', '{$xml_emit->enderEmit->xMun}', '{$xml_emit->enderEmit->CEP}', 
+'{$xml_emit->enderEmit->xPais}', '{$xml_emit->enderEmit->fone}', 
+'{$xml_dest->enderDest->xLgr}', '{$xml_dest->enderDest->nro}', '{$xml_dest->enderDest->xCpl}', 
+'{$xml_dest->enderDest->xBairro}', '{$xml_dest->enderDest->xMun}', '{$xml_dest->enderDest->CEP}', 
+'{$xml_dest->enderDest->xPais}', '{$xml_dest->enderDest->fone}', 
+'{$xml_transp->vol->marca}', '{$xml_transp->vol->qVol}', 
+'{$xml_total->ICMSTot->vFrete}', '{$xml_total->ICMSTot->vSeg}', '{$xml_total->ICMSTot->vDesc}', 
+'{$xml_total->ICMSTot->vII}', '{$xml_total->ICMSTot->vIPI}', '{$xml_total->ICMSTot->vOutro}', 
+'{$xml_ide->cNF}', '{$xml_transp->modFrete}', 
+'{$xml_transp->transporta->IE}', '{$xml_transp->transporta->xNome}', '{$xml_transp->transporta->xEnder}', 
+'{$xml_transp->transporta->xMun}', '{$xml_transp->transporta->UF}', '{$xml_transp->transporta->CNPJ}', 
+'{$xml_transp->vol->esp}', '{$xml_transp->vol->qVol}', 
+'{$xml_transp->vol->pesoL}', '{$xml_transp->vol->pesoB}', 
+'{$xml_infAdic->infAdFisco}', '{$xml_infAdic->infCpl}'
+);
+EOD;
+
+    $insert_sql = <<<EOD
+INSERT INTO nfe VALUES(
+'{$linha['chav_ace']}', '{$dtaemi}', '{$dtaentsai}', '{$xml_ide->mod}', '{$xml_ide->serie}', '{$xml_ide->nNF}', ''
+);
+
+INSERT INTO nfe
+   SELECT 
+      chav_ace, dtaemi, Null AS dtaentsai, modelo_, serie, numero, item AS nItem,
+      modelo AS origem, cnpj_origem, ie_origem, aaaamm, 
+      CASE WHEN cod_sit = 1 THEN 2 ELSE cod_sit END AS  cod_sit,
+      CASE WHEN cfop + 0 > 5000 THEN 'S' ELSE 'E' END AS tp_oper, cst, cfop,
+      valcon, bcicms, CASE WHEN bcicms = 0 THEN 0 ELSE round(icms/bcicms*100, 2) END AS alicms,icms, valipi + valii AS outimp, 
+      bcicmsst, CASE WHEN bcicmsst = 0 THEN 0 ELSE round((icms+icmsst)/bcicmsst*100, 2) END AS alicmsst, icmsst, valipi, valii,
+      {$indice}.cnpj, {$indice}.ie, {$indice}.uf, {$indice}.razsoc, dtaina, descina,
+      codncm, codpro, Null AS cEAN, descri, qtdpro, unimed,
+      Null AS vFrete, Null AS vSeg, Null AS vDesc, Null AS vOutro, Null AS nDI, Null AS UFDesemb, 
+      Null AS pRedBC, Null AS pMVAST, Null AS pRedBCST, Null AS vBCSTRet, Null AS vICMSSTRet, Null AS vCredICMSSN
+      FROM tabela
+   LEFT OUTER JOIN cadesp ON cadesp.cnpj = {$indice}.cnpj;
+EOD;
+
+    debug_log("\rInsert SQL = {$insert_sql}\r");
+
+  }
+
+  $pr->db->close();
 
 }
 

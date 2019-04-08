@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS dgca_simplif;
 CREATE TABLE dgca_simplif (cfop int, valcon_s text, valcon_e text, bcicms_e text, icms_pmc text);
 CREATE INDEX dgca_simplif_chapri ON dgca_simplif (cfop ASC);
 ";
-	create_table_from_txt($pr->db, $createtable, 'res\tabelas\dgca_simplif.txt', 'dgca_simplif');	
+	create_table_from_txt($pr->db, $createtable, PR_RES . '/tabelas/dgca_simplif.txt', 'dgca_simplif');	
 
 	$pr->aud_prepara("
 -- dgca analítico

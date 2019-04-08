@@ -224,7 +224,44 @@ SELECT substr(ca_modelo.ord, 1, 4) AS per,
   $col_format = array(
 	"C:D" => "0",
 );
-  $cabec = $pr->auto_cabec('ca_modelo');
+  $cabec = array(
+  	'per' => "Período",
+  	'cod_item_alvo' => "Código do Item alvo da Análise, ou seja, cod_item_outra_tab na Ficha 1a cod_item nas demais fichas",
+  	'ord' => "AAMM e Número da Linha do Principal Registro que deu origem a cada linha",
+  	'ficha' => "Código da Ficha, conforme Manual do Crédito Acumulado sistma de custeio",
+	'orig' => "Origem - Registros",
+	'cod_item' => "Código do item conforme Registro 0200.",
+	'num_lanc' => "Número do Lançamento",
+	'dt_mov' => "Data",
+	'hist' => "Histórico",
+	'tip_doc' => "Tipo Doc",
+	'ser' => "Série",
+	'num_doc' => "Nro Doc",
+	'cfop' => "CFOP",
+	'num_di' => "Número da DI ou DSI",
+	'cod_part' => "Código do participante conforme registro 0150.",
+	'cod_lanc' => "Código do Lançamento, conforme tab6.1.",
+	'fic_orig_dest' => "Descrição sumária da ficha de origem e destino, conforme tab 6.1",
+	'cod_item_outra_tab' => "Código do item controlado na ficha de origem ou destino conforme Registro 0200.",
+	'ind' => "Indicador do Movimento – preencher com:
+0 – Entrada
+1 - Saída.",
+	'quan' => "Quantidade",
+	'cust_unit' => "Custo Unitário por unidade de produto de entrada, excluídos os tributos e contribuições recuperáveis",
+	'cust_merc' => "Custo de entrada, excluídos os tributos e contribuições recuperáveis",
+	'icms_unit' => "Valor Unitário do ICMS do Insumo por unidade de produto",
+	'vl_icms' => "Entrada - Valor do ICMS",
+	'ent_ipi' => "Entrada - Valor do IPI",
+	'ent_out_imp_contrib' => "Entrada - Valor de Outros Impostos e Contribuições",
+	'valor_crdout' => "Val Créd Outorgado",
+	'valor_desp' => "Val Créd Desp Operacionais",
+	'cod_legal' => "Código do Enquadramento Legal conforme registro 0300.",
+	'valor_op_item' => "Valor Total da Operação relativo ao item",
+	'valor_bc_item' => "Base de Cálculo da operação de saída relativa ao item.",
+	'aliq_item' => "Alíquota do ICMS da operação de saída relativa ao item.",
+	'icms_deb_item' => "ICMS debitado na operação de saída do item.",
+	'icms_gera_item' => "Crédito Acumulado Gerado na Operação com o item"
+);
   $pr->abre_excel_sql('ca_modelo', 'Credito Acumulado - Custos - Port 83 - Modelo', $sql, $col_format, $cabec, $form_final);
 
   

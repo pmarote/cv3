@@ -10,20 +10,10 @@ require __DIR__ . '/conv/Conv_EFD.php';
 require __DIR__ . '/conv/Conv_LADCA.php';
 require __DIR__ . '/conv/Conv_LASIMCA.php';
 require __DIR__ . '/conv/Conv_CAT42.php';
-//require 'Conv_ECD.php';
-//require 'Conv_P32.php';
-//require 'Conv_NFe.php';
-//require 'Conv_Cad.php';
-//require 'Conv_IEs.php';
-//require 'Conv_GIA.php';
+require __DIR__ . '/conv/Conv_ECD.php';
+require __DIR__ . '/conv/Conv_XML.php';
 require __DIR__ . '/conv/Conv_TXT.php';	// se não for nenhuma opção acima e for arquivo txt, vai criar uma tabela e tentar ler, da forma que der
-//if (file_exists('../_xtras/Conv_LogFileMocha.php')) {
-//  include '../_xtras/Conv_LogFileMocha.php';
-//}
 include __DIR__ . '/conv/Conv_P17.php';
-//if (file_exists('../_xtras/LeNFe.php')) {
-//  include '../_xtras/LeNFe.php';
-//}
 
 error_warning_logs(PR_LOG . '/ThreadConvError.log', PR_LOG . '/ThreadConvWarning.log'); 	// em base.inc.php
 
@@ -75,7 +65,7 @@ while (Gtk::events_pending()) {  // redraw de splash screen
   // Leituras
   $numarqs = 0;
   wecho("\n\nLeitura dos arquivos presentes na pasta Fontes e subpastas:\n");
-  $arqs = listdir_semConsultaNFes(PR_FONTES); // em base.inc.php - \Fontes\ConsultaNFes, caso exista, é lido em leituraConsultaNFes() mais abaixo
+  $arqs = listdir(PR_FONTES, True); // em base.inc.php
   // primeiro unzip todos os arquivos .sped ou .zip
   $zip = new ZipArchive;
   $novolistdir = False;
@@ -103,7 +93,8 @@ while (Gtk::events_pending()) {  // redraw de splash screen
   }
   
   // Leituras dos arquivos... os que estavam zipados, já foram descompactados
-  if ($novolistdir) $arqs = listdir(PR_FONTES); // se descompactou arquivo SPED ou ZIP, lê tudo novamente...
+  if ($novolistdir) $arqs = listdir(PR_FONTES, True); // se descompactou arquivo SPED ou ZIP, lê tudo novamente...
+  // debug_log("#ThreadConv-arqs=" . print_r($arqs, True) . "#\r");
   foreach ($arqs as $key => $entry) {
 	if (strtolower(substr($entry, -4)) != '.xml') {
 	  // é arquivo Sped ?
@@ -119,11 +110,11 @@ while (Gtk::events_pending()) {  // redraw de splash screen
 			// é Sped Contábil
 			wecho("\n-->Leitura do arquivo Sped Contabil " . str_replace('../', '', $entry) . " ");
 			leitura_ecd($entry);
-			if ($options['arqs_sep']) gera_excel_ecd($entry);
+			//if ($options['arqs_sep']) gera_excel_ecd($entry);
 		  } else {
 			wecho("\n-->Leitura do arquivo Sped Fiscal " . str_replace('../', '', $entry) . " ");
   			leitura_efd($entry);
-			if ($options['arqs_sep']) gera_excel_efd($entry);
+			//if ($options['arqs_sep']) gera_excel_efd($entry);
 		  }
 		} else {
 		  if ((substr($linha, 0, 2) == '10' && substr($linha2, 0, 2) == '11')
@@ -204,12 +195,7 @@ while (Gtk::events_pending()) {  // redraw de splash screen
 	}
   }
 
-  $existenfe = False;
-  if (findxml(PR_FONTES)) {  // função em base.inc.php
-	$existenfe = True;
-	leitura_nfe();
-	wecho("\n\n-->Gerando nfe.xls ");
-  } 
+  leitura_xml();  // em Conv_XML.php
 
   //wecho("\nFinalizando... Gerando agora tabelas auxiliares...\n");
   gera_tabelas_auxiliares(); 	// função em TabAux.php

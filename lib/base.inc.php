@@ -6,7 +6,8 @@ require __DIR__ . '/../cv3.config.php';
 set_time_limit(0); // Desabilita o limite padrao de 60 segundos para processamento
 
 function versao() {
-	return "3.1.1 - 03/2019";
+	return "3.1.2 - 04/2019";
+// 3.1.2 - 04/2019 - Leitura de XML e ECD
 // 3.1.1 - 03/2019 - Leitura de LASIMCA
 // 3.1.0 - 03/2019 - Combinei com todos meus softwares em /pn, habilitando para GitHub
 //                   db3 agora ficam em tmp... a parta db3 agora é perene, não se apaga
@@ -115,18 +116,6 @@ function recursiveDelete($str){
         }
         return @rmdir($str);
     }
-}
-
-function printXml($xml) {
-    if ($xml instanceof DOMDocument) {
-	$s = $xml->saveXML();
-    } else if ($xml instanceof DOMNodeList) {
-	$s = '';
-	foreach ($xml as $node) { $s .= printXml($node); }
-    } else {
-	$s = $xml->ownerDocument->saveXml($xml);
-    }
-    return $s;
 }
 
 function wecho($str) {
@@ -324,7 +313,7 @@ function dtaBarra2AAAA_MM_DD($data) {
   //else return $data; // ver comentário acima sobre data legível ou não
 }
 
-function listdir($start_dir='.') {  // usado para ler arquivos recursivamente
+function listdir($start_dir='.', $exclui_xml = False) {  // usado para ler arquivos recursivamente
 
   $files = array();
   if (is_dir($start_dir)) {
@@ -334,8 +323,13 @@ function listdir($start_dir='.') {  // usado para ler arquivos recursivamente
       if (strcmp($file, '.')==0 || strcmp($file, '..')==0) continue;
       $filepath = $start_dir . '/' . $file;
       if ( is_dir($filepath) )
-        $files = array_merge($files, listdir($filepath));
-      else array_push($files, $filepath);
+        $files = array_merge($files, listdir($filepath, $exclui_xml));
+      else {
+      	if ($exclui_xml) {
+      	  //debug_log(mb_strtolower(mb_substr($filepath, -4)) . "\r");
+      	  if (mb_strtolower(mb_substr($filepath, -4)) <> '.xml') array_push($files, $filepath);
+      	} else array_push($files, $filepath);
+      }
     }
     closedir($fh);
   } else {
@@ -343,57 +337,6 @@ function listdir($start_dir='.') {  // usado para ler arquivos recursivamente
     $files = false;
   }
   return $files;
-}
-
-function listdir_semConsultaNFes($start_dir='.') {  // usado para ler arquivos recursivamente
-	// não lê \Fontes\ConsultaNFes, caso exista
-	// porque essa pasta é lida especificamente em leituraConsultaNFes(), em LeNFe.php
-	// Fiz uma rotina específica para ganhar tempo, porque as vezes há milhares de arquivos .xml
-	// Se eu ler tudo e depois excluir \Fontes\ConsultaNFes, pode haver perda de tempo no caso de pastas com muitos arquivos
-
-  $files = array();
-  if (is_dir($start_dir)) {
-    $fh = opendir($start_dir);
-    while (($file = readdir($fh)) !== false) {
-      # loop through the files, skipping . and .., and recursing if necessary
-      if (strcmp($file, '.')==0 || strcmp($file, '..')==0) continue;
-      $filepath = $start_dir . '/' . $file;
-      if ( is_dir($filepath) ) {
-        if ($filepath <> '../Fontes/ConsultaNFes') $files = array_merge($files, listdir_semConsultaNFes($filepath));
-	  } else array_push($files, $filepath);
-    }
-    closedir($fh);
-  } else {
-    # false if the function was called with an invalid non-directory argument
-    $files = false;
-  }
-  return $files;
-}
-
-function findxml($start_dir='.') {  // retorna True se existe arquivos xml no diretório
-
-  if (is_dir($start_dir)) {
-    //echo("#{$start_dir}#");
-    $fh = opendir($start_dir);
-    while (($file = readdir($fh)) !== false) {
-      # loop through the files, skipping . and .., and recursing if necessary
-      if (strcmp($file, '.')==0 || strcmp($file, '..')==0) continue;
-      $filepath = $start_dir . '/' . $file;
-      if ( is_dir($filepath) ) {
-		if (findxml($filepath)) {
-			closedir($fh);
-			return True;
-		}
-	  } else {
-		if (substr(strtolower($file), -4) == '.xml') {
-			closedir($fh);
-			return True;
-		}
-	  }
-    }
-    closedir($fh);
-  }
-  return False;
 }
 
 function db_lista_campos($db, $tabela) {

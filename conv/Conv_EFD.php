@@ -753,6 +753,10 @@ INSERT INTO o000 VALUES(
  )
 EOD;
 		$db->query($insert_query);
+		if (is_null($pr->cnpj_master)) {
+			$pr->cnpj_master = $campos[7] + 0;	// CNPJ é sempre int...
+			wecho("\n\n#Definida propriedade pr->cnpj_master com o seguinte CNPJ: {$pr->cnpj_master} \n");	
+		}
 	  }
 
 	  	  if ($campos[1] == '0005') {

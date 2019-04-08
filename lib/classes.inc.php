@@ -12,6 +12,11 @@ class Pr {
 
   public $dicdados = array();		// dicionário de dados - alpha - por enquanto, só pra gerar txt em lasimca
 
+  public $cnpj_master = Null;		// CNPJ da empresa principal, sendo auditada. Carregado automaticamente
+                                    // em Conv_EFD.php com base no Registro 0000
+                                    // Usado em TabAux para converter dados de xml.db3 para nfe.db3
+                                    // Lembre-se: cnpj e cpf são sempre campos int e IE é text (padrão EFD)
+
   // Propriedades - Seção Parâmetros (utilizados nos Sqls das Auditorias)
   public $sql_params = array();		// contém sempre dois índices: O primeiro, nome do db3 (nfe, p32, etc...)
 									// o segundo, o nome do parâmetro
@@ -200,6 +205,7 @@ class Pr {
 		  if (strtolower(substr($file, 0, 3)) == "ecd") $this->db_disponiveis .= strpos($lbltexto, "ecd") > 0 ? "" : "[ecd] ";
 		  if (strtolower(substr($file, 0, 3)) == "gia") $this->db_disponiveis .= strpos($lbltexto, "gia") > 0 ? "" : "[gia] ";
 		  if (strtolower(substr($file, 0, 3)) == "txt") $this->db_disponiveis .= strpos($lbltexto, "txt") > 0 ? "" : "[txt] ";
+		  if (strtolower(substr($file, 0, 3)) == "xml") $this->db_disponiveis .= strpos($lbltexto, "xml") > 0 ? "" : "[xml] ";
 		  if (strtolower(substr($file, 0, 5)) == "audit") $this->db_disponiveis .= strpos($lbltexto, "audit") > 0 ? "" : "[audit] ";
 		  if (strtolower(substr($file, 0, 5)) == "ladca") $this->db_disponiveis .= strpos($lbltexto, "ladca") > 0 ? "" : "[ladca] ";
 		  if (strtolower(substr($file, 0, 7)) == "lasimca") $this->db_disponiveis .= strpos($lbltexto, "lasimca") > 0 ? "" : "[lasimca] ";
