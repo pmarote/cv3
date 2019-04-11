@@ -80,3 +80,25 @@ Em seguida roda TabAux.php, que:
 
 Ao contrário do Conversor2,o novo Modelo será simples, parecido com a GIA (aberto, no máximo, por CFOP, CST e Alíquota).
 Se for necessário mais dados, basta relacionar com os arquivos originais.
+
+### Emissão de NFe e escrituração na importação
+
+É o velho problema... a NFe não bate com o SPED que não bate com a GIA... 
+- Conceitos:
+  - BC II = Valor da Mercadoria, pura, sem nada de impostos, nem desp aduaneiras, nem AFRMM
+  - BC IPI = Valor da Mercadoria + II, soma pura, sem nada de impostos, nem desp aduaneiras, nem AFRMM
+  - Outras Despesas Acessórias = AFRMM + Desp Aduaneiras + II + PIS + Cofins
+  
+- C190 vl_opr = Valor da operação na combinação de CST_ICMS, CFOP e alíquota do ICMS, correspondente ao somatório do valor das mercadorias, despesas acessórias (frete, seguros e outras despesas acessórias), ICMS_ST e IPI
+  - Na prática, na importação, é: Valor da Mercadoria + Outras Despesas Acessórias + IPI (porque não tem ICMS-ST na importação)
+  - Ou, na prática, C190 vl_opr + vl_icms = Valor Total da NFe = Valor Contábil da GIA
+  
+- Valor Total da NFe = Valor Contábil na GIA = C190 vl_opr + vl_icms
+
+- Valor Total do Item que vem no BO, que é igual ao campo valcon em audit.db3.modelo e também em dfe.nfe:
+  - C190 vl_opr + II
+    - Opa... temos um problema aqui... então o valor total do item que vem no BO está adicionado do II duas vezes! Para usá-lo corretamente, deve ser deduzido o II !
+    
+- Como chegar do valcon em audit.db3.modelo ou também em dfe.nfe para Valor Total da NFe ?
+  - Subtrair II (para corrigir, chegar ao C190 vl_opr) e Somar ao ICMS
+
