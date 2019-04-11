@@ -1,0 +1,19 @@
+reg	proc	nivel	descri	obrig	ocorr
+0000	X	0	Abertura do Arquivo Digital e Identificação do Contribuinte	S	1
+0001	X	1	Abertura do Bloco 0	S	1
+0150	X	2	Cadastro de Participantes de Operações e Prestações	S	Vários
+0300	X	2	Enquadramento Legal da Operação/Prestação Geradora de Crédito Acumulado do ICMS	N	Vários
+0990	X	1	Encerramento do Bloco 0	S	1
+5001	X	1	Abertura do Bloco 5	S	1
+5315	X	2	Operações de Saída	N	Vários
+5320	X	3	Devolução de Saída	N	1:1
+5325	X	3	Operações Geradoras de Crédito Acumulado	N	1:1
+5330	X	4	Operações Geradoras Apuradas na Ficha 6A ou 6B	N	1:1
+5335	X	4	Operações Geradoras Apuradas na Ficha 6C ou 6D	N	1:1
+5340	X	5	Dados da Exportação Indireta Comprovada - Fichas 5H	N	1:N
+5350	X	3	Operações Não Geradoras de Crédito Acumulado – Ficha 6F	N	1:1
+5990	X	1	Encerramento do Bloco 5	S	1
+9001	X	1	Abertura do Bloco 9	S	1
+9900	X	2	Registros do Arquivo	S	Vários
+9990	X	1	Encerramento do Bloco 9	S	1
+9999	X	0	Encerramento do Arquivo Digital	S	1

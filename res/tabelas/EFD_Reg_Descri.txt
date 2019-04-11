@@ -1,0 +1,193 @@
+reg	proc	nivel	descri
+0000	X	0	Abertura do Arquivo Digital e Identificação da entidade
+0001		1	Abertura do Bloco 0 (Abertura, Identificação e Referências)
+0005	X	2	Dados Complementares da entidade
+0015	X	2	Dados do Contribuinte Substituto
+0100	X	2	Dados do Contabilista
+0150	X	2	Tabela de Cadastro do Participante
+0175	X	3	Alteração da Tabela de Cadastro de Participante
+0190	X	2	Identificação das unidades de medida
+0200	X	2	Tabela de Identificação do Item (Produtos e Serviços)
+0205	X	3	Alteração do Item
+0206	X	3	Código de produto conforme Tabela ANP (Combustíveis)
+0220	X	3	Fatores de Conversão de Unidades
+0300	X	2	Cadastro de bens ou componentes do Ativo Imobilizado
+0305	X	3	Informação sobre a Utilização do Bem
+0400	X	2	Tabela de Natureza da Operação/ Prestação
+0450	X	2	Tabela de Informação Complementar do documento fiscal
+0460	X	2	Tabela de Observações do Lançamento Fiscal
+0500	X	2	Plano de contas contábeis
+0600	X	2	Centro de custos
+0990		1	Encerramento do Bloco 0 (Abertura, Identificação e Referências)
+1001		1	Abertura do Bloco 1 (Outras Informações)
+1010	X	2	Obrigatoriedade de registros do Bloco 1
+1100	X	2	Registro de Informações sobre Exportação
+1105	X	3	Documentos Fiscais de Exportação
+1110		4	Operações de Exportação Indireta - Mercadorias de terceiros
+1200	X	2	Controle de Créditos Fiscais - ICMS
+1210	X	3	Utilização de Créditos Fiscais - ICMS
+1300	X	2	Movimentação diária de combustíveis
+1310	X	3	Movimentação diária de combustíveis por tanque
+1320	X	4	Volume de vendas
+1350	X	2	Bombas
+1360	X	3	Lacres das bombas
+1370	X	3	Bicos da bomba
+1390		2	Controle de produção de Usina
+1391		3	Produção diária da usina
+1400		2	Informação sobre Valor Agregado
+1500		2	Nota fiscal/Conta de energia elétrica (código 06) - Operações Interestaduais
+1510		3	Itens do documento Nota fiscal/Conta de energia elétrica (código 06)
+1600		2	Total das operações com cartão de crédito e/ou débito
+1700		2	Documentos fiscais utilizados
+1710		3	Documentos fiscais cancelados/inutilizados
+1800		2	DCTA - Demonstrativo de crédito do ICMS sobre transporte aéreo
+1900		2	Indicador de sub-apuração do ICMS
+1910		3	Período da sub-apuração do ICMS
+1920		4	Sub-apuração do ICMS
+1921		5	Ajuste/benefício/incentivo da sub-apuração do ICMS
+1922		6	Informações adicionais dos ajustes da sub-apuração do ICMS
+1923		6	Informações adicionais dos ajustes da sub-apuração do ICMS - Identificação dos documentos fiscais
+1925		5	Informações adicionais da sub-apuração do ICMS - Valores declaratórios
+1926		5	Obrigações do ICMS a recolher - Operações referentes à sub-apuração do ICMS
+1990		1	Encerramento do Bloco 1 (Outras Informações)
+9001		1	Abertura do Bloco 9 (Controle e Encerramento do Arquivo Digital)
+9900		2	Registros do Arquivo
+9990		1	Encerramento do Bloco 9
+9999		0	Encerramento do Arquivo Digital (Controle e Encerramento do Arquivo Digital)
+C001		1	Abertura do Bloco C (Documentos Fiscais I  - Mercadorias (ICMS/IPI))
+C100	X	2	Documento - Nota Fiscal (código 01), Nota Fiscal Avulsa (código 1B), Nota Fiscal de Produtor (código 04) e Nota Fiscal Eletrônica (código 55)
+C101	X	3	Inf.Compl.Dos Docs Fiscais Qd Das Oper Interestaduais Dest A Cons Final Não Contribuinte EC 87/15
+C105		3	Operações com ICMS ST recolhido para UF diversa do destinatário do documento fiscal (Código 55)
+C110	X	3	Complemento de Documento - Informação Complementar da Nota Fiscal (código 01, 1B, 55)
+C111		4	Complemento de Documento - Processo referenciado
+C112		4	Complemento de Documento - Documento de Arrecadação Referenciado
+C113	X	4	Complemento de Documento - Documento Fiscal Referenciado
+C114	X	4	Complemento de Documento - Cupom Fiscal Referenciado
+C115		4	Local de coleta e/ou entrega (CÓDIGOS 01, 1B e 04)
+C116		4	Cupom Fiscal Eletrônico - CF-e referenciado
+C120	X	3	Complemento de Documento - Operações de Importação (código 01)
+C130		3	Complemento de Documento - ISSQN, IRRF e Previdência Social
+C140	X	3	Complemento de Documento - Fatura (código 01)
+C141	X	4	Complemento de Documento - Vencimento da Fatura (código 01)
+C160		3	Complemento de Documento - Volumes Transportados (código 01 e 04) Exceto Combustíveis
+C165		3	Complemento de Documento - Operações com combustíveis (código 01)
+C170	X	3	Complemento de Documento - Itens do Documento (código 01, 1B, 04 e 55)
+C171	X	4	Complemento de Item - LMC - Armazenamento de Combustíveis (código 01,55)
+C172		4	Complemento de Item - Operações com ISSQN (código 01)
+C173	X	4	Complemento de Item - Operações com Medicamentos (código 01,55)
+C174	X	4	Complemento de Item - Operações com Armas de Fogo (código 01)
+C175	X	4	Complemento de Item - Operações com Veículos Novos (código 01,55)
+C176	X	4	Complemento de Item -Ressarcimento de ICMS em operações com Substituição Tributária (código 01,55)
+C177		4	Complemento de Item - Operações com Produtos Sujeitos a Selo de Controle IPI (código 01)
+C178		4	Complemento de Item - Operações com Produtos Sujeitos a Tributação de IPI por Unidade ou Quantidade de produto
+C179		4	Complemento de Item - Informações Complementares ST (código 01)
+C190	X	3	Registro Analítico do Documento (código 01, 1B, 04 e 55)
+C195	X	3	Complemento do Registro Analítico - Observações do Lançamento Fiscal (código 01, 1B e 55)
+C197	X	4	Outras Obrigações Tributárias, Ajustes e Informações provenientes de Documento Fiscal
+C300		2	Documento - Resumo Diário das Notas Fiscais de Venda a Consumidor (código 02)
+C310		3	Documentos Cancelados de Nota Fiscal de Venda a Consumidor (código 02)
+C320		3	Registro Analítico das Notas Fiscais de Venda a Consumidor (código 02)
+C321		4	Itens dos Resumos Diários dos Documentos (código 02)
+C350		2	Nota Fiscal de venda a consumidor (código 02)
+C370		3	Itens do documento (código 02)
+C390		3	Registro Analítico das Notas Fiscais de Venda a Consumidor (código 02)
+C400	X	2	Equipamento ECF (código 02 e 2D)
+C405	X	3	Redução Z (código 02 e 2D)
+C410	X	4	PIS e COFINS Totalizados no Dia (código 02 e 2D)
+C420	X	4	Registro dos Totalizadores Parciais da Redução Z (código 02 e 2D)
+C425		5	Resumo de itens do movimento diário (código 02 e 2D)
+C460	X	4	Documento Fiscal Emitido por ECF (código 02 e 2D)
+C470	X	5	Itens do Documento Fiscal Emitido por ECF (código 02 e 2D)
+C490	X	4	Registro Analítico do movimento diário (código 02 e 2D)
+C495		2	Resumo Mensal de Itens do ECF por Estabelecimento (código 02 e 2D e 2E)
+C500	X	2	Nota Fiscal/Conta de Energia Elétrica (código 06), Nota Fiscal/Conta de fornecimento dágua canalizada (código 29) e Nota Fiscal/Consumo Fornecimento de Gás (Código 28)
+C510		3	Itens do Documento - Nota Fiscal/Conta de Energia Elétrica (código 06), Nota Fiscal/Conta de fornecimento dágua canalizada (código 29) e Nota Fiscal/Conta Fornecimento de Gás (Código 28)
+C590	X	3	Registro Analítico do Documento - Nota Fiscal/Conta de Energia Elétrica (código 06), Nota Fiscal/Conta de fornecimento dágua canalizada (código 29) e Nota Fiscal/Conta Fornecimento de Gás (Código 28)
+C600		2	Consolidação Diária de Notas Fiscais/Contas de Energia Elétrica (Código 06), Nota Fiscal/Conta de Fornecimento d´água (código 29) e Nota Fiscal/Conta de Fornecimento de Gás (Código 28) - (Empresas não obrigadas ao Convênio ICMS 115/03)
+C601		3	Documentos cancelados - Consolidação diária de notas fiscais/conta de energia elétrica (Código 06), nota fiscal/conta de fornecimento de água (código 29) e nota fiscal/conta de fornecimento de gás (código 28)
+C610		3	Itens do Documento Consolidado - Notas Fiscais/Contas de Energia Elétrica (Código 06), Nota Fiscal/Conta de Fornecimento d´água (código 29) e Nota Fiscal/Conta de Fornecimento de Gás (Código 28) - (Empresas não obrigadas ao Convênio ICMS 115/03)
+C690		3	Registro Analítico dos Documentos - Notas Fiscais/Contas de Energia Elétrica (Código 06), Nota Fiscal/Conta de Fornecimento d´água (código 29) e Nota Fiscal/Conta de Fornecimento de Gás (Código 28)
+C700		2	Consolidação dos Documentos Nota Fiscal/Conta Energia Elétrica (código 06) emitidas em via única - (Empresas obrigadas à entrega do arquivo previsto no Convênio ICMS 115/03) e Nota Fiscal/Conta de Fornecimento de Gás Canalizado (Código 28)
+C790		3	Registro Analítico dos Documentos - Nota Fiscal/Conta Energia Elétrica (código 06) emitidas em via única
+C791		4	Registro de Informações de ICMS ST por UF
+C800	X	2	Registro Cupom Fiscal Eletrônico - CF-e (Código 59)
+C850	X	3	Registro Analítico do CF-e (Código 59)
+C860	X	2	Identificação do equipamento SAT-CF-e (Código 59)
+C890	X	3	Resumo diário de CF-e (Código 59) por equipamento SAT-CF-e
+C990		1	Encerramento do Bloco C (Documentos Fiscais I  - Mercadorias (ICMS/IPI))
+D001		1	Abertura do Bloco D (Documentos Fiscais II - Serviços (ICMS))
+D100	X	2	Nota Fiscal de Serviço de Transporte (código 07) e Conhecimentos de Transporte Rodoviário de Cargas (código 08), Conhecimento de Transporte de Cargas Avulso (Código 8B), Aquaviário de Cargas (código 09), Aéreo (código 10), Ferroviário de Cargas (código 11) e Multimodal de Cargas (código 26) e Nota Fiscal de Transporte Ferroviário de Cargas(código 27) e Conhecimento de Transporte Eletrônico - CT-e (código 57).
+D110	X	3	Itens do documento - Nota Fiscal de Serviços de Transporte (código 07)
+D120	X	4	Complemento da Nota Fiscal de Serviços de Transporte (código 07)
+D130		3	Complemento do Conhecimento Rodoviário de Cargas (código 08) e Conhecimento de Transporte de Cargas Avulso (Código 8B)
+D140		3	Complemento do Conhecimento Aquaviário de Cargas (código 09)
+D150		3	Complemento do Conhecimento Aéreo de Cargas (código 10)
+D160		3	Carga Transportada  (CÓDIGO 08, 8B, 09, 10, 11, 26 E 27)
+D161		4	Local de Coleta e Entrega (códigos 08, 8B, 09, 10, 11 e 26)
+D162		4	Identificação dos documentos fiscais (código 08,8B, 09,10,11,26 e 27)
+D170		3	Complemento do Conhecimento Multimodal de Cargas (código 26)
+D180		3	Modais (código 26)
+D190	X	3	Registro Analítico dos Documentos (CÓDIGO 07, 08, 8B, 09, 10, 11, 26, 27 e 57)
+D195	X	4	Observações do lançamento (CÓDIGO 07, 08, 8B, 09, 10, 11, 26, 27 e 57)
+D197	X	5	Outras obrigações tributárias, ajustes e informações de valores provenientes do documento fiscal.
+D300		2	Registro Analítico dos bilhetes consolidados de Passagem Rodoviário (código 13), de Passagem Aquaviário (código 14), de Passagem e Nota de Bagagem (código 15) e de Passagem Ferroviário (código 16)
+D301		3	Documentos cancelados dos Bilhetes de Passagem Rodoviário (código 13), de Passagem Aquaviário (código 14), de Passagem e Nota de Bagagem (código 15) e de Passagem Ferroviário (código 16)
+D310		3	Complemento dos Bilhetes (código 13, código 14, código 15 e código 16)
+D350		2	Equipamento ECF (Códigos 2E, 13, 14, 15 e 16)
+D355		3	Redução Z (Códigos 2E, 13, 14, 15 e 16)
+D360		4	PIS E COFINS totalizados no dia (Códigos 2E, 13, 14, 15 e 16)
+D365		4	Registro dos Totalizadores Parciais da Redução Z (Códigos 2E, 13, 14, 15 e 16)
+D370		5	Complemento dos documentos informados (Códigos 13, 14, 15, 16 E 2E)
+D390		4	Registro analítico do movimento diário (Códigos 13, 14, 15, 16 E 2E)
+D400		2	Resumo do Movimento Diário (código 18)
+D410		3	Documentos Informados (Códigos 13, 14, 15 e 16)
+D411		4	Documentos Cancelados dos Documentos Informados (Códigos 13, 14, 15 e 16)
+D420		3	Complemento dos Documentos Informados (Códigos 13, 14, 15 e 16)
+D500	X	2	Nota Fiscal de Serviço de Comunicação (código 21) e Serviço de Telecomunicação (código 22)
+D510		3	Itens do Documento - Nota Fiscal de Serviço de Comunicação (código 21) e Serviço de Telecomunicação (código 22)
+D530		3	Terminal Faturado
+D590	X	3	Registro Analítico do Documento (códigos 21 e 22)
+D600		2	Consolidação da Prestação de Serviços - Notas de Serviço de Comunicação (código 21) e de Serviço de Telecomunicação (código 22)
+D610		3	Itens do Documento Consolidado (códigos 21 e 22)
+D690		3	Registro Analítico dos Documentos (códigos 21 e 22)
+D695		2	Consolidação da Prestação de Serviços - Notas de Serviço de Comunicação (código 21) e de Serviço de Telecomunicação (código 22)
+D696		3	Registro Analítico dos Documentos (códigos 21 e 22)
+D697		4	Registro de informações de outras UFs, relativamente aos serviços “não-medidos” de televisão por assinatura via satélite
+D990		1	Encerramento do Bloco D (Documentos Fiscais II - Serviços (ICMS))
+E001		1	Abertura do Bloco E (Apuração do ICMS e do IPI)
+E100	X	2	Período de Apuração do ICMS
+E110	X	3	Apuração do ICMS - Operações Próprias
+E111	X	4	Ajuste/Benefício/Incentivo da Apuração do ICMS
+E112		5	Informações Adicionais dos Ajustes da Apuração do ICMS
+E113	X	5	Informações Adicionais dos Ajustes da Apuração do ICMS - Identificação dos documentos fiscais
+E115		4	Informações Adicionais da Apuração do ICMS - Valores Declaratórios
+E116	X	4	Obrigações do ICMS a Recolher - Obrigações Próprias
+E200	X	2	Período de Apuração do ICMS - Substituição Tributária
+E210	X	3	Apuração do ICMS - Substituição Tributária
+E220		4	Ajuste/Benefício/Incentivo da Apuração do ICMS - Substituição Tributária
+E230		5	Informações Adicionais dos Ajustes da Apuração do ICMS Substituição Tributária
+E240		5	Informações Adicionais dos Ajustes da Apuração do ICMS Substituição Tributária - Identificação dos documentos fiscais
+E250	X	4	Obrigações do ICMS a Recolher - Substituição Tributária
+E300	X	2	Período De Apuração Do Fundo De Combate À Pobreza E Do Icms Diferencial De Alíquota  UF Origem/Destino Ec 87/15
+E310	X	3	Apuração do fundo de combate à pobreza e do icms - Diferencial de alíquota  UF origem/destino ec 87/15
+E311	X	4	Ajuste/benefício/incentivo da apuração do fundo de Combate à pobreza e do icms diferencial de alíquota uf Origem/destino ec 87/15
+E312	X	5	Informações adicionais dos ajustes da apuração do Fundo de combate à pobreza e do icms diferencial de alíquota uf Origem/destino ec 87/15
+E313	X	5	Informações adicionais dos ajustes da apuração do Fundo de combate à pobreza e do icms diferencial de alíquota uf Origem/destino ec 87/15 - identificação dos documentos fiscais
+E316	X	4	Obrigações recolhidas ou a recolher – fundo de Combate à pobreza e icms diferencial de alíquota uf origem/destino Ec 87/15
+E500		2	Período de Apuração do IPI
+E510		3	Consolidação dos Valores de IPI
+E520		3	Apuração do IPI
+E530		4	Ajustes da Apuração do IPI
+E990		1	Encerramento do Bloco E (Apuração do ICMS e do IPI)
+G001		1	Abertura do Bloco G (Controle do Crédito de ICMS do Ativo Permanente - CIAP - modelos “C” e “D”)
+G110	X	2	ICMS - Ativo Permanente - CIAP
+G125	X	3	Movimentação de Bem do Ativo Imobilizado
+G126	X	4	Outros créditos CIAP
+G130	X	4	Identificação do documento fiscal
+G140	X	5	Identificação do item do documento fiscal
+G990		1	Encerramento do Bloco G (Controle do Crédito de ICMS do Ativo Permanente - CIAP - modelos “C” e “D”)
+H001		1	Abertura do Bloco H (Inventário Físico)
+H005	X	2	Totais do Inventário
+H010	X	3	Inventário
+H020		4	Informação complementar do Inventário
+H990		1	Encerramento do Bloco H (Inventário Físico)

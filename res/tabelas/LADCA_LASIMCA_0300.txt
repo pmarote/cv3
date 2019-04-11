@@ -1,0 +1,14 @@
+desc	anex	art	inc	alin	prg	itm	ltr	obs	
+1	1		71	I			0		Operações Interestaduais com alíquota 7%
+2	2		71	I			0		Operações Interestaduais com alíquota 12%
+3	3		71	I			0		Operações Internas com alíquota 7%
+4	4		71	I			0		Operações Internas
+5	5		71	I			0		Outras
+6	6		71	II			0		Redução de Base de Cálculo
+7	7		71	III			0		Saídas sem pagamento de Imposto - Exportação
+8	8		71	III			0		Saídas sem pagamento de Imposto - Exportação Indireta
+9	9		71	III			0		Saídas sem pagamento de Imposto - ZF Manaus
+10	10		71	III			0		Saídas sem pagamento de Imposto - Diferimento
+11	11		71	III			0		Saídas sem pagamento de Imposto - Isenção
+12	12		71	III			0		Saídas sem pagamento de Imposto - ST
+13	13		71	III			0		Saídas sem pagamento de Imposto - Outras

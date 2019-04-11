@@ -1,0 +1,89 @@
+db	Reg	Nro	campo	descri	tipo	tam	dec
+lasimca	0000	1	reg	Texto fixo contendo "0000"	C	4	-
+lasimca	0000	2	lasimca	Texto fixo contendo "LASIMCA”	C	7	-
+lasimca	0000	3	cod_ver	Código da versão do leiaute conforme a Tabela 3.1	N	2	-
+lasimca	0000	4	cod_fin	Código da finalidade do arquivo conforme a Tabela 3.2	N	2	-
+lasimca	0000	5	periodo	Período das informações contidas no arquivo	N	6	-
+lasimca	0000	6	nome	Nome empresarial do estabelecimento informante	C	-	-
+lasimca	0000	7	cnpj	Número de inscrição no CNPJ do estabelecimento informante	N	14	-
+lasimca	0000	8	ie	Inscrição Estadual do estabelecimento informante	C	-	-
+lasimca	0000	9	cnae	CNAE do contribuinte informante	N	7	-
+lasimca	0000	10	cod_mun	Código do município do domicílio fiscal do estabelecimento informante, conforme a Tabela de Municípios (IBGE: www.ibge.gov.br).	N	7	-
+lasimca	0000	11	ie_intima	Inscrição Estadual do Estabelecimento paulista gerador de crédito acumulado notificado, por intimação específica, a entregar arqui- vo	C	12	-
+lasimca	0001	1	reg	Texto fixo contendo "0001"	C	4	-
+lasimca	0001	2	ind_mov	"Indicador de movimento: 0-   Bloco com dados informados 1-   Bloco sem dados informados"	N	1	-
+lasimca	0150	1	reg	Texto fixo contendo "0150"	C	4	-
+lasimca	0150	2	cod_part	Código numérico de identificação do participante no arquivo	N	-	-
+lasimca	0150	3	nome	Razão social ou nome do participante	C	-	-
+lasimca	0150	4	cod_pais	Código do país do participante, conforme a tabela indicada na Tabela de Países do Banco Central do Brasil: www.bcb.gov.br	N	5	-
+lasimca	0150	5	cnpj	CNPJ ou CPF do participante	N	14	-
+lasimca	0150	6	ie	Inscrição Estadual do participante	C	-	-
+lasimca	0150	7	uf	Sigla da unidade da federação do participante	C	2	-
+lasimca	0150	8	cep	Código de Endereçamento Postal	N	8	-
+lasimca	0150	9	end	Logradouro e endereço do imóvel	C	-	-
+lasimca	0150	10	num	Número do imóvel	C	-	-
+lasimca	0150	11	compl	Dados complementares do endereço	C	-	-
+lasimca	0150	12	bairro	Bairro em que o imóvel está situado	C	-	-
+lasimca	0150	13	cod_mun	Código do município, conforme Tabela de Municípios (IBGE: www.ibge.gov.br)	N	7	-
+lasimca	0150	14	fone	Número do telefone	C	-	-
+lasimca	0300	1	reg	Texto fixo contendo "0300"	C	4	-
+lasimca	0300	2	cod_legal	Código do Enquadramento Legal	N	4	-
+lasimca	0300	3	desc	"Informar um dos seguintes códigos, relativo à hipótese de geração, conforme o inciso do artigo 71 do RICMS/00 : 1 – “Inciso I - Operações interestaduais com alíquota 7%” 2 – “Inciso I - Operações interestaduais com alíquota 12%” 3 – “Inciso I - Operações internas com alíquota 7%” 4 – “Inciso I - Operações internas” 5 – “Inciso I - Outras” 6 – “Inciso II - Redução de Base de Cálculo” 7 – “Inciso III - Saídas sem pagamento de Imposto – Exportação"" 8 – “Inciso III - Saídas sem pagamento de Imposto – Exportação Indireta” 9 – “Inciso III - Saídas sem pagamento de Imposto – ZF Manaus” 10 – “Inciso III - Saídas sem pagamento de Imposto – Diferimento” 11 – “Inciso III - Saídas sem pagamento de Imposto – Isenção” 12 – “Inciso III - Saídas sem pagamento de Imposto – ST” 13 – “Inciso III - Saídas sem pagamento de Imposto – Outras"""	N	2	-
+lasimca	0300	4	anex	Informar o Anexo do RICMS referente ao enquadramento legal da operação ou prestação geradora do crédito acumulado do ICMS, se existir.	C	-	-
+lasimca	0300	5	art	Informar o Artigo do RICMS referente ao enquadramento legal da operação ou prestação geradora do crédito acumulado do ICMS.	C	-	-
+lasimca	0300	6	inc	Informar o Inciso do RICMS referente ao enquadramento legal da operação ou prestação geradora do crédito acumulado do ICMS, se existir.	C	-	-
+lasimca	0300	7	alin	Informar a Alínea do RICMS referente ao enquadramento legal da operação ou prestação geradora do crédito acumulado do ICMS, se existir.	C	-	-
+lasimca	0300	8	prg	Informar o Parágrafo do RICMS referente ao enquadramento legal da operação ou prestação geradora do crédito acumulado do ICMS, se existir.	C	-	-
+lasimca	0300	9	itm	Informar o Item do RICMS referente ao enquadramento legal da operação ou prestação geradora do crédito acumulado do ICMS, se existir.	C	-	-
+lasimca	0300	10	ltr	Informar a letra do RICMS referente ao enquadramento legal da operação ou prestação geradora do crédito acumulado do ICMS, se existir.	C	-	-
+lasimca	0300	11	obs	Informação  complementar  referente  ao  enquadramento  legal  da operação ou prestação geradora do crédito acumulado do ICMS.	C	-	-
+lasimca	0990	1	reg	Texto fixo contendo "0990"	C	4	-
+lasimca	0990	2	qtd_lin_0	Quantidade total de linhas do Bloco 0	N	-	-
+lasimca	5001	1	reg	Texto fixo contendo "5001"	C	4	-
+lasimca	5001	2	ind_mov	"Indicador de movimento: 0-       Bloco com dados informados. 1-       Bloco com dados informados"	N	1	-
+lasimca	5315	1	reg	Texto fixo contendo "5315".	C	4	-
+lasimca	5315	3	dt_emissao	Data da emissão do documento fiscal.	N	8	-
+lasimca	5315	4	tip_doc	Tipo do documento conforme a coluna Código Chave da tabela 4.1	N	2	-
+lasimca	5315	5	ser	Série do documento.	C	-	-
+lasimca	5315	6	num_doc	Número do documento	C	-	-
+lasimca	5315	7	cod_part	Código numérico de identificação do participante no arquivo	N	-	-
+lasimca	5315	8	valor_sai	Valor de Saída	N	-	2
+lasimca	5315	9	perc_crdout	Percentual de Crédito Outorgado	N	-	2
+lasimca	5315	10	valor_crdout	Valor do Crédito Outorgado	N	-	2
+lasimca	5320	1	reg	Texto fixo contendo "5320".	C	4	-
+lasimca	5320	2	dt_sai	Data da emissão do documento fiscal que acobertou a operação original.	N	8	-
+lasimca	5320	3	tip_doc	Tipo do documento que acobertou a operação original, utilizar a coluna Código Chave da tabela 4.1.	N	2	-
+lasimca	5320	4	ser	Série do documento que acobertou a operação original.	C	-	-
+lasimca	5320	5	num_doc	Número do documento que acobertou a operação original.	N	-	-
+lasimca	5325	1	reg	Texto fixo contendo "5325".	C	4	-
+lasimca	5325	2	cod_legal	Código do Enquadramento Legal conforme registro 0300.	N	4	-
+lasimca	5325	3	iva_utilizado	IVA - Índice de Valor Acrescido considerado no cálculo do custo estimado da operação ou prestação geradora conforme a legislação vigente.	N	-	4
+lasimca	5325	4	per_med_icms	Percentual Médio de Crédito do Imposto – é a alíquota média das entradas das mercadorias, insumos e serviços recebidos relacio- nados às saídas geradoras de crédito acumulado, obtida conforme legislação vigente, informar utilizando o formato percentual.	N	-	4
+lasimca	5325	5	cred_est_icms	Crédito estimado do ICMS	N	-	2
+lasimca	5325	6	icms_gera	Crédito Acumulado Gerado na operação	N	-	2
+lasimca	5330	1	reg	Texto fixo contendo "5330".	C	4	-
+lasimca	5330	2	valor_bc	Base de Cálculo da operação de saída.	N	-	2
+lasimca	5330	3	icms_deb	ICMS debitado na operação de saída .	N	-	2
+lasimca	5335	1	reg	Texto fixo contendo "5335".	C	4	-
+lasimca	5335	2	num_decl_exp	Número da Declaração para Despacho de Exportação ou Decla- ração Simplificada de Exportação	C	-	-
+lasimca	5335	3	comp_oper	"Comprovação da Operação – preencher com: 0 – Sim 1 – Não"	N	1	-
+lasimca	5340	1	reg	Texto fixo contendo "5340".	C	4	-
+lasimca	5340	2	data_doc_ind	Data de emissão do documento fiscal do exportador	N	8	-
+lasimca	5340	3	num_doc_ind	Número do documento fiscal do exportador	N	-	-
+lasimca	5340	4	ser_doc_ind	Série do documento fiscal do exportador	C	-	-
+lasimca	5340	5	num_decl_exp_ind	Número da Declaração para Despacho de Exportação ou Decla- ração Simplificada de Exportação do estabelecimento exportador	C	-	-
+lasimca	5350	1	reg	Texto fixo contendo "5350".	C	4	-
+lasimca	5350	2	valor_bc	Base de Cálculo da operação de saída.	N	-	2
+lasimca	5350	3	icms_deb	ICMS debitado da operação de saída.	N	-	2
+lasimca	5350	4	num_decl_exp_ind	Número da Declaração para Despacho de Exportação ou Declaração Simplificada de Exportação do estabele- cimento exportador	C	-	-
+lasimca	5990	1	reg	Texto fixo contendo "5990"	C	4	-
+lasimca	5990	2	qtd_lin_c	Quantidade total de linhas do Bloco 5	N	-	-
+lasimca	9001	1	reg	Texto fixo contendo "9001"	C	4	-
+lasimca	9001	2	ind_mov	"Indicador de movimento: 0- Bloco com dados informados;"	N	1	-
+lasimca	9900	1	reg	Texto fixo contendo "9900"	C	4	-
+lasimca	9900	2	reg_blc	Registro que será totalizado no próximo campo	C	4	-
+lasimca	9900	3	qtd_reg_blc	Total de registros do tipo informado no campo anterior	N	-	-
+lasimca	9990	1	reg	Texto fixo contendo "9990"	C	4	-
+lasimca	9990	2	qtd_lin_9	Quantidade total de linhas do Bloco 9	N	-	-
+lasimca	9999	1	reg	Texto fixo contendo "9999"	C	4	-
+lasimca	9999	2	qtd_lin	Quantidade total de linhas do arquivo digital	N	-	-

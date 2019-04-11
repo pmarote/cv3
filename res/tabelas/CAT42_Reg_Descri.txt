@@ -1,0 +1,8 @@
+reg	proc	nivel	descri	obrig	ocorr
+0000	X	0	Abertura do Arquivo Digital e Identificação do Contribuinte	O	1
+0150	X	1	Tabela de Cadastro do Participante	O	Vários
+0200	X	1	Identificação do Item	O	Vários
+0205	X	1	Código Item Anterior (não obrigados ao SPED)	OC	Vários
+1050	X	1	Registro de Saldos	O	Vários
+1100	X	1	Registro de Documento Fiscal Eletrônico Para Fins de Ressarcimento de Substituição Tributária – SP	OC	Vários
+1200	X	1	Registro de Documento Fiscal Não-Eletrônico Para Fins de Ressarcimento de Substituição Tributária – SP	OC	Vários

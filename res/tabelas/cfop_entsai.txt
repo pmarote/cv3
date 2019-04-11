@@ -1,0 +1,493 @@
+CFOP_NFe	CFOP_Livro	Desc_CFOP_NFe	Desc_CFOP_Livro
+1201	5201	Devolução de venda de produção do estabelecimento	Devolução de compra para industrialização ou produção rural (alteração vigente a partir de 01.01.2006)
+1202	5202	Devolução de venda de mercadoria adquirida ou recebida de terceiros	Devolução de compra para comercialização
+1208	5208	Devolução de produção do estabelecimento, remetida em transferência	Devolução de mercadoria recebida em transferência para industrialização ou produção rural (alteração vigente a partir de 01.01.2006)
+1209	5209	Devolução de mercadoria adquirida ou recebida de terceiros, remetida em transferência	Devolução de mercadoria recebida em transferência para comercialização
+1410	5410	Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária	Devolução de compra para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária (alteração vigente a partir de 01.01.2006)
+1411	5411	Devolução de venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária	Devolução de compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária
+1503	5503	Entrada decorrente de devolução de produto remetido com fim específico de exportação, de produção do estabelecimento	Devolução de mercadoria recebida com fim específico de exportação
+1551	5551	Compra de bem para o ativo imobilizado	Venda de bem do ativo imobilizado
+1552	5552	Transferência de bem do ativo imobilizado	Transferência de bem do ativo imobilizado
+1553	5553	Devolução de venda de bem do ativo imobilizado	Devolução de compra de bem para o ativo imobilizado
+1554	5554	Retorno de bem do ativo imobilizado remetido para uso fora do estabelecimento	Remessa de bem do ativo imobilizado para uso fora do estabelecimento
+1555	5555	Entrada de bem do ativo imobilizado de terceiro, remetido para uso no estabelecimento	Devolução de bem do ativo imobilizado de terceiro, recebido para uso no estabelecimento
+1556	5556	Compra de material para uso ou consumo	Devolução de compra de material de uso ou consumo
+1660	5660	Devolução de venda de combustível ou lubrificante para industrialização subseqüente	Devolução de compra de combustível ou lubrificante adquirido para industrialização subseqüente
+1661	5661	Devolução de venda de combustível ou lubrificante destinado à comercialização	Devolução de compra de combustível ou lubrificante adquirido para comercialização
+1662	5662	Devolução de venda de combustível ou lubrificante destinado a consumidor ou usuário final	Devolução de compra de combustível ou lubrificante adquirido por consumidor ou usuário final
+1920	5920	Entrada de vasilhame ou sacaria	Remessa de vasilhame ou sacaria
+1921	5921	Retorno de vasilhame ou sacaria	Devolução de vasilhame ou sacaria
+1949	5949	Outra entrada de mercadoria ou prestação de serviço não especificada	Outra saída de mercadoria ou prestação de serviço não especificado
+5101	1101	Venda de produção do estabelecimento	Compra para industrialização
+5102	1102	Venda de mercadoria adquirida ou recebida de terceiros	Compra para comercialização
+5103	1101	Venda de produção do estabelecimento, efetuada fora do estabelecimento	Compra para industrialização
+5104	1102	Venda de mercadoria adquirida ou recebida de terceiros, efetuada fora do estabelecimento	Compra para comercialização
+5105	1101	Venda de produção do estabelecimento que não deva por ele transitar	Compra para industrialização
+5106	1102	Venda de mercadoria adquirida ou recebida de terceiros, que não deva por ele transitar	Compra para comercialização
+5107	1000	Venda de produção do estabelecimento, destinada a não contribuinte	
+5108	1000	Venda de mercadoria adquirida ou recebida de terceiros, destinada a não contribuinte	
+5109	1000	Venda de produção do estabelecimento, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio	
+5110	1000	Venda de mercadoria adquirida ou recebida de terceiros, destinada à Zona Franca de Manaus ou Áreas de Livre Comércio	
+5111	1111	Venda de produção do estabelecimento remetida anteriormente em consignação industrial	Compra para industrialização de mercadoria recebida anteriormente em consignação industrial
+5112	1113	Venda de mercadoria adquirida ou recebida de terceiros remetida anteriormente em consignação industrial	Compra para comercialização, de mercadoria recebida anteriormente em consignação mercantil
+5113	1111	Venda de produção do estabelecimento remetida anteriormente em consignação mercantil	Compra para industrialização de mercadoria recebida anteriormente em consignação industrial
+5114	1113	Venda de mercadoria adquirida ou recebida de terceiros remetida anteriormente em consignação mercantil	Compra para comercialização, de mercadoria recebida anteriormente em consignação mercantil
+5115	1102	Venda de mercadoria adquirida ou recebida de terceiros, recebida anteriormente em consignação mercantil	Compra para comercialização
+5116	1116	Venda de produção do estabelecimento originada de encomenda para entrega futura	Compra para industrialização ou produção rural originada de encomenda para recebimento futuro (alteração vigente a partir de 01.01.2006)
+5117	1117	Venda de mercadoria adquirida ou recebida de terceiros, originada de encomenda para entrega futura	Compra para comercialização originada de encomenda para recebimento futuro
+5118	1118	Venda de produção do estabelecimento entregue ao destinatário por conta e ordem do adquirente originário, em venda à ordem	Compra de mercadoria para comercialização pelo adquirente originário, entregue pelo vendedor remetente ao destinatário, em venda à ordem
+5119	1118	Venda de mercadoria adquirida ou recebida de terceiros entregue ao destinatário por conta e ordem do adquirente originário, em venda à ordem	Compra de mercadoria para comercialização pelo adquirente originário, entregue pelo vendedor remetente ao destinatário, em venda à ordem
+5120	1120	Venda de mercadoria adquirida ou recebida de terceiros entregue ao destinatário pelo vendedor remetente, em venda à ordem	Compra para industrialização, em venda à ordem, já recebida do vendedor remetente
+5122	1122	Venda de produção do estabelecimento remetida para industrialização, por conta e ordem do adquirente, sem transitar pelo estabelecimento do adquirente	Compra para industrialização em que a mercadoria foi remetida pelo fornecedor ao industrializador sem transitar pelo estabelecimento adquirente
+5123	1000	Venda de mercadoria adquirida ou recebida de terceiros remetida para industrialização, por conta e ordem do adquirente, sem transitar pelo estabelecimento do adquirente	
+5124	1124	Industrialização efetuada para outra empresa	Industrialização efetuada por outra empresa
+5125	1125	Industrialização efetuada para outra empresa quando a mercadoria recebida para utilização no processo de industrialização não transitar pelo estabelecimento adquirente da mercadoria	Industrialização efetuada por outra empresa quando a mercadoria remetida para utilização no processo de industrialização não transitou pelo estabelecimento adquirente da mercadoria
+5127	1127	Venda de produção do estabelecimento sob o regime de drawback	Compra para industrialização sob o regime de drawback
+5151	1151	Transferência de produção do estabelecimento	Transferência para industrialização ou produção rural (alteração vigente a partir de 01.01.2006)
+5152	1152	Transferência de mercadoria adquirida ou recebida de terceiros	Transferência para comercialização
+5153	1153	Transferência de energia elétrica	Transferência de energia elétrica para distribuição
+5155	1151	Transferência de produção do estabelecimento, que não deva por ele transitar	Transferência para industrialização ou produção rural (alteração vigente a partir de 01.01.2006)
+5156	1152	Transferência de mercadoria adquirida ou recebida de terceiros, que não deva por ele transitar	Transferência para comercialização
+5201	1201	Devolução de compra para industrialização ou produção rural (alteração vigente a partir de 01.01.2006)	Devolução de venda de produção do estabelecimento
+5202	1202	Devolução de compra para comercialização	Devolução de venda de mercadoria adquirida ou recebida de terceiros
+5205	1205	Anulação de valor relativo a aquisição de serviço de comunicação	Anulação de valor relativo à prestação de serviço de comunicação
+5206	1206	Anulação de valor relativo a aquisição de serviço de transporte	Anulação de valor relativo à prestação de serviço de transporte
+5207	1207	Anulação de valor relativo à compra de energia elétrica	Anulação de valor relativo à venda de energia elétrica
+5208	1208	Devolução de mercadoria recebida em transferência para industrialização ou produção rural (alteração vigente a partir de 01.01.2006)	Devolução de produção do estabelecimento, remetida em transferência
+5209	1209	Devolução de mercadoria recebida em transferência para comercialização	Devolução de mercadoria adquirida ou recebida de terceiros, remetida em transferência
+5210	1202	Devolução de compra para utilização na prestação de serviço	Devolução de venda de mercadoria adquirida ou recebida de terceiros
+5211	1201	Devolução de compras para industrialização sob o regime de drawback	Devolução de venda de produção do estabelecimento
+5251	1251	Venda de energia elétrica para distribuição ou comercialização	Compra de energia elétrica para distribuição ou comercialização
+5252	1252	Venda de energia elétrica para estabelecimento industrial	Compra de energia elétrica por estabelecimento industrial
+5253	1253	Venda de energia elétrica para estabelecimento comercial	Compra de energia elétrica por estabelecimento comercial
+5254	1254	Venda de energia elétrica para estabelecimento prestador de serviço de transporte	Compra de energia elétrica por estabelecimento prestador de serviço de transporte
+5255	1255	Venda de energia elétrica para estabelecimento prestador de serviço de comunicação	Compra de energia elétrica por estabelecimento prestador de serviço de comunicação
+5256	1256	Venda de energia elétrica para estabelecimento de produtor rural	Compra de energia elétrica por estabelecimento de produtor rural
+5257	1257	Venda de energia elétrica para consumo por demanda contratada	Compra de energia elétrica para consumo por demanda contratada
+5258	1000	Venda de energia elétrica a não contribuinte	
+5301	1301	Prestação de serviço de comunicação para execução de serviço da mesma natureza	Aquisição de serviço de comunicação para execução de serviço da mesma natureza
+5302	1302	Prestação de serviço de comunicação a estabelecimento industrial	Aquisição de serviço de comunicação por estabelecimento industrial
+5303	1303	Prestação de serviço de comunicação a estabelecimento comercial	Aquisição de serviço de comunicação por estabelecimento comercial
+5304	1304	Prestação de serviço de comunicação a estabelecimento de prestador de serviço de transporte	Aquisição de serviço de comunicação por estabelecimento de prestador de serviço de transporte
+5305	1305	Prestação de serviço de comunicação a estabelecimento de geradora ou de distribuidora de energia elétrica	Aquisição de serviço de comunicação por estabelecimento de geradora ou de distribuidora de energia elétrica
+5306	1306	Prestação de serviço de comunicação a estabelecimento de produtor rural	Aquisição de serviço de comunicação por estabelecimento de produtor rural
+5307	1000	Prestação de serviço de comunicação a não contribuinte	
+5351	1351	Prestação de serviço de transporte para execução de serviço da mesma natureza	Aquisição de serviço de transporte para execução de serviço da mesma natureza
+5352	1352	Prestação de serviço de transporte a estabelecimento industrial	Aquisição de serviço de transporte por estabelecimento industrial
+5353	1353	Prestação de serviço de transporte a estabelecimento comercial	Aquisição de serviço de transporte por estabelecimento comercial
+5354	1354	Prestação de serviço de transporte a estabelecimento de prestador de serviço de comunicação	Aquisição de serviço de transporte por estabelecimento de prestador de serviço de comunicação
+5355	1355	Prestação de serviço de transporte a estabelecimento de geradora ou de distribuidora de energia elétrica	Aquisição de serviço de transporte por estabelecimento de geradora ou de distribuidora de energia elétrica
+5356	1356	Prestação de serviço de transporte a estabelecimento de produtor rural	Aquisição de serviço de transporte por estabelecimento de produtor rural
+5357	1000	Prestação de serviço de transporte a não contribuinte	
+5358	1000	Prestação de serviço de transporte internacional	
+5359	1000	Prestação de serviço de transporte a contribuinte ou a não contribuinte quando a mercadoria transportada está dispensada de emissão de nota fiscal (vigente a partir de 01.01.2005)	
+5401	1401	Venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária, na condição de contribuinte substituto	Compra para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária (alteração vigente a partir de 01.01.2006)
+5402	1401	Venda de produção do estabelecimento de produto sujeito ao regime de substituição tributária, em operação entre contribuintes substitutos do mesmo produto	Compra para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária (alteração vigente a partir de 01.01.2006)
+5403	1403	Venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária, na condição de contribuinte substituto	Compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária
+5404	1403	Venda de mercadoria sujeita ao regime de substituição tributária, cujo imposto já tenha sido retido anteriormente	Compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária
+5405	1403	Venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária, na condição de contribuinte substituído	Compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária
+5408	1408	Transferência de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária	Transferência para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária (alteração vigente a partir de 01.01.2006)
+5409	1409	Transferência de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária	Transferência para comercialização em operação com mercadoria sujeita ao regime de substituição tributária
+5410	1410	Devolução de compra para industrialização ou produção rural em operação com mercadoria sujeita ao regime de substituição tributária (alteração vigente a partir de 01.01.2006)	Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária
+5411	1411	Devolução de compra para comercialização em operação com mercadoria sujeita ao regime de substituição tributária	Devolução de venda de mercadoria adquirida ou recebida de terceiros em operação com mercadoria sujeita ao regime de substituição tributária
+5412	1410	Devolução de bem do ativo imobilizado, em operação com mercadoria sujeita ao regime de substituição tributária	Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária
+5413	1410	Devolução de mercadoria destinada ao uso ou consumo, em operação com mercadoria sujeita ao regime de substituição tributária	Devolução de venda de produção do estabelecimento em operação com produto sujeito ao regime de substituição tributária
+5414	1414	Remessa de produção do estabelecimento para venda fora do estabelecimento em operação com produto sujeito ao regime de substituição tributária	Retorno de produção do estabelecimento, remetida para venda fora do estabelecimento em operação com produto sujeito ao regime de substituição tributária
+5415	1415	Remessa de mercadoria adquirida ou recebida de terceiros para venda fora do estabelecimento, em operação com mercadoria sujeita ao regime de substituição tributária	Retorno de mercadoria adquirida ou recebida de terceiros, remetida para venda fora do estabelecimento em operação com mercadoria sujeita ao regime de substituição tributária
+5451	1451	Remessa de animal e de insumo para estabelecimento produtor	Retorno de animal do estabelecimento produtor
+5501	1501	Remessa de produção do estabelecimento, com fim específico de exportação	Entrada de mercadoria recebida com fim específico de exportação
+5502	1501	Remessa de mercadoria adquirida ou recebida de terceiros, com fim específico de exportação	Entrada de mercadoria recebida com fim específico de exportação
+5503	1503	Devolução de mercadoria recebida com fim específico de exportação	Entrada decorrente de devolução de produto remetido com fim específico de exportação, de produção do estabelecimento
+5504	1504	Remessa de mercadorias para formação de lote de exportação, de produtos  industrializados ou produzidos pelo próprio estabelecimento  exportação.	Entrada decorrente de devolução de mercadoria remetida com fim específico de exportação, adquirida ou recebida de terceiros
+5505	1505	Remessa de mercadorias, adquiridas ou recebidas de terceiros, para formação de lote de  exportação.	Entrada decorrente de devolução simbólica de mercadorias remetidas para formação de lote de exportação, de produtos industrializados ou produzidos pelo próprio estabelecimento
+5551	1551	Venda de bem do ativo imobilizado	Compra de bem para o ativo imobilizado
+5552	1552	Transferência de bem do ativo imobilizado	Transferência de bem do ativo imobilizado
+5553	1553	Devolução de compra de bem para o ativo imobilizado	Devolução de venda de bem do ativo imobilizado
+5554	1554	Remessa de bem do ativo imobilizado para uso fora do estabelecimento	Retorno de bem do ativo imobilizado remetido para uso fora do estabelecimento
+5555	1555	Devolução de bem do ativo imobilizado de terceiro, recebido para uso no estabelecimento	Entrada de bem do ativo imobilizado de terceiro, remetido para uso no estabelecimento
+5556	1556	Devolução de compra de material de uso ou consumo	Compra de material para uso ou consumo
+5557	1557	Transferência de material de uso ou consumo	Transferência de material para uso ou consumo
+5601	1601	Transferência de crédito de ICMS acumulado	Recebimento, por transferência, de crédito de ICMS
+5602	1602	Transferência de saldo credor de ICMS para outro estabelecimento da mesma empresa, destinado à compensação de saldo devedor de ICMS	Recebimento, por transferência, de saldo credor de ICMS de outro estabelecimento da mesma empresa, para compensação de saldo devedor de ICMS
+5603	1603	Ressarcimento de ICMS retido por substituição tributária	Ressarcimento de ICMS retido por substituição tributária
+5605	1605	Transferência de saldo devedor de ICMS de outro estabelecimento da mesma empresa (vigente a partir de 01.01.2005)	Recebimento, por transferência, de saldo devedor de ICMS de outro estabelecimento da mesma empresa (vigente a partir de 01.01.2005)
+5606	1000	Utilização de saldo credor de ICMS para extinção por compensação de débitos fiscais. (alteração vigente a partir de 01.01.2006)	
+5651	1651	Venda de combustível ou lubrificante de produção do estabelecimento destinado à industrialização subseqüente	Compra de combustível ou lubrificante para industrialização subseqüente
+5652	1652	Venda de combustível ou lubrificante de produção do estabelecimento destinado à comercialização	Compra de combustível ou lubrificante para comercialização
+5653	1653	Venda de combustível ou lubrificante de produção do estabelecimento destinado a consumidor ou usuário final	Compra de combustível ou lubrificante por consumidor ou usuário final
+5654	1651	Venda de combustível ou lubrificante adquirido ou recebido de terceiros destinado à industrialização subseqüente	Compra de combustível ou lubrificante para industrialização subseqüente
+5655	1652	Venda de combustível ou lubrificante adquirido ou recebido de terceiros destinado à comercialização	Compra de combustível ou lubrificante para comercialização
+5656	1000	Venda de combustível ou lubrificante adquirido ou recebido de terceiros destinado a consumidor ou usuário final	
+5657	1652	Remessa de combustível ou lubrificante adquirido ou recebido de terceiros para venda fora do estabelecimento	Compra de combustível ou lubrificante para comercialização
+5658	1658	Transferência de combustível ou lubrificante de produção do estabelecimento	Transferência de combustível e lubrificante para industrialização
+5659	1659	Transferência de combustível ou lubrificante adquirido ou recebido de terceiro	Transferência de combustível e lubrificante para comercialização
+5660	1660	Devolução de compra de combustível ou lubrificante adquirido para industrialização subseqüente	Devolução de venda de combustível ou lubrificante para industrialização subseqüente
+5661	1661	Devolução de compra de combustível ou lubrificante adquirido para comercialização	Devolução de venda de combustível ou lubrificante destinado à comercialização
+5662	1662	Devolução de compra de combustível ou lubrificante adquirido por consumidor ou usuário final	Devolução de venda de combustível ou lubrificante destinado a consumidor ou usuário final
+5663	1663	Remessa para armazenagem de combustível ou lubrificante	Entrada de combustível ou lubrificante para armazenagem
+5664	1664	Retorno de combustível ou lubrificante recebido par armazenagem	Retorno de combustível ou lubrificante remetido para armazenagem
+5665	1000	Retorno simbólico de combustível ou lubrificante recebido para armazenagem	
+5666	1663	Remessa por conta e ordem de terceiros de combustível ou lubrificante recebido para armazenagem	Entrada de combustível ou lubrificante para armazenagem
+5667	1652	Venda Interna de combustível ou lubrificante para contribuintes localizados fora do estado	Compra de combustível ou lubrificante para comercialização
+5901	1901	Remessa para industrialização por encomenda	Entrada para industrialização por encomenda
+5902	1902	Retorno de mercadoria utilizada na industrialização por encomenda	Retorno de mercadoria remetida para industrialização por encomenda
+5903	1903	Retorno de mercadoria recebida para industrialização e não aplicada no referido processo	Entrada de mercadoria remetida para industrialização e não aplicada no referido processo
+5904	1904	Remessa para venda fora do estabelecimento	Retorno de remessa para venda fora do estabelecimento
+5905	1905	Remessa para depósito fechado ou armazém	Entrada de mercadoria recebida para depósito em depósito fechado ou armazém
+5906	1906	Retorno de mercadoria depositada em depósito fechado ou armazém	Retorno de mercadoria remetida para depósito fechado ou armazém
+5907	1907	Retorno simbólico de mercadoria depositada em depósito fechado ou armazém	Retorno simbólico de mercadoria remetida para depósito fechado ou armazém
+5908	1908	Remessa de bem por conta de contrato de comodato	Entrada de bem por conta de contrato de comodato
+5909	1909	Retorno de bem recebido por conta de contrato de comodato	Retorno de bem remetido por conta de contrato de comodato
+5910	1910	Remessa em bonificação, doação ou brinde	Entrada de bonificação, doação ou brinde
+5911	1911	Remessa de amostra grátis	Entrada de amostra grátis
+5912	1912	Remessa de mercadoria ou bem para demonstração	Entrada de mercadoria ou bem recebido para demonstração
+5913	1913	Retorno de mercadoria ou bem recebido para demonstração	Retorno de mercadoria ou bem remetido para demonstração
+5914	1914	Remessa de mercadoria ou bem para exposição ou feira	Retorno de mercadoria ou bem remetido para exposição ou feira
+5915	1915	Remessa de mercadoria ou bem para conserto ou reparo	Entrada de mercadoria ou bem recebido para conserto ou reparo
+5916	1916	Retorno de mercadoria ou bem recebido para conserto ou reparo	Retorno de mercadoria ou bem remetido para conserto ou reparo
+5917	1917	Remessa de mercadoria em consignação mercantil ou industrial	Entrada de mercadoria recebida em consignação mercantil ou industrial
+5918	1918	Devolução de mercadoria recebida em consignação mercantil ou industrial	Devolução de mercadoria remetida em consignação mercantil ou industrial
+5919	1919	Devolução simbólica de mercadoria vendida ou utilizada em processo industrial, recebida anteriormente em consignação mercantil ou industrial	Devolução simbólica de mercadoria vendida ou utilizada em processo industrial, remetida anteriormente em consignação mercantil ou industrial
+5920	1920	Remessa de vasilhame ou sacaria	Entrada de vasilhame ou sacaria
+5921	1921	Devolução de vasilhame ou sacaria	Retorno de vasilhame ou sacaria
+5922	1922	Lançamento efetuado a título de simples faturamento decorrente de venda para entrega futura	Lançamento efetuado a título de simples faturamento decorrente de compra para recebimento futuro
+5923	1923	Remessa de mercadoria por conta e ordem de terceiros, em venda à ordem	Entrada de mercadoria recebida do vendedor remetente, em venda à ordem
+5924	1924	Remessa para industrialização por conta e ordem do adquirente da mercadoria, quando esta não transitar pelo estabelecimento do adquirente	Entrada para industrialização por conta e ordem do adquirente da mercadoria, quando esta não transitar pelo estabelecimento do adquirente
+5925	1925	Retorno de mercadoria recebida para industrialização por conta e ordem do adquirente da mercadoria, quando aquela não transitar pelo estabelecimento do adquirente	Retorno de mercadoria remetida para industrialização por conta e ordem do adquirente da mercadoria, quando esta não transitar pelo estabelecimento do adquirente
+5926	1926	Lançamento efetuado a título de reclassificação de mercadoria decorrente de formação de kit ou de sua desagregação	Lançamento efetuado a título de reclassificação de mercadoria decorrente de formação de kit ou de sua desagregação
+5927	1000	Lançamento efetuado a título de baixa de estoque decorrente de perda, roubo ou deterioração	
+5928	1000	Lançamento efetuado a título de baixa de estoque decorrente do encerramento da atividade da empresa	
+5929	1556	Lançamento efetuado em decorrência de emissão de documento fiscal relativo a operação ou prestação também registrada em equipamento Emissor de Cupom Fiscal	Compra de material para uso ou consumo
+5930	1930	Lançamento efetuado a título de devolução de bem cuja entrada tenha ocorrido sob amparo de regime especial aduaneiro de admissão temporária	Lançamento efetuado a título de entrada de bem sob amparo de regime especial aduaneiro de admissão temporária
+5931	1931	Lançamento efetuado em decorrência da responsabilidade de retenção do imposto por substituição tributária, atribuída ao remetente ou alienante da mercadoria, pelo serviço de transporte realizado por transportador autônomo ou por transportador não inscrito	Lançamento efetuado pelo tomador do serviço de transporte quando a responsabilidade de retenção do imposto for atribuída ao remetente ou alienante da mercadoria, pelo serviço de transporte realizado por transportador autônomo ou por transportador não insc
+5932	1932	Prestação de serviço de transporte iniciada em unidade da Federação diversa daquela onde inscrito o prestador	Aquisição de serviço de transporte iniciado em unidade da Federação diversa daquela onde inscrito o prestador (vigente a partir de 01.01.2005)
+5933	1933	Prestação de serviço tributado pelo ISSQN (vigente a partir de 01.01.2005)	Aquisição de serviço tributado pelo ISSQN (vigente a partir de 01.01.2005)
+5949	1949	Outra saída de mercadoria ou prestação de serviço não especificado	Outra entrada de mercadoria ou prestação de serviço não especificada
+2201	6201		
+2202	6202		
+2208	6208		
+2209	6209		
+2410	6410		
+2411	6411		
+2503	6503		
+2551	6551		
+2552	6552		
+2553	6553		
+2554	6554		
+2555	6555		
+2556	6556		
+2660	6660		
+2661	6661		
+2662	6662		
+2920	6920		
+2921	6921		
+2949	6949		
+6101	2101		
+6102	2102		
+6103	2101		
+6104	2102		
+6105	2101		
+6106	2102		
+6107	2000		
+6108	2000		
+6109	2000		
+6110	2000		
+6111	2111		
+6112	2113		
+6113	2111		
+6114	2113		
+6115	2102		
+6116	2116		
+6117	2117		
+6118	2118		
+6119	2118		
+6120	2120		
+6122	2122		
+6123	2000		
+6124	2124		
+6125	2125		
+6127	2127		
+6151	2151		
+6152	2152		
+6153	2153		
+6155	2151		
+6156	2152		
+6201	2201		
+6202	2202		
+6205	2205		
+6206	2206		
+6207	2207		
+6208	2208		
+6209	2209		
+6210	2202		
+6211	2201		
+6251	2251		
+6252	2252		
+6253	2253		
+6254	2254		
+6255	2255		
+6256	2256		
+6257	2257		
+6258	2000		
+6301	2301		
+6302	2302		
+6303	2303		
+6304	2304		
+6305	2305		
+6306	2306		
+6307	2000		
+6351	2351		
+6352	2352		
+6353	2353		
+6354	2354		
+6355	2355		
+6356	2356		
+6357	2000		
+6358	2000		
+6359	2000		
+6401	2401		
+6402	2401		
+6403	2403		
+6404	2403		
+6405	2403		
+6408	2408		
+6409	2409		
+6410	2410		
+6411	2411		
+6412	2410		
+6413	2410		
+6414	2414		
+6415	2415		
+6451	2451		
+6501	2501		
+6502	2501		
+6503	2503		
+6504	2504		
+6505	2505		
+6551	2551		
+6552	2552		
+6553	2553		
+6554	2554		
+6555	2555		
+6556	2556		
+6557	2557		
+6601	2601		
+6602	2602		
+6603	2603		
+6605	2605		
+6606	2000		
+6651	2651		
+6652	2652		
+6653	2653		
+6654	2651		
+6655	2652		
+6656	2000		
+6657	2652		
+6658	2658		
+6659	2659		
+6660	2660		
+6661	2661		
+6662	2662		
+6663	2663		
+6664	2664		
+6665	2000		
+6666	2663		
+6667	2652		
+6901	2901		
+6902	2902		
+6903	2903		
+6904	2904		
+6905	2905		
+6906	2906		
+6907	2907		
+6908	2908		
+6909	2909		
+6910	2910		
+6911	2911		
+6912	2912		
+6913	2913		
+6914	2914		
+6915	2915		
+6916	2916		
+6917	2917		
+6918	2918		
+6919	2919		
+6920	2920		
+6921	2921		
+6922	2922		
+6923	2923		
+6924	2924		
+6925	2925		
+6926	2926		
+6927	2000		
+6928	2000		
+6929	2556		
+6930	2930		
+6931	2931		
+6932	2932		
+6933	2933		
+6949	2949		
+3201	7201		
+3202	7202		
+3208	7208		
+3209	7209		
+3410	7410		
+3411	7411		
+3503	7503		
+3551	7551		
+3552	7552		
+3553	7553		
+3554	7554		
+3555	7555		
+3556	7556		
+3660	7660		
+3661	7661		
+3662	7662		
+3920	7920		
+3921	7921		
+3949	7949		
+7101	3101		
+7102	3102		
+7103	3101		
+7104	3102		
+7105	3101		
+7106	3102		
+7107	3000		
+7108	3000		
+7109	3000		
+7110	3000		
+7111	3111		
+7112	3113		
+7113	3111		
+7114	3113		
+7115	3102		
+7116	3116		
+7117	3117		
+7118	3118		
+7119	3118		
+7120	3120		
+7122	3122		
+7123	3000		
+7124	3124		
+7125	3125		
+7127	3127		
+7151	3151		
+7152	3152		
+7153	3153		
+7155	3151		
+7156	3152		
+7201	3201		
+7202	3202		
+7205	3205		
+7206	3206		
+7207	3207		
+7208	3208		
+7209	3209		
+7210	3202		
+7211	3201		
+7251	3251		
+7252	3252		
+7253	3253		
+7254	3254		
+7255	3255		
+7256	3256		
+7257	3257		
+7258	3000		
+7301	3301		
+7302	3302		
+7303	3303		
+7304	3304		
+7305	3305		
+7306	3306		
+7307	3000		
+7351	3351		
+7352	3352		
+7353	3353		
+7354	3354		
+7355	3355		
+7356	3356		
+7357	3000		
+7358	3000		
+7359	3000		
+7401	3401		
+7402	3401		
+7403	3403		
+7404	3403		
+7405	3403		
+7408	3408		
+7409	3409		
+7410	3410		
+7411	3411		
+7412	3410		
+7413	3410		
+7414	3414		
+7415	3415		
+7451	3451		
+7501	3501		
+7502	3501		
+7503	3503		
+7504	3504		
+7505	3505		
+7551	3551		
+7552	3552		
+7553	3553		
+7554	3554		
+7555	3555		
+7556	3556		
+7557	3557		
+7601	3601		
+7602	3602		
+7603	3603		
+7605	3605		
+7606	3000		
+7651	3651		
+7652	3652		
+7653	3653		
+7654	3651		
+7655	3652		
+7656	3000		
+7657	3652		
+7658	3658		
+7659	3659		
+7660	3660		
+7661	3661		
+7662	3662		
+7663	3663		
+7664	3664		
+7665	3000		
+7666	3663		
+7667	3652		
+7901	3901		
+7902	3902		
+7903	3903		
+7904	3904		
+7905	3905		
+7906	3906		
+7907	3907		
+7908	3908		
+7909	3909		
+7910	3910		
+7911	3911		
+7912	3912		
+7913	3913		
+7914	3914		
+7915	3915		
+7916	3916		
+7917	3917		
+7918	3918		
+7919	3919		
+7920	3920		
+7921	3921		
+7922	3922		
+7923	3923		
+7924	3924		
+7925	3925		
+7926	3926		
+7927	3000		
+7928	3000		
+7929	3556		
+7930	3930		
+7931	3931		
+7932	3932		
+7933	3933		
+7949	3949		

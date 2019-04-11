@@ -22,7 +22,7 @@ define('PR_PATH', dirname( dirname( dirname(__FILE__) ) ) );
 // Main Consts
 // Configuration Files
 // Resources - Helpers, docs, resources, etc
-define("PR_RES",  PR_PATH . "/res/cv3");
+define("PR_RES",  PR_PATH . "/src/cv3/res");
 configCreateFolderIfNotExists(PR_RES);
 
 // applications

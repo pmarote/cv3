@@ -1,0 +1,79 @@
+reg	proc	nivel	descri	obrig	ocorr
+0000	X	0	Abertura do Arquivo Digital e Identificação do Contribuinte	S	1
+0001		1	Abertura do Bloco 0	S	1
+0150	X	2	Cadastro de Participantes de Operações e Prestações	S	Vários
+0151		3	Cadastro de IE de contribuinte substituto	N	01:01
+0200	X	2	Tabela de Identificação do Item	S	Vários
+0205		3	Código Anterior do Item	N	01:01
+0300	X	2	Enquadramento Legal da Operação/Prestação Geradora de Crédito Acumulado do ICMS	N	Vários
+0400	X	2	Tabela de Identificação de Documento ou Relatório Interno	N	Vários
+0990		1	Encerramento do Bloco 0	S	1
+5001		1	Abertura do Bloco 5	S	1
+5010	X	2	Abertura de Ficha 1A	N	Vários
+5015	X	3	Movimentação de Itens	N	1:N
+5020	X	4	IPI e Outros Tributos na Entrada	N	01:01
+5060		2	Abertura da Ficha 1B	N	1
+5065		3	Movimentação de Itens da Ficha 1B	N	1:N
+5070		4	IPI e Outros Tributos na Entrada	N	01:01
+5080		2	Abertura da Ficha 1C	N	1
+5085		3	Movimentação de Itens da Ficha 1C	N	1:N
+5090		4	Outros Tributos na Entrada	N	01:01
+5100		2	Abertura da Ficha 1D	N	1
+5105		3	Movimentação de Itens da Ficha 1D	N	1:N
+5110		2	Abertura da Ficha 1E	N	1
+5115		3	Movimentação de Itens da Ficha 1E	N	1:N
+5150	X	2	Abertura de Ficha 2A	N	Vários
+5155	X	3	Apuração do Custo – Ficha Técnica 5A	N	1:N
+5160	X	3	Movimentação de Itens da Ficha 2A	N	1:N
+5165		2	Abertura de Ficha 2B	N	Vários
+5170		3	Apuração do Custo – Ficha Técnica 5A	N	1:N
+5175		3	Movimentação de Itens da Ficha 2B	N	1:N
+5180		2	Abertura de Ficha 2C	N	1
+5185		3	Movimentação de Itens da Ficha 2C	N	1:N
+5190		2	Abertura de Ficha 2D	N	1
+5195		3	Movimentação de Itens da Ficha 2D	N	1:N
+5210		2	Abertura de Ficha 2E	N	1
+5215		3	Movimentação dos Itens na Ficha 2E	N	1:N
+5230		2	Abertura de Ficha 2F	N	Vários
+5235		3	Apuração do Percentual de Alocação de Custo do Período - Ficha 4B	N	1:N
+5240		3	Movimentação dos Itens na Ficha 2F	N	1:N
+5260		2	Abertura de Ficha 2G	N	Vários
+5265		3	Abertura de Ficha Técnica 5A	N	1:N
+5270		4	Apuração do Custo - Ficha Técnica 5A	N	1:N
+5275		3	Movimentação de Itens da Ficha 2G	N	1:N
+5310	X	2	Abertura de Ficha 3A	N	Vários
+5315	X	3	Movimentação de Itens	N	1:N
+5320		4	Devolução de Saída	N	01:01
+5325	X	4	Operações Geradoras de Crédito Acumulado	N	01:01
+5330	X	5	Operações Geradoras Apuradas na Ficha 6A ou 6B	N	01:01
+5335		5	Operações Geradoras Apuradas na Ficha 6C ou 6D	N	01:01
+5340		6	Dados da Exportação Indireta Comprovada - Fichas 5H	N	1:N
+5350	X	4	Operações Não Geradoras de Crédito Acumulado – Ficha 6F	N	01:01
+5360	X	2	Abertura de Ficha 3B	N	Vários
+5365	X	3	Movimentação de Itens	N	1:N
+5370	X	4	IPI e Outros Tributos na Entrada	N	01:01
+5375		4	Devolução de Saída	N	01:01
+5380	X	4	Operações Geradoras de Crédito Acumulado	N	01:01
+5385	X	5	Operações Geradoras Apuradas na Ficha 6A ou 6B	N	01:01
+5390		5	Operações Geradoras Apuradas na Ficha 6C ou 6D	N	01:01
+5395		6	Dados da Exportação Indireta Comprovada - Fichas 5H	N	1:N
+5400	X	4	Operações Não Geradoras de Crédito Acumulado – Ficha 6F	N	01:01
+5410		2	Abertura de Ficha 3C	N	Vários
+5415		3	Movimentação de Itens	N	1:N
+5420		4	Devolução de Saída da Ficha	N	01:01
+5425		4	Operações Geradoras de Crédito Acumulado	N	01:01
+5430		5	Operações Geradoras Apuradas na Ficha 6A ou 6B	N	01:01
+5435		5	Operações Geradoras Apuradas na Ficha 6C ou 6D	N	01:01
+5440		4	Operações Não Geradoras de Crédito Acumulado – Ficha 6F	N	01:01
+5550		2	Abertura da Ficha 5B	N	Vários
+5555		3	Movimentação de Itens da Ficha 5B	N	1:N
+5590	X	2	Abertura da Ficha 5G	N	Vários
+5595	X	3	Inventário por material componente - Ficha 5G	N	1:N
+5720		2	Ficha 6G	N	Vários
+5725		2	Ficha 5I	N	Vários
+5730		2	Ficha 6H	N	Vários
+5990		1	Encerramento do Bloco 5	S	1
+9001		1	Abertura do Bloco 9	S	1
+9900		2	Registros do Arquivo	S	Vários
+9990		1	Encerramento do Bloco 9	S	1
+9999		0	Encerramento do Arquivo Digital	S	1

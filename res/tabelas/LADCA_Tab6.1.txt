@@ -1,0 +1,266 @@
+cod	ori_des	descri
+70xx1x	Nihil	Das Entradas Externas
+70xx11	Nihil	Entrada Externa no Módulo 1 ou 3, por aquisição ou transferência de material, mercadoria.
+701111	Ext->1A	Entrada de Insumo por aquisição ou transferência
+701211	Ext->1B	Valor cobrado pelo industrializador referente ao material empregado no processo industrial.
+701311	Ext->1C	Entrada de Energia Elétrica
+701411	Ext->1D	Aquisição de Serviços de Comunicação - Exportação
+703211	Ext->3B	Entrada de Mercadoria para Revenda por aquisição ou transferência
+70xx12	Nihil	Entrada Externa no Módulo 1 ou 3, por aquisição de serviço de transporte.
+701112	Ext->1A	Aquisição de serviço de transporte -Ficha 1A
+701212	Ext->1B	Aquisição de serviço de transporte -Ficha 1B
+701512	#Cadastrar_Conversor#	Aquisição de serviço de transporte para execução de serviço da mesma natureza
+702212	Ext->2B	Aquisição de serviço de transporte - Ficha 2B
+702312	Ext->2C	Aquisição de serviço de transporte - Ficha 2C
+702712	Ext->2G	Aquisição de serviço de transporte - Ficha 2G
+703212	Ext->3B	Aquisição de serviço de transporte - Ficha 3B
+70xx13	Nihil	Valor do serviço prestado cobrado pelo industrializador
+701213	#Cadastrar_Conversor#	Valor cobrado pelo industrializador referente ao serviço empregado no processo industrial.
+70xx16	Nihil	Complemento de Valor/Quantidade e/ou lançamento complementar de ICMS
+701116	ExtCompl->1A	Lançamento complementar - Quantidade/Valor/ICMS Ficha 1A
+701216	ExtCompl->1B	Lançamento complementar - Quantidade/Valor/ICMS Ficha 1B
+701316	ExtCompl->1C	Lançamento complementar - Quantidade/Valor/ICMS Ficha 1C
+701416	ExtCompl->1D	Lançamento complementar - Quantidade/Valor/ICMS Ficha 1D
+701516	ExtCompl->1E	Lançamento complementar - Quantidade/Valor/ICMS Ficha 1E
+702116	ExtCompl->2A	Lançamento complementar - Quantidade/Valor/ICMS Ficha 2A
+702216	ExtCompl->2B	Lançamento complementar - Quantidade/Valor/ICMS Ficha 2B
+702316	ExtCompl->2C	Lançamento complementar - Quantidade/Valor/ICMS Ficha 2C
+702416	ExtCompl->2D	Lançamento complementar - Quantidade/Valor/ICMS Ficha 2D
+702516	ExtCompl->2E	Lançamento complementar - Quantidade/Valor/ICMS Ficha 2E
+702616	ExtCompl->2F	Lançamento complementar - Quantidade/Valor/ICMS Ficha 2F
+702716	ExtCompl->2G	Lançamento complementar - Quantidade/Valor/ICMS Ficha 2G
+703116	ExtCompl->3A	Lançamento complementar - Quantidade/Valor/ICMS Ficha 3A
+703216	ExtCompl->3B	Lançamento complementar - Quantidade/Valor/ICMS Ficha 3B
+xx7017	Nihil	Estorno de Valor/Quantidade e/ou Estorno de ICMS a maior
+117017	Estorno-1A	Estorno de Valor/Quantidade/ICMS a maior - Ficha 1A
+127017	Estorno-1B	Estorno de Valor/Quantidade/ICMS a maior - Ficha 1B
+137017	Estorno-1C	Estorno de Valor/Quantidade/ICMS a maior - Ficha 1C
+147017	Estorno-1D	Estorno de Valor/Quantidade/ICMS a maior - Ficha 1D
+157017	Estorno-1E	Estorno de Valor/Quantidade/ICMS a maior - Ficha 1E
+217017	Estorno-2A	Estorno de Valor/Quantidade/ICMS a maior - Ficha 2A
+227017	Estorno-2B	Estorno de Valor/Quantidade/ICMS a maior - Ficha 2B
+237017	Estorno-2C	Estorno de Valor/Quantidade/ICMS a maior - Ficha 2C
+247017	Estorno-2D	Estorno de Valor/Quantidade/ICMS a maior - Ficha 2D
+257017	Estorno-2E	Estorno de Valor/Quantidade/ICMS a maior - Ficha 2E
+267017	Estorno-2F	Estorno de Valor/Quantidade/ICMS a maior - Ficha 2F
+277017	Estorno-2G	Estorno de Valor/Quantidade/ICMS a maior - Ficha 2G
+317017	Estorno-3A	Estorno de Valor/Quantidade/ICMS a maior - Ficha 3A
+327017	Estorno-3B	Estorno de Valor/Quantidade/ICMS a maior - Ficha 3B
+xx7018	Nihil	Anulação de Entrada por Devolução do Material, Mercadoria, Valor Agregado ou Serviço de Transporte registrado no Módulo 1 ou 3.
+117018	#Cadastrar_Conversor#	Devolução de entrada de insumo ou anulação de valor relativo à prestação de serviço de transporte registrado na Ficha 1A
+127018	#Cadastrar_Conversor#	Devolução para o industrializador do material e serviço empregado no processo industrial ou anulação de valor relativo à prestação de serviço de transporte registrado na Ficha 1B
+137018	#Cadastrar_Conversor#	Anulação de valor relativo à compra de energia elétrica registrada na Ficha 1C
+147018	#Cadastrar_Conversor#	Anulação de valor relativo à prestação de serviço de comunicação registrado na Ficha 1D
+157018	#Cadastrar_Conversor#	Anulação de valor relativo à prestação de serviço de transporte registrado na Ficha 1E
+327018	#Cadastrar_Conversor#	Devolução de mercadoria destinada à revenda registrada na Ficha 3B
+70xx19	Nihil	Outras Entradas não compreendidas nos códigos anteriores
+701119	Ext->1A	Entrada na Ficha 1A não compreendida nos códigos anteriores.
+701219	Ext->1B	Entrada na Ficha 1B não compreendida nos códigos anteriores.
+701319	Ext->1C	Entrada na Ficha 1C não compreendida nos códigos anteriores.
+701419	Ext->1D	Entrada na Ficha 1D não compreendida nos códigos anteriores
+701519	Ext->1E	Entrada na Ficha 1E não compreendida nos códigos anteriores.
+xxxx2x	Nihil	Saídas/Apropriação para Produção - Lançamento de Custo
+xxxx21	Nihil	Saída de insumo para produção – Fichas do módulo 2
+112121	1A->(1Aou2A)	Requisição de estoque da Ficha 1A para produto ou ordem de fabricação - Ficha 1A para 2A
+112221	1A->2B	Alocação do custo da saída de insumos destinados à industrialização em outro estabelecimento - Ficha 1A para 2B
+112321	1A->(1Aou2C)	Requisição de estoque da Ficha 1A para industrialização de encomenda feita para outro estabelecimento - Ficha 1A para 2C
+112421	1A->2D	Alocação do custo do combustível consumido na prestação de serviço de transporte - Ficha 1A para 2D
+112521	1A->2E	Alocação do custo de insumos secundários e auxiliares para rateio em gastos gerais de fabricação - Ficha 1A para 2E
+112621	1A->2F	Requisição de insumo conjunto para produção de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 1A para 2F
+112721	1A->2G	Requisição de insumo conjunto ou próprio para produção de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 1A para 2G
+132121	1C->2A	Alocação de energia elétrica para a produção do estabelecimento - Ficha 1C para 2A
+132221	1C->2B	Alocação de energia elétrica remetida para industrialização em outro estabelecimento - Ficha 1C para 2B
+132321	1C->2C	Alocação de energia elétrica para industrialização para outro estabelecimento - Ficha 1C para 2C
+132421	1C->2D	Alocação do custo da energia elétrica consumida diretamente na prestação de serviço de transporte - Ficha 1C para 2D
+132521	1C->2E	Alocação de energia elétrica para Gastos Gerais de Fabricação - Ficha 1C para 2E
+132721	1C->2G	Alocação de energia elétrica para a produção do estabelecimento - Ficha 1C para 2G
+152421	1E->2D	Alocação do custo e ICMS do serviço de transporte utilizado para execução de serviço da mesma natureza - Ficha 1E para 2D
+xxxx22	Nihil	Alocação de custo do material empregado pelo industrializador para produto em elaboração
+122222	1B->2B	Alocação de custo do material empregado pelo industrializador para produto em elaboração - Ficha 1B para 2B
+122322	1B->2C	Alocação de custo do material empregado pelo industrializador para produto em elaboração - Ficha 1B para 2C
+122722	1B->2G	Alocação de custo do material empregado pelo industrializador para produto em elaboração - Ficha 1B para 2G
+xxxx23	Nihil	Alocação do serviço cobrado pelo industrializador para produto em elaboração
+122223	1B->2B	Alocação do serviço cobrado pelo industrializador para produto em elaboração - Ficha 1B para 2B
+122323	1B->2C	Alocação do serviço cobrado pelo industrializador para produto em elaboração - Ficha 1B para 2C
+122723	1B->2G	Alocação do serviço cobrado pelo industrializador para produto em elaboração - Ficha 1B para 2G
+xxxx27	Nihil	Devolução de serviço prestado pelo Industrializador
+221227	2B->1B	Devolução do Valor Agregado (Serviço) relativo a industrialização em outro estabelecimento – Ficha 2B para 1B
+231227	2C->1B	Devolução do Valor Agregado (Serviço) relativo a industrialização em outro estabelecimento – Ficha 2C para 1B
+271227	2G->1B	Devolução do Valor Agregado (Serviço) relativo a industrialização em outro estabelecimento – Ficha 2G para 1B
+xxxx28	Nihil	Devolução de Insumo não utilizado no processo produtivo
+211128	2A->1A	Devolução de Insumo não utilizado no processo produtivo - Ficha 2A para 1A
+221128	2B->1B	Retorno do insumo remetido para industrialização e não aplicado na encomenda - Ficha 2B para 1A
+231128	2C->1A	Devolução de Insumo não utilizado na industrialização para outro estabelecimento - Ficha 2C para 1A
+261128	2F->1A	Devolução de Insumo não utilizado no processo produtivo - Ficha 2F para 1A
+271128	2G->1A	Devolução de Insumo não utilizado no processo produtivo - Ficha 2G para 1A
+221228	2B->1B	Devolução do Valor Agregado (Material) relativo a industrialização em outro estabelecimento – Ficha 2B para 1B
+231228	2C->1B	Devolução do Valor Agregado (Material) relativo a industrialização em outro estabelecimento – Ficha 2C para 1B
+271228	2G->1B	Devolução do Valor Agregado (Material) relativo a industrialização em outro estabelecimento – Ficha 2G para 1B
+xxxx3x	Nihil	Transferências – dentro do processo produtivo
+xxxx31	Nihil	Transferência entre fichas do Módulo 2
+212131	2A->2A	Transferência das unidades finalizadas de um produto para composição de outro produto em elaboração - Ficha 2A para 2A
+212231	2A->2B	Transferência das unidades finalizadas de um determinado produto para composição de produto em elaboração industrializado em outro estabelecimento - Ficha 2A para 2B
+212331	2A->2C	Transferência das unidades finalizadas de um produto para composição de produto em elaboração industrializado para outro estabelecimento - Ficha 2A para 2C
+212531	2A->2E	Transferência das unidades finalizadas de um produto para gastos gerais de fabricação - Ficha 2A para 2E
+212631	2A->2F	Transferência das unidades finalizadas de um produto a ser utilizado como insumo comum para a produção subseqüente de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 2A para 2F
+212731	2A->2G	Transferência das unidades finalizadas de um produto a ser utilizado como insumo comum ou próprio para a produção subseqüente de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 2A para 2G
+222131	2B->2A	Transferência das unidades finalizadas de um produto industrializado em outro estabelecimento para composição de produto em elaboração - Ficha 2B para 2A
+222231	2B->2B	Transferência das unidades finalizadas de um produto industrializado em outro estabelecimento para composição de produto em elaboração industrializado por terceiros - Ficha 2B para 2B
+222331	2B->2C	Transferência das unidades finalizadas de um produto industrializado em outro estabelecimento para composição de produto em elaboração industrializado para outro estabelecimento - Ficha 2B para 2C
+222531	2B->2E	Transferência das unidades finalizadas de um produto industrializado em outro estabelecimento para gastos gerais de fabricação - Ficha 2B para 2E
+222631	2A->2F	Transferência das unidades finalizadas de um produto industrializado em outro estabelecimento a ser utilizado como insumo comum para a produção de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 2A para 2F
+222731	2A->2G	Transferência das unidades finalizadas de um produto industrializado em outro estabelecimento a ser utilizado como insumo comum ou próprio para a produção de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 2A para 2G
+252131	2E->2A	Rateio de gastos gerais de fabricação para produção - Ficha 2E para 2A
+252331	2E->2C	Rateio de gastos gerais de fabricação para industrialização para outro estabelecimento - Ficha 2E para 2C
+252731	2E->2G	Rateio de gastos gerais de fabricação para produção conjunta - Ficha 2E para 2G
+262131	2F->2A	Transferência das unidades finalizadas de um co-produto ou subproduto para composição de outro produto em elaboração - Ficha 2F para 2A
+262231	2F->2B	Transferência das unidades finalizadas de um co-produto ou subproduto para composição de produto em elaboração industrializado em outro estabelecimento - Ficha 2F para 2B
+262331	2F->2C	Transferência das unidades finalizadas de um co-produto ou subproduto para composição de produto em elaboração industrializado para outro estabelecimento - Ficha 2F para 2C
+262531	2F->2E	Transferência das unidades finalizadas de um co-produto ou subproduto para gastos gerais de fabricação - Ficha 2F para 2E
+262631	2F->2F	Transferência das unidades finalizadas de um co-produto ou subproduto a ser utilizado como insumo comum para a produção subseqüente de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 2F para 2F
+262731	2F->2G	Transferência das unidades finalizadas de um co-produto ou subproduto a ser utilizado como insumo comum ou próprio para a produção subseqüente de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 2F para 2G
+272131	2G->2A	Transferência das unidades finalizadas de um co-produto ou subproduto para composição de outro produto em elaboração - Ficha 2G para 2A
+272231	2G->2B	Transferência das unidades finalizadas de um co-produto ou subproduto para composição de produto em elaboração industrializado em outro estabelecimento - Ficha 2G para 2B
+272331	2G->2C	Transferência das unidades finalizadas de um co-produto ou subproduto para composição de produto em elaboração industrializado para outro estabelecimento - Ficha 2G para 2C
+272531	2G->2E	Transferência das unidades finalizadas de um co-produto ou subproduto para gastos gerais de fabricação - Ficha 2G para 2E
+272631	2G->2F	Transferência das unidades finalizadas de um co-produto ou subproduto a ser utilizado como insumo comum para a produção subseqüente de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 2G para 2F
+272731	2G->2G	Transferência das unidades finalizadas de um co-produto ou subproduto a ser utilizado como insumo comum ou próprio para a produção subseqüente de dois ou mais produtos dentro de um mesmo processo produtivo - Ficha 2G para 2G
+xxxx38	Nihil	Devolução de transferências entre fichas do Módulo 2 - Anulação de Transferência
+212138	2A->2A	Devolução de produto não utilizado no processo produtivo - Ficha 2A para 2A
+212238	2A->2B	Devolução, para a Ficha 2B de origem, de produto industrializado em outro estabelecimento anteriormente transferido para produção - Ficha 2A para 2B
+212738	2A->2G	Devolução de produto não utilizado no processo produtivo - Ficha 2A para 2G
+222138	2B->2A	Devolução de produto remetido para industrialização e não aplicado na encomenda - Ficha 2B para 2A
+222238	2B->2B	Devolução, para a Ficha 2B de origem, de produto industrializado em outro estabelecimento anteriormente transferido para produção em estabelecimento de terceiros - Ficha 2B para 2B
+222738	2B->2G	Devolução de produto remetido para industrialização e não aplicado na encomenda - Ficha 2B para 2G
+232138	2C->2A	Devolução de produto não utilizado na industrialização para outro estabelecimento - Ficha 2C para 2A
+232238	2C->2B	Devolução de produto industrializado em outro estabelecimento e não utilizado na industrialização para outro estabelecimento - Ficha 2C para 2B
+232738	2C->2G	Devolução de produto não utilizado na industrialização para outro estabelecimento - Ficha 2C para 2G
+262138	2F->2A	Devolução de insumo (produto semi-elaborado) não utilizado no processo produtivo - Ficha 2F para 2A
+262238	2F->2B	Devolução, para a Ficha 2B de origem, de insumo conjunto industrializado em outro estabelecimento anteriormente transferido para produção - Ficha 2F para 2B
+262738	2F->2G	Devolução de insumo conjunto (co-produto ou subproduto) anteriormente transferido para produção - Ficha 2F para 2G
+272138	2G->2A	Devolução de insumo (produto semi-elaborado) não utilizado no processo produtivo - Ficha 2G para 2A
+272238	2G->2B	Devolução de co-produto ou subproduto industrializado por outro estabelecimento anteriormente transferido para produção para a Ficha 2B - Ficha 2G para 2B
+272738	2G->2G	Devolução de co-produto ou subproduto não utilizado no processo produtivo - Ficha 2G para 2G
+xxxx4x	Nihil	Transferências entre Módulos
+xxxx41	Nihil	Transferência de Insumo para Revenda ou de Revenda para Insumo
+113241	1A->3B	Transferência de materiais para estoque de mercadorias de revenda - Ficha 1A para 3B
+321141	3B->1A	Transferência de mercadoria de revenda para estoque de materiais - Ficha 3B para 1A
+133241	1C->3B	Transferência de energia elétrica para mercadorias de revenda - Ficha 1C para 3B
+xxxx42	Nihil	Transferência de Produto Semi Elaborado para Estoque de Materiais
+211142	2A->1A	Transferência de produto semi elaborado para estoque de materiais - Ficha 2A para 1A
+221142	2B->1A	Transferência de produto semi elaborado industrializado em outro estabelecimento para estoque de materiais - Ficha 2B para 1A
+261142	2F->1A	Transferência de co-produto ou subproduto para estoque de materiais - Ficha 2F para 1A
+271142	2G->1A	Transferência de co-produto ou subproduto para estoque de materiais - Ficha 2G para 1A
+xxxx43	Nihil	Transferência dos Custos de Energia Elétrica
+211343	2A->1C	Transferência de energia elétrica produzida pelo estabelecimento para Controle de Energia Elétrica - Ficha 2A para 1C
+221343	2B->1C	Transferência de energia elétrica produzida em outro estabelecimento para Controle de Energia Elétrica - Ficha 2B para 1C
+271343	2G->1C	Transferência de energia elétrica (co-produto ou subproduto) resultante de processo de produção conjunta para Controle de Energia Elétrica - Ficha 2G para 1C
+xxxx44	Nihil	Transferência por Reintegração de Produto Acabado para a Produção
+312144	3A->2A	Reintegração de produto acabado para produção - Ficha 3A para 2A
+312244	3A->2B	Reintegração de produto acabado para produção em outro estabelecimento - Ficha 3A para 2B
+312744	3A->2G	Reintegração de produto acabado para produção conjunta - Ficha 3A para 2G
+xxxx45	Nihil	Transferência de Custos de Transporte e Armazenagem para Estoque de Insumos ou Mercadoria
+251145	2E->1A	Rateio de custos de transporte e armazenagem para estoque de insumos – Ficha 2E para 1A
+253245	2E->3B	Rateio de custos de transporte para estoque de mercadorias – Ficha 2E para 3B
+xxxx51	Custo->3A	Transferência do Custo e ICMS da produção terminada para Ficha 3A
+213151	2A->3A	Transferência das unidades finalizadas de um produto para estoque de produtos acabados - Ficha 2A para 3A
+223151	2B->3A	Transferência das unidades finalizadas de um produto industrializado em outro estabelecimento para estoque de produtos acabados - Ficha 2B para 3A
+263151	2F->3A	Transferência das unidades finalizadas de um co-produto ou subproduto para estoque de produtos acabados - Ficha 2F para 3A
+273151	2G->3A	Transferência das unidades finalizadas de um co-produto ou subproduto para estoque de produtos acabados - Ficha 2G para 3A
+xxxx53	Nihil	Transferência do Custo e ICMS do Valor Agregado na industrialização para terceiros para a Ficha 3C
+233353	#Cadastrar_Conversor#	Transferência do Custo e ICMS do Valor Agregado na industrialização para terceiros para a Ficha 3C
+xxxx57	Nihil	Devolução de Valor Agregado na industrialização para terceiros para a produção - reparo ou recusa de produto
+332357	#Cadastrar_Conversor#	Devolução de Valor Agregado na industrialização para terceiros para a produção – reparo ou recusa de produto
+xxxx58	Nihil	Devolução para Produção – Reparo de Produto Acabado
+312158	3A->2A	Devolução de produto acabado para reparo no estabelecimento - Ficha 3A para 2A
+312258	3A->2B	Devolução de produto acabado para reparo em outro estabelecimento - Ficha 3A para 2B
+312758	3A->2G	Devolução de produto acabado para reparo no estabelecimento - Ficha 3A para 2G
+xx766x	Nihil	Baixas no Sistema de Apuração – contrapartida fora do sistema
+xx7661	Nihil	Baixa de Insumo, Mercadoria ou Produto para Integrar Ativo Fixo
+117661	1A->AtivFixo	Baixa do estoque de material para integrar o ativo fixo do estabelecimento - Ficha 1A
+217661	2A->AtivFixo	Baixa de unidades finalizadas de produto para integrar o ativo fixo do estabelecimento - Ficha 2A
+227661	2B->AtivFixo	Baixa de unidades finalizadas de produto, industrializado em outro estabelecimento, para integrar o ativo fixo do estabelecimento - Ficha 2B
+267661	2F->AtivFixo	Baixa de co-produto ou subproduto para integrar o ativo fixo do estabelecimento - Ficha 2F
+277661	2G->AtivFixo	Baixa de co-produto ou subproduto para integrar o ativo fixo do estabelecimento - Ficha 2G
+317661	3A->AtivFixo	Baixa do estoque de produto acabado para integrar o ativo fixo do estabelecimento - Ficha 3A
+327661	3B->AtivFixo	Baixa do estoque de mercadoria de revenda para integrar o ativo fixo do estabelecimento - Ficha 3B
+xx7662	Nihil	Baixa de Insumo, Mercadoria ou Produto para Uso e Consumo
+117662	1A->UsoCons	Baixa do estoque de material para uso e consumo do estabelecimento - Ficha 1A
+217662	2A->UsoCons	Baixa de unidades finalizadas de produto para uso e consumo do estabelecimento - Ficha 2A
+227662	2B->UsoCons	Baixa de unidades finalizadas de produto, industrializado em outro estabelecimento, para uso e consumo do estabelecimento - Ficha 2B
+267662	2F->UsoCons	Baixa de co-produto ou subproduto para uso e consumo do estabelecimento - Ficha 2F
+277662	2G->UsoCons	Baixa de co-produto ou subproduto para uso e consumo do estabelecimento - Ficha 2G
+317662	3A->UsoCons	Baixa do estoque de produto acabado para uso e consumo do estabelecimento - Ficha 3A
+327662	3B->UsoCons	Baixa do estoque de mercadoria de revenda para uso e consumo do estabelecimento - Ficha 3B
+xx7663	Nihil	Baixa por Perda Anormal
+137663	1C->PerdaAnormal	Baixa de energia elétrica por perda anormal - Ficha 1C
+217663	2A->PerdaAnormal	Baixa de material alocado na produção ou produto por perda anormal - Ficha 2A
+227663	2B->PerdaAnormal	Baixa de material alocado na produção ou produto por perda anormal ocorrida na industrialização em outro estabelecimento - Ficha 2B
+237663	2C->PerdaAnormal	Baixa de material alocado na produção ou produto por perda anormal ocorrida na industrialização para outro estabelecimento - Ficha 2C
+267663	2F->PerdaAnormal	Baixa de material alocado na produção ou co-produto ou subproduto por perda anormal - Ficha 2F
+277663	2G->PerdaAnormal	Baixa de material alocado na produção ou co-produto ou subproduto por perda anormal - Ficha 2G
+xx7664	Nihil	Baixa por Quebra de Estoque
+117664	1A->QuebraEstoque	Baixa do estoque de material por quebra de estoque - Ficha 1A
+217664	2A->QuebraEstoque	Baixa de material alocado na produção ou produto por quebra de estoque - Ficha 2A
+227664	2B->QuebraEstoque	Baixa de material alocado na produção ou produto por quebra de estoque ocorrida na industrialização em outro estabelecimento - Ficha 2B
+267664	2F->QuebraEstoque	Baixa de material alocado na produção ou co-produto ou subproduto por quebra de estoque - Ficha 2F
+277664	2G->QuebraEstoque	Baixa de material alocado na produção ou co-produto ou subproduto por quebra de estoque - Ficha 2G
+317664	3A->QuebraEstoque	Baixa do estoque de produto acabado por quebra de estoque - Ficha 3A
+327664	3B->QuebraEstoque	Baixa do estoque de mercadoria de revenda por quebra de estoque - Ficha 3B
+337664	3C->QuebraEstoque	Baixa do estoque de mercadoria de revenda por quebra de estoque - Ficha 3C
+xx7665	Nihil	Baixa para despesas operacionais
+117665	#Cadastrar_Conversor#	Baixa de aquisições consumidas ou utilizadas na estocagem, comercialização ou entrega de mercadorias de revenda ou produtos acabados.
+137665	#Cadastrar_Conversor#	Baixa de Energia Elétrica consumida na estocagem e comercialização de mercadorias de revenda ou produtos acabados
+xx777x	Nihil	Apuração do Custo e ICMS dos Produtos Vendidos/Saídos - Módulo 3 para Módulo 6
+xx7771	Nihil	Apuração do Custo e ICMS dos Produtos Saídos para Ficha 6A
+317771	3A-ApurCPV-AlDiv	Apuração do Custo e ICMS do produto acabado - operação geradora de crédito acumulado pela aplicação de alíquotas diversificadas
+327771	3B-ApurCMV-AlDiv	Apuração do Custo e ICMS da mercadoria de revenda - operação geradora de crédito acumulado pela aplicação de alíquotas diversificadas
+337771	3C-ApurCPV-AlDiv	Apuração do Custo e ICMS na industrialização para outro estabelecimento - operação geradora de crédito acumulado pela aplicação de alíquotas diversificadas
+xx7772	Nihil	Apuração do Custo e ICMS dos Produtos Saídos para Ficha 6B
+317772	3A-ApurCPV-RedBC	Apuração do Custo e ICMS do produto acabado - operação geradora de crédito acumulado efetuada com redução de base de cálculo
+327772	3B-ApurCMV-RedBC	Apuração do Custo e ICMS da mercadoria de revenda - operação geradora de crédito acumulado efetuada com redução de base de cálculo
+337772	3C-ApurCPV-RedBC	Apuração do Custo e ICMS na industrialização para outro estabelecimento - operação geradora de crédito acumulado efetuada com redução de base de cálculo
+xx7773	Nihil	Apuração do Custo e ICMS dos Produtos Saídos para Ficha 6C
+317773	3A-ApurCPV-Exp	Apuração do Custo e ICMS do produto acabado - operação geradora de crédito acumulado - exportação
+327773	3B-ApurCMV-Exp	Apuração do Custo e ICMS da mercadoria de revenda - operação geradora de crédito acumulado - exportação
+337773	3C-ApurCPV-Exp	Apuração do Custo e ICMS na industrialização para outro estabelecimento - operação geradora de crédito acumulado - exportação
+xx7774	Nihil	Apuração do Custo e ICMS dos Produtos Saídos para Ficha 6D
+317774	3A-ApurCPV-ZFM	Apuração do Custo e ICMS do produto acabado - operação geradora de crédito acumulado - ZFM
+327774	3B-ApurCMV-ZFM	Apuração do Custo e ICMS da mercadoria de revenda - operação geradora de crédito acumulado - ZFM
+337774	3C-ApurCPV-ZFM	Apuração do Custo e ICMS na industrialização para outro estabelecimento - operação geradora de crédito acumulado - ZFM
+xx7775	Nihil	Apuração do Custo e ICMS dos Produtos Saídos para Ficha 6E
+317775	3A-ApurCPV-Isen	Apuração do Custo e ICMS do produto acabado - operação geradora de crédito acumulado - outras saídas sem o pagamento do imposto
+327775	3B-ApurCMV-Isen	Apuração do Custo e ICMS da mercadoria de revenda - operação geradora de crédito acumulado - outras saídas sem o pagamento do imposto
+337775	3C-ApurCPV-Isen	Apuração do Custo e ICMS na industrialização para outro estabelecimento - operação geradora de crédito acumulado - outras saídas sem o pagamento do imposto
+xx7776	Nihil	Apuração do Custo e ICMS dos Produtos Saídos para Ficha 6F
+317776	3A-ApurCPV-NGer	Apuração do Custo e ICMS do produto acabado - operação não geradora de crédito acumulado
+327776	3B-ApurCMV-NGer	Apuração do Custo e ICMS da mercadoria de revenda - operação não geradora de crédito acumulado
+337776	3C-ApurCPV-NGer	Apuração do Custo e ICMS na industrialização para outro estabelecimento - operação não geradora de crédito acumulado
+77xx78	Nihil	Devolução de Saídas - Anulação da Saída do Módulo 3
+773178	3A->Dev	Devolução de produto acabado - Ficha 3A
+773278	3B->Dev	Devolução de mercadoria de revenda - Ficha 3B
+773378	3C->Dev	Devolução de produto industrializado para outro estabelecimento - Ficha 3C
+xxxx8x	Nihil	Outros Lançamentos e Anotações
+xx7881	Nihil	Anotação em Ficha do Módulo 2
+237881	#Cadastrar_Conversor#	Anotação na Ficha 2C dos dados da nota fiscal de remessa para industrialização em outro estabelecimento - Ficha 2C
+277881	#Cadastrar_Conversor#	Anotação na Ficha 2G dos dados da nota fiscal de remessa para industrialização em outro estabelecimento - Ficha 2G
+782381	#Cadastrar_Conversor#	Anotação na Ficha 2C dos dados da nota fiscal de retorno do material ou produto em elaboração remetido para industrialização em outro estabelecimento e não utilizado no processo - Ficha 2C
+782781	#Cadastrar_Conversor#	Anotação na Ficha 2G dos dados da nota fiscal de retorno do material ou produto em elaboração remetido para industrialização em outro estabelecimento e não utilizado no processo - Ficha 2G
+xxxx85	Nihil	Transferências entre Fichas do Módulo 1
+131185	#Cadastrar_Conversor#	Alocação de Energia Elétrica utilizada na armazenagem de insumos
+xxxx88	Nihil	Anulação de transferências entre Fichas do Módulo 1
+111388	#Cadastrar_Conversor#	Anulação de Alocação de Energia Elétrica de armazenagem de Insumos
+xxxx9x	Nihil	Do Controle de Materiais Resultantes de Perdas e Sobras
+xx5291	Nihil	Entrada de Materiais Resultantes de Perdas e Sobras
+115291	#Cadastrar_Conversor#	Entrada de materiais resultantes de perdas do estoque de materiais
+215291	#Cadastrar_Conversor#	Entrada de materiais resultantes de perdas e sobras da produção
+225291	#Cadastrar_Conversor#	Entrada de materiais resultantes de perdas e sobras da produção em outro estabelecimento
+235291	#Cadastrar_Conversor#	Entrada de materiais resultantes de perdas e sobras da industrialização para outro estabelecimento
+275291	#Cadastrar_Conversor#	Entrada de materiais resultantes de perdas e sobras da produção conjunta
+315291	#Cadastrar_Conversor#	Entrada de materiais resultantes de perdas do estoque de produtos acabados
+325291	#Cadastrar_Conversor#	Entrada de materiais resultantes de perdas do estoque de mercadoria de revenda
+335291	#Cadastrar_Conversor#	Entrada de materiais resultantes de perdas do estoque de produtos industrializados para outro estabelecimento
+527997	#Cadastrar_Conversor#	Saída com Valor Comercial de Materiais Resultantes de Perdas e Sobras
+527997	#Cadastrar_Conversor#	Saída com Valor Comercial de Materiais Resultantes de Perdas e Sobras
+527996	#Cadastrar_Conversor#	Saída sem Valor Comercial de Materiais Resultantes de Perdas e Sobras
+527996	#Cadastrar_Conversor#	Saída sem Valor Comercial de Materiais Resultantes de Perdas e Sobras

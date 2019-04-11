@@ -1,0 +1,33 @@
+cod	descri	mod
+1	Nota Fiscal	1/1ª
+1B	Nota Fiscal Avulsa	-
+2	Nota Fiscal de Venda a Consumidor	2
+2D	Cupom Fiscal	-
+2E	Cupom Fiscal Bilhete de Passagem	-
+4	Nota Fiscal de Produtor	4
+6	Nota Fiscal/Conta de Energia Elétrica	6
+7	Nota Fiscal de Serviço de Transporte	7
+8	Conhecimento de Transporte Rodoviário de Cargas	8
+8B	Conhecimento de Transporte de Cargas Avulso	-
+9	Conhecimento de Transporte Aquaviário de Cargas	9
+10	Conhecimento Aéreo	10
+11	Conhecimento de Transporte Ferroviário de Cargas	11
+13	Bilhete de Passagem Rodoviário	13
+14	Bilhete de Passagem Aquaviário	14
+15	Bilhete de Passagem e Nota de Bagagem	15
+17	Despacho de Transporte	17
+16	Bilhete de Passagem Ferroviário	16
+18	Resumo de Movimento Diário	18
+20	Ordem de Coleta de Cargas	20
+21	Nota Fiscal de Serviço de Comunicação	21
+22	Nota Fiscal de Serviço de Telecomunicação	22
+23	GNRE	23
+24	Autorização de Carregamento e Transporte	24
+25	Manifesto de Carga	25
+26	Conhecimento de Transporte Multimodal de Cargas	26
+27	Nota Fiscal De Transporte Ferroviário De Carga	-
+28	Nota Fiscal/Conta de Fornecimento de Gás Canalizado	-
+29	Nota Fiscal/Conta De Fornecimento D'água Canalizada	-
+55	Nota Fiscal Eletrônica	55
+57	Conhecimento de Transporte Eletrônico - CT-e	57
+59	Cupom Fiscal Eletrônico - CF-e	59

@@ -1,0 +1,33 @@
+cod_chv	codigo	descri	mod
+1	01	Nota Fiscal	1/1A
+2	1B	Nota Fiscal Avulsa	-
+3	02	Nota Fiscal de Venda a Consumidor	2
+4	2D	Cupom Fiscal emitido por ECF	-
+5	2E	Bilhete de Passagem emitido por ECF	-
+6	04	Nota Fiscal de Produtor	4
+7	06	Nota Fiscal/Conta de Energia Elétrica	6
+8	07	Nota Fiscal de Serviço de Transporte	7
+9	08	Conhecimento de Transporte Rodoviário de Cargas	8
+10	8B	Conhecimento de Transporte de Cargas Avulso	-
+11	09	Conhecimento de Transporte Aquaviário de Cargas	9
+12	10	Conhecimento Aéreo	10
+13	11	Conhecimento de Transporte Ferroviário de Cargas	11
+14	13	Bilhete de Passagem Rodoviário	13
+15	14	Bilhete de Passagem Aquaviário	14
+16	15	Bilhete de Passagem e Nota de Bagagem	15
+17	16	Bilhete de Passagem Ferroviário	16
+18	17	Despacho de Transporte	17
+19	18	Resumo de Movimento Diário	18
+20	20	Ordem de Coleta de Cargas	20
+21	21	Nota Fiscal de Serviço de Comunicação	21
+22	22	Nota Fiscal de Serviço de Telecomunicação	22
+23	23	GNRE	23
+24	24	Autorização de Carregamento e Transporte	24
+25	25	Manifesto de Carga	25
+26	26	Conhecimento de Transporte Multimodal de Cargas	26
+27	27	Nota Fiscal/Conta de Fornecimento de Água Canalizada	-
+28	28	Nota Fiscal/Conta de Fornecimento de Gás Canalizado	-
+29	29	Manifesto de Vôo	-
+30	30	Bilhete/Recibo do Passageiro	-
+31	55	Nota Fiscal Eletrônica	-
+32	57	Conhecimento de Transporte Eletrônico – CTe	-

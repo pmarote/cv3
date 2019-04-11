@@ -1,0 +1,45 @@
+reg	proc	nivel	descri
+0000	X	0	Abertura do Arquivo Digital e Identificação do Empresário ou da Sociedade  Empresária
+0001		1	Abertura do Bloco 0
+0007	X	2	Outras Inscrições Cadastrais do Empresário ou Sociedade empresária
+0020		2	Escrituração Contábil Descentralizada
+0150	X	2	Tabela de Cadastro do Participante
+0180	X	3	Identificação do Relacionamento com o Participante
+0990		1	encerramento do Bloco 0
+9001		1	Abertura do Bloco 9
+9900		2	Registros do arquivo
+9990		1	Encerramento do Bloco 9
+9999		0	Encerramento do arquivo digital 
+I001		1	Abertura do Bloco I
+I010	X	2	Identificação da Escrituração Contábil    
+I012		3	Livros Auxiliares ao Diário
+I015		4	Identificação das contas da escrituração resumida a que se        refere a escrituração auxiliar
+I020		3	 Campos Adicionais
+I030		3	Termo de Abertura
+I050	X	3	Plano de Contas
+I051	X	4	Plano de Contas Referencial
+I052	X	4	Indicação dos Códigos de Aglutinação
+I075	X	3	Tabela de Histórico Padronizado
+I100	X	3	Centro de Custos
+I150	X	3	Saldos Periódicos
+I151		4	Assinatura digital dos arquivos que contém as Fichas de lançamentos utilizadas no período
+I155	X	4	Detalhes dos Saldos Periódicos
+I200	X	3	Lançamento Contábil
+I250	X	4	Partidas do Lançamento contábil
+I300		3	Balancetes Diários
+I310		4	Detalhes do Balancete Diário
+I350	X	3	Saldos das Contas de Resultado Antes do Encerramento
+I355	X	4	Detalhes dos saldos das contas de resultado antes do encerramento
+I500		3	Parâmetros de Impressão/Visualização do Livro Razão Auxiliar com Leiaute Parametrizável
+I510		3	Definição dos Campos do Livro Razão Auxiliar com Leiaute Parametrizável
+I550		3	Detalhes do Livro Razão Auxiliar com Leiaute Parametrizável
+I555		4	Totais no Livro Razão Auxiliar com Leiaute Parametrizável
+I990		1	Encerramento do Bloco I
+J001		1	Abertura do Bloco J
+J005	X	2	Demonstrações Contábeis
+J100	X	3	Balanço Patrimonial
+J150	X	3	Demonstração do Resultado do Exercício
+J800		3	Outras Informações
+J900	X	2	termo de encerramento do livro 
+J930	X	3	Identificação dos signatários da escrituração
+J990		1	Encerramento do Bloco J
