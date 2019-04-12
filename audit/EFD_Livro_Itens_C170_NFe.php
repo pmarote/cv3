@@ -2,6 +2,7 @@
 
 $pr->aud_registra(new PrMenu("efd_livros_itensC170_NFe", "E_FD", "Livro Fiscal C170 _com NFe", "efd,dfe"));
 $pr->aud_registra(new PrMenu("efd_livros_itensC170",     "E_FD", "Livro Fiscal C170 _sem NFe", "efd"));
+$pr->aud_registra(new PrMenu("efd_base_especifico", "E_FD", "Base para _Específico", "efd,dfe"));
 
 function efd_livros_itensC170() {
   gera_efd_livros_itensC170('');
@@ -11,34 +12,22 @@ function efd_livros_itensC170_NFe() {
   gera_efd_livros_itensC170('NFe');
 }
 
-function gera_efd_livros_itensC170($tipo = '') {
+function efd_base_especifico() {
+  gera_efd_livros_itensC170('NFe', 'base');
+}
+
+function gera_efd_livros_itensC170($tipo = '', $base = False) {
 
   global $pr;
 
-  $pr->inicia_excel('EFD_LivFisC170_0200_C190_C100_0150');
+  if (!$base) $pr->inicia_excel('EFD_LivFisC170_0200_C100_0150');
+  if ($base)  $pr->inicia_excel('EFD_Base_Especifico');
 
   $form_final = '
 	$this->excel_orientacao(2);		// paisagem
 	$this->excel_zoom_visualizacao(80);
 ';
 
-  $pr->aud_prepara("
--- Criação de c190_cfop, ou seja, sem separar por alíquotas e cst
--- Porque há varias inconsistências especialmente do código de origem (CST > 100). Exemplo: diferença NFe x c190 ou NFe x c170 e inclusive difer cst c170 x c190
-DROP TABLE IF EXISTS c190_cst02_cfop;
-CREATE TABLE c190_cfop (
-	  ord int, ordC100 int,
-	  cfop int, vl_opr real, vl_bc_icms real, vl_icms real, 
-	  vl_bc_icms_st real, vl_icms_st real, vl_red_bc real, vl_ipi real, cod_obs );
-INSERT INTO c190_cfop	  
-  SELECT 'c190_cfop' AS ord, ordC100, cfop,
-	sum(vl_opr) AS vl_opr, sum(vl_bc_icms) AS vl_bc_icms, sum(vl_icms) AS vl_icms, 
-	sum(vl_bc_icms_st) AS vl_bc_icms_st, sum(vl_icms_st) AS vl_icms_st, sum(vl_red_bc) AS vl_red_bc, sum(vl_ipi) AS vl_ipi, 
-	cod_obs
-	FROM c190
-	GROUP BY ordC100, cfop;
-CREATE INDEX c190_cfop_ordC100 ON c190_cfop (ordC100 ASC);
-");	
   $pr->aud_prepara("
 -- Criação de c170_NFe_Emit, parecido com DFe em modelo, para ficar mais fácil o resto
 -- especialmente quanto à criação de chaves de acesso em casos de documentos não digitais
@@ -65,19 +54,24 @@ INSERT INTO c170_NFe_Emit
       modelo, serie, nNF AS numero, nItem AS item, chav_ace, c100.ord AS ord_c100
       FROM nfe
       LEFT OUTER JOIN c100 ON c100.chv_nfe = chav_ace
-      WHERE nfe.cod_sit = 0;
+      WHERE nfe.cod_sit = 0 AND nfe.origem = 'NFe_Emit';
 ");	
   $pr->aud_prepara("
 DROP TABLE IF EXISTS c170_total; 
 -- Preenchendo com os dados originais
 CREATE TABLE c170_total AS SELECT * FROM c170;
 ");	
+/*
+Veja o manual do CV3 no tópico: emissão de NFe e escrituração na importação, lá está a explicação do porque está sendo deduzido o II aqui abaixo
+Como a ideia é chegar no 'vl_item' do C170, que é "Valor total do item (mercadorias ou serviços)",
+conforme conciliação C190xC170, temos que o total do C190 é C170.vl_item - C170.vl_desc + C170.vl_ipi + C170.vl_icms_st, considerando também que não há valor de desconto vindo da NFe, descontarei o ipi e icms_st abaixo
+*/
   if ($tipo == 'NFe') $pr->aud_prepara("
 -- Inserindo dados das NFes que constam como registradas no C100
 INSERT INTO c170_total
-SELECT null AS ord, ord_c100 AS ordC100,
+SELECT origem AS ord, ord_c100 AS ordC100,
 	  item AS num_item, codpro AS cod_item, 'NCM#' || codncm || '#' || descri AS descr_compl, qtdpro AS qtd, unimed AS unid,
-	  valcon AS vl_item, 0 AS vl_desc, Null AS ind_mov, cst AS cst_icms, cfop, Null AS cod_nat,
+	  valcon - valii - valipi - icmsst AS vl_item, 0 AS vl_desc, Null AS ind_mov, cst AS cst_icms, cfop, Null AS cod_nat,
 	  bcicms AS vl_bc_icms, CASE WHEN bcicms > 0 THEN round(icms/bcicms*100,2) ELSE 0 END AS aliq_icms, icms AS vl_icms, 
 	  bcicmsst AS vl_bc_icms_st, CASE WHEN bcicmsst > 0 THEN round(icmsst/bcicmsst*100,2) ELSE 0 END aliq_st, icmsst AS vl_icms_st,
 	  Null AS ind_apur, Null AS cst_ipi, Null AS cod_enq,
@@ -87,10 +81,13 @@ SELECT null AS ord, ord_c100 AS ordC100,
 	  FROM c170_nfe_emit
 	  WHERE ordC100 IS NOT NULL;
 ");	
-  // Planilha RegEntSaidaC190_C170_0200_C100_0150 
-  $sql = "
+
+  if (!$base) {
+
+    // Planilha RegEntSaidaC170_0200_C100_0150 
+    $sql = "
 SELECT 
-	  c170_total.*,  o200.*, c190_cfop.*,
+	  c170_total.*,  o200.*, 
 	  c100.ord AS c100_ord, c100.ind_oper, c100.ind_emit, c100.cod_part, c100.cod_mod, c100.cod_sit,
 	  c100.ser, c100.num_doc, '#' || c100.chv_nfe AS chv_nfe, c100.dt_doc, c100.dt_e_s, c100.vl_doc,
 	  c100.ind_pgto, c100.vl_desc, c100.vl_abat_nt, c100.vl_merc,
@@ -98,14 +95,13 @@ SELECT
 	  c100.vl_bc_icms, c100.vl_icms, c100.vl_bc_icms_st, c100.vl_icms_st, c100.vl_ipi,
 	  c100.vl_pis, c100.vl_cofins, c100.vl_pis_st, c100.vl_cofins_st, 
 	  o150.*, 
-	  round(c170_total.ord / 10000000 - 0.49) * 10000000 AS ordmin, round(c170_total.ord / 10000000 + 0.5) * 10000000 AS ordmax
+	  round(c170_total.ordC100 / 10000000 - 0.49) * 10000000 AS ordmin, round(c170_total.ordC100 / 10000000 + 0.5) * 10000000 AS ordmax
   FROM c170_total
   LEFT OUTER JOIN c100 ON c100.ord = c170_total.ordC100
-  LEFT OUTER JOIN c190_cfop ON c190_cfop.ordC100 = c100.ord AND c190_cfop.cfop = c170_total.cfop
   LEFT OUTER JOIN o200 ON o200.cod_item = c170_total.cod_item AND o200.ord > ordmin AND o200.ord < ordmax
   LEFT OUTER JOIN o150 ON o150.cod_part = c100.cod_part       AND o150.ord > ordmin AND o150.ord < ordmax;
 ";
-  $col_format = array(
+    $col_format = array(
 	"A:B" => "0",
 	"D:D" => "0",
 	"F:F" => "#.##0,000",
@@ -117,15 +113,15 @@ SELECT
 	"AM:AN" => "0",
 	"AT:AT" => "0",
 	"AX:AX" => "#.##0,00",
-	"AZ:BA" => "0",
-	"BC:BI" => "#.##0,00",
-	"BK:BK" => "0",
-	"BX:BZ" => "#.##0,00",
-	"CB:CM" => "#.##0,00",
-	"CN:CO" => "0",
-	"CR:CT" => "0"
+	"AZ:AZ" => "0",
+	"BC:BC" => "0",
+	"BM:BO" => "#.##0,00",
+	"BQ:CB" => "#.##0,00",
+	"CC:CD" => "0",
+	"CG:CI" => "0",
+	"CP:CQ" => "0"
 );
-  $cabec = array(
+    $cabec = array(
 	'OrdC170' => "Número da Linha do Registro C170",
 	'OrdC100_C170' => "Número da Linha do Registro C100",
 	'num_item' => "Número Sequencial do Item no Documento Fiscal",
@@ -189,18 +185,6 @@ SELECT
 	'COD_LST' => "Código do serviço conforme lista do Anexo I da Lei Complementar Federal nº 116/03.",
 	'ALIQ_ICMS' => "Alíquota de ICMS aplicável ao item nas operações internas",
 	'CEST' => "Código Especificador da Substituição Tributária",
-	'c190_agrup' => "Registro C190 desconsiderando cst e alíquota, agrupado apenas por CFOP
-Houve essa necessidade porque há várias inconsistências no código da origem, inclusive entre C170 e C190",
-	'OrdC100' => "Número da Linha do Registro C100",
-	'cfop' => "Código Fiscal de Operação e Prestação do agrupamento de itens", 
-	'vl_opr' => "Valor da operação na combinação de CST_ICMS, CFOP e alíquota do ICMS, correspondente ao somatório do valor das mercadorias, despesas acessórias (frete, seguros e outras despesas acessórias), ICMS_ST  e IPI",
-	'vl_bc_icms' => "Parcela correspondente ao 'Valor da base de cálculo do ICMS' referente à combinação de CST_ICMS, CFOP e alíquota do ICMS.",
-	'vl_icms' => "Parcela correspondente ao 'Valor do ICMS' referente à combinação de CST_ICMS, CFOP e alíquota do ICMS.",
-	'vl_bc_icms_st' => "Parcela correspondente ao 'Valor da base de cálculo do ICMS' da substituição tributária referente à combinação de CST_ICMS, CFOP e alíquota do ICMS.",
-	'vl_icms_st' => "Parcela correspondente ao valor creditado/debitado do ICMS da substituição tributária, referente à combinação de CST_ICMS, CFOP, e alíquota do ICMS.",
-	'vl_red_bc' => "Valor não tributado em função da redução da base de cálculo do ICMS, referente à combinação de CST_ICMS, CFOP e alíquota do ICMS.",
-	'vl_ipi' => "Parcela correspondente ao 'Valor do IPI' referente à combinação CST_ICMS, CFOP e alíquota do ICMS.",
-	'cod_obs' => "Código da observação do lançamento fiscal (campo 02 do Registro 0460)",
 	'c100_ord' => "Número da Linha do Registro C100",
 	'ind_oper' => "Indicador do Tipo de Operação 0-Entrada 1-Saída",
 	'ind_emit' => "Indicador do Emitente do Doc.Fiscal 0-Emissão Própria  1-Terceiros",
@@ -270,7 +254,174 @@ Indicador do tipo do frete:
 	'ordmin' => "Uso interno do conversor, para fins de relacionamento entre tabelas",
 	'ordmax' => "Uso interno do conversor, para fins de relacionamento entre tabelas"
 );
-  $pr->abre_excel_sql('LivFiscC170_0200_C190_C100_0150', 'LivFiscC170_0200_C190_C100_0150', $sql, $col_format, $cabec, $form_final);
+    $pr->abre_excel_sql('LivFiscC170_0200_C100_0150', 'LivFiscC170_0200_C100_0150', $sql, $col_format, $cabec, $form_final);
+
+  }
+
+  if ($base) {
+
+    // Planilha Base para especifico
+    $sql = "
+SELECT 
+	  c170_total.ord AS ord, c170_total.ordC100 AS ordC100, '#' || c100.chv_nfe AS chv_nfe, c170_total.num_item AS num_item, 
+	  substr(CASE WHEN c170_total.ord = 'NFeEmisProp-C170NDisp' THEN substr(c170_total.descr_compl, 5, 8) ELSE o200.cod_ncm END, 1, 2) AS cod_ncm2, 
+	  substr(CASE WHEN c170_total.ord = 'NFeEmisProp-C170NDisp' THEN substr(c170_total.descr_compl, 5, 8) ELSE o200.cod_ncm END, 1, 4) AS cod_ncm4, 
+	  CASE WHEN c170_total.ord = 'NFeEmisProp-C170NDisp' THEN substr(c170_total.descr_compl, 5, 8) ELSE o200.cod_ncm END AS cod_ncm, c170_total.cod_item AS cod_item, 
+	  CASE WHEN c170_total.ord = 'NFeEmisProp-C170NDisp' THEN substr(c170_total.descr_compl, 14, 255) ELSE o200.descr_item END AS descr_item, 
+	  CASE WHEN c170_total.ord != 'NFeEmisProp-C170NDisp' THEN c170_total.descr_compl ELSE NULL END AS descr_compl,
+	  CASE WHEN c170_total.cfop < 5000 THEN -c170_total.qtd ELSE c170_total.qtd END AS qtd, c170_total.unid AS unid, 
+	  CASE WHEN c170_total.cfop < 5000 THEN -(c170_total.vl_item - c170_total.vl_desc + c170_total.vl_icms_st + c170_total.vl_ipi) 
+	     ELSE c170_total.vl_item - c170_total.vl_desc + c170_total.vl_icms_st + c170_total.vl_ipi END AS vl_oper, 
+	  c170_total.vl_item AS vl_item, c170_total.vl_desc AS vl_desc, 
+	  c170_total.ind_mov AS ind_mov, c170_total.cst_icms AS cst_icms, 
+	  c170_total.CFOP AS cfop, cfopd.g1 AS g1, cfopd.g2 AS g2, cfopd.classe || ' ' || cfopd.descri_simplif AS cfop_descri,
+	  c170_total.cod_nat AS cod_nat, 
+	  CASE WHEN c170_total.cfop < 5000 THEN -c170_total.vl_bc_icms ELSE c170_total.vl_bc_icms END AS vl_bc_icms, c170_total.aliq_icms AS aliq_icms, 
+	  CASE WHEN c170_total.cfop < 5000 THEN -c170_total.vl_icms ELSE c170_total.vl_icms END AS vl_icms, 
+	  CASE WHEN c170_total.cfop < 5000 THEN -c170_total.vl_bc_icms_st ELSE c170_total.vl_bc_icms_st END AS vl_bc_icms_st, c170_total.aliq_st AS aliq_st, 
+	  CASE WHEN c170_total.cfop < 5000 THEN -c170_total.vl_icms_st ELSE c170_total.vl_icms_st END AS vl_icms_st, c170_total.cod_cta,
+	  c100.ord AS c100_ord, c100.ind_oper AS ind_oper, c100.ind_emit AS ind_emit, c100.cod_part AS cod_part, 
+	  c100.cod_mod AS cod_mod, c100.cod_sit AS cod_sit, c100.ser AS ser, c100.num_doc AS num_doc, c100.dt_doc AS dt_doc, c100.dt_e_s AS dt_e_s, c100.ind_pgto AS ind_pagto, 
+	  o150.cod_part AS cod_part_o150, o150.cnpj || o150.cpf AS cnpj_cpf,  o150.ie AS ie, tab_munic.uf AS uf, o150.nome AS nome, 
+	  round(c170_total.ordC100 / 10000000 - 0.49) * 10000000 AS ordmin, round(c170_total.ordC100 / 10000000 + 0.5) * 10000000 AS ordmax
+  FROM c170_total
+  LEFT OUTER JOIN c100 ON c100.ord = c170_total.ordC100
+  LEFT OUTER JOIN o200 ON o200.cod_item = c170_total.cod_item AND o200.ord > ordmin AND o200.ord < ordmax
+  LEFT OUTER JOIN o150 ON o150.cod_part = c100.cod_part       AND o150.ord > ordmin AND o150.ord < ordmax
+  LEFT OUTER JOIN tab_munic ON tab_munic.cod = o150.cod_mun
+  LEFT OUTER JOIN cfopd ON cfopd.cfop = c170_total.cfop;
+";
+    $col_format = array(
+	"A:B" => "0",
+	"H:H" => "0",
+	"K:K" => "#.##0,000_ ;[Vermelho]-#.##0,000 ",
+	"M:M" => "#.##0,00_ ;[Vermelho]-#.##0,00 ",
+	"N:O" => "#.##0,00",
+	"Q:Q" => "000",
+	"W:AB" => "#.##0,00_ ;[Vermelho]-#.##0,00 ",
+	"AD:AD" => "0",
+	"AG:AG" => "0",
+	"AO:AQ" => "0",
+	"AT:AU" => "0",
+);
+    $cabec = array(
+	'OrdC170' => "Número da Linha do Registro C170",
+	'OrdC100_C170' => "Número da Linha do Registro C100",
+	'chv_nfe' => "Chave da Nota Fiscal Eletrônica",
+	'num_item' => "Número Sequencial do Item no Documento Fiscal",
+	'COD_NCM2' => "Primeiros 2 dígitos do Código da Nomenclatura Comum do Mercosul",
+	'COD_NCM4' => "Primeiros 4 dígitos do Código da Nomenclatura Comum do Mercosul",
+	'COD_NCM' => "Código da Nomenclatura Comum do Mercosul",
+	'cod_item' => "Código do item (campo 02 do Registro 0200)",
+	'descr_item' => "Descrição do item",
+	'descr_compl' => "Descrição complementar do item como adotado no documento fiscal",
+	'qtd_liq' => "Quantidade do item, negativo para entrada, positivo para saída",
+	'unid' => "Unidade do item (Campo 02 do registro 0190)",
+	'vl_oper' => "Negativo para entrada, total na mesma base do C190, ou seja, vl_item - vl_desc + vl_ipi + vl_icms_st",
+	'vl_item' => "Valor total do item (mercadorias ou serviços)",
+	'vl_desc' => "Valor do desconto comercial",
+	'ind_mov' => "Movimentação física do ITEM/PRODUTO: 0. SIM 1. NÃO",
+	'cst_icms_C170' => "Código da Situação Tributária referente ao ICMS, conforme a Tabela indicada no item 4.3.1",
+	'cfop' => "Código Fiscal de Operação e Prestação",
+	'g1' => "Agrupamento 1 de cfop",
+	'g2' => "Agrupamento 2 de cfop",
+	'cfop_descri' => "Classe de cfop e descrição simplificada",
+	'cod_nat' => "Código da natureza da operação (campo 02 do Registro 0400)",
+	'vl_bc_icms_c170' => "Valor da base de cálculo do ICMS",
+	'aliq_icms_c170' => "Alíquota do ICMS",
+	'vl_icms_c170' => "Valor do ICMS creditado/debitado",
+	'vl_bc_icms_st_c170' => "Valor da base de cálculo referente à substituição tributária",
+	'aliq_st_c170' => "Alíquota do ICMS da substituição tributária na unidade da federação de destino",
+	'vl_icms_st_c170' => "Valor do ICMS referente à substituição tributária",
+	'cod_cta' => "Código da conta analítica contábil debitada/creditada",
+	'OrdC100' => "Número da Linha do Registro C100",
+	'ind_oper' => "Indicador do Tipo de Operação 0-Entrada 1-Saída",
+	'ind_emit' => "Indicador do Emitente do Doc.Fiscal 0-Emissão Própria  1-Terceiros",
+	'cod_part' => "Código do participante (campo 02 do Registro 0150): - do emitente do documento ou do remetente das mercadorias, no caso de entradas; - do adquirente, no caso de saídas",
+	'cod_mod' => "Código do modelo do documento fiscal, conforme a Tabela 4.1.1",
+	'cod_sit' => "Código da situação do documento fiscal, conforme a Tabela 4.1.2
+00 - Documento Regular
+01 - Documento Regular Extemporâneo
+02 - Documento Cancelado
+03 - Documento Cancelado Extemporâneo
+04 - NF-e ou CT-e denegado
+05 - NF-e ou CT-e - Numeração Inutilizada
+06 - Documento Fiscal Complementar
+07 - Documento Fiscal Complementar Extemporâneo
+08 - Documentos Fiscal emitido com base em Regime Especial ou Norma Específica",
+	'ser' => "Série do documento fiscal",
+	'num_doc' => "Número do documento fiscal",
+	'dt_doc' => "Data da emissão do documento fiscal",
+	'dt_e_s' => "Data da entrada ou da saída",
+	'ind_pgto' => "Indicador do tipo de pagamento:
+0- À vista;
+1- A prazo;
+9- Sem pagamento.
+Obs.: A partir de 01/07/2012 passará a ser:
+Indicador do tipo de pagamento:
+0- À vista;
+1- A prazo;
+2 - Outros",
+	'cod_part_0150' => "Código de identificação do participante no arquivo",
+	'cnpj_cpf' => "CNPJ do participante appended CPF do participante",
+	'ie' => "Inscrição Estadual do participante",
+	'uf' => "UF do participante",
+	'nome' => "Nome pessoal ou empresarial do participante",
+	'ordmin' => "Uso interno do conversor, para fins de relacionamento entre tabelas",
+	'ordmax' => "Uso interno do conversor, para fins de relacionamento entre tabelas"
+);
+    $pr->abre_excel_sql('base_especifico', 'Base para Especifico', $sql, $col_format, $cabec, $form_final);
+
+  }
+
+  // Conciliação C170xC190 
+  $sql = "
+SELECT ordC100, vl_oper_c190, vL_oper_c170, round(vl_oper_c170 - vL_oper_c190, 2) AS dif ,
+  vl_frt, vl_seg, vl_out_da, 
+  cfops_c190, cfops_c170, CASE WHEN cfops_c190 <> cfops_c170 THEN 'S' ELSE 'N' END AS c_dif,
+  chv_nfe
+  FROM
+    (SELECT ordC100, 
+      sum(CASE WHEN orig = 'c190' THEN vl_oper ELSE 0 END) AS vl_oper_c190,
+      sum(CASE WHEN orig = 'c170' THEN vl_oper ELSE 0 END) AS vl_oper_c170,
+      group_concat(CASE WHEN orig = 'c190' THEN cfops ELSE '' END,'') AS cfops_c190,
+      group_concat(CASE WHEN orig = 'c170' THEN cfops ELSE '' END,'') AS cfops_c170
+      FROM 
+        (SELECT ordC100, 'c190' AS orig, group_concat(cfop) AS cfops, sum(vl_opr) AS vl_oper FROM 
+	  (SELECT ordC100, 'c190' AS orig, cfop, sum(vl_opr) AS vl_opr FROM c190 GROUP BY ordC100, cfop)
+	  GROUP BY ordC100
+        UNION ALL
+        SELECT ordC100, 'c170' AS orig, group_concat(cfop) AS cfops, sum(vl_oper) AS vl_oper FROM 
+	  (SELECT ordC100, 'c170' AS orig, cfop, sum(vl_item - vl_desc + vl_icms_st + vl_ipi) AS vl_oper FROM c170_total GROUP BY ordC100, cfop)
+	  GROUP BY ordC100)
+    GROUP BY ordC100)
+LEFT OUTER JOIN c100 ON c100.ord  = ordC100;
+";
+  $col_format = array(
+	"A:A" => "0",
+	"B:G" => "#.##0,00_ ;[Vermelho]-#.##0,00 "
+);
+    $cabec = array(
+	'OrdC100_C170' => "Número da Linha do Registro C100",
+	'vl_oper_c190' => "Valor da operação na combinação de CST_ICMS, CFOP e alíquota do ICMS, correspondente ao somatório do valor das mercadorias, despesas acessórias (frete, seguros e outras despesas acessórias), ICMS_ST  e IPI",
+	'vl_oper_c170' => "Os seguintes campos do C170: vl_item - vl_desc + vl_ipi + vl_icms_st",
+	'dif' => "Diferença entre os dois campos à esquerda",
+	'vl_frt_C100' => "Valor do Frete constante no C100",
+	'vl_seg_C100' => "Valor do Frete constante no C100",
+	'vl_out_da_C100' => "Valor do Frete constante no C100",
+	'cfops_c190' => "Lista de CFOPs que compões este C100, conforme C190",
+	'cfops_c170' => "Lista de CFOPs que compões este C100, conforme C170",
+	'c_dif' => "S caso haja diferença entre cfops de c190 e c170",
+	'chv_nfe' => "Chave de Acesso"
+);
+  $pr->abre_excel_sql('ConcC190xC170', 'Conciliação C190 x C170', $sql, $col_format, $cabec, $form_final);
+
+  $tabela = 'cfopd';
+  $sql = "SELECT * FROM {$tabela};";
+  $col_format = array(
+);
+  $cabec = $pr->auto_cabec($tabela);
+  $pr->abre_excel_sql(substr($tabela, 0, 15), $tabela, $sql, $col_format, $cabec, $form_final);
   
   $pr->finaliza_excel();
 }

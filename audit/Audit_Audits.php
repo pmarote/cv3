@@ -12,8 +12,9 @@ function audit_audits() {
 	2 => "Resumo Geral",
 	3 => "Conciliações",
 	4 => "Mapas",
-	5 => "Espelhos NFes, estilo Danfe (acima R$5.000,00)"
+	5 => "Espelhos NFes, estilo Danfe, valor mínimo:[GtkEntry]"
 );
+	$val_entry[5] = 5000;
 
 	$dialog = new GtkDialog('Opções', null, Gtk::DIALOG_MODAL);
 	$dialog->set_position(Gtk::WIN_POS_CENTER_ALWAYS);
@@ -27,10 +28,17 @@ function audit_audits() {
 
 	$chkbuttons = array();
 	foreach ($lista_tabelas as $indice => $valor) {
-		$chkbuttons[$indice] = new GtkCheckButton(str_replace('_', '__', $valor));
+		$chkbuttons[$indice] = new GtkCheckButton(str_replace('_', '__', str_replace('[GtkEntry]', '', $valor)));
 		$chkbuttons[$indice]->set_active(True);
-		$dialog->vbox->pack_start($chkbuttons[$indice], false, false, 3);
+		if (mb_strpos($valor, '[GtkEntry]') !== False) {
+          $hboxes[$indice] = new GtkHBox();
+          $entrys[$indice] = new GtkEntry($val_entry[$indice]);
+          $hboxes[$indice]->pack_start($chkbuttons[$indice], false, false, 0);
+          $hboxes[$indice]->pack_start($entrys[$indice], false, false, 0);
+          $dialog->vbox->pack_start($hboxes[$indice], false, false, 3);
+		} else $dialog->vbox->pack_start($chkbuttons[$indice], false, false, 3);
 	}
+
 	$dialog->add_button("Inverter Seleção", 100);
 	$dialog->add_button(Gtk::STOCK_CANCEL, Gtk::RESPONSE_CANCEL);
 	$dialog->add_button(Gtk::STOCK_OK, Gtk::RESPONSE_OK);
@@ -48,6 +56,7 @@ function audit_audits() {
 		$dialog->destroy();
 		return;
 	}
+  	$valor_min_danfe = $entrys[5]->get_text();
 	$dialog->destroy();
 
 	$restricao_data_modelo = "  ";
@@ -809,7 +818,7 @@ SELECT * FROM {$tabela};
 			$pr->finaliza_excel();
 
   if ($chkbuttons[5]->get_active()) {
-	  gera_espelhos_nfe(); // ver ao final deste arquivo php
+	  gera_espelhos_nfe($valor_min_danfe + 0); // ver ao final deste arquivo php
 
   }
 
@@ -817,11 +826,12 @@ SELECT * FROM {$tabela};
 
 
 
-function gera_espelhos_nfe() {
+function gera_espelhos_nfe($valor) {
 	
 	$pr2 = new Pr;	// classe principal, global
 
 	wecho("\n\nGerando Espelhos de NFes a partir das seguintes tabelas:\r\n");
+	wecho("Valor mínimo: {$valor}\r\n");
 	wecho("  dfe/nfe, dfe/nfe_danfe (dados NFe), audit/conc_dfe_res (correlacao) e audit/aud_modelo (dados RES)\r\n");
 	wecho("Obs: Velocidade Média nos notebooks Thinkpad da Sefaz: 100 por segundo.\n");
 	wecho("Os arquivos serão em formato .html e estarão dentro de /Resultados/DANFes\n");
@@ -862,7 +872,7 @@ SELECT nfe.*, nfe_danfe.*, conc_dfe_res.*
     FROM nfe
     LEFT OUTER JOIN nfe_danfe ON nfe_danfe.chav_ace = nfe.chav_ace
     LEFT OUTER JOIN conc_dfe_res ON conc_dfe_res.dfe_chav_ace = nfe.chav_ace
-    WHERE abs(conc_dfe_res.dfe_valcon) >= 5000
+    WHERE abs(conc_dfe_res.dfe_valcon) >= {$valor}
     ORDER BY nfe.chav_ace, nfe.nItem;
 ";
 	$result = $pr2->query_log($sql);
