@@ -15,8 +15,8 @@ reg	proc	nivel	descri	obrig	ocorr
 5060		2	Abertura da Ficha 1B	N	1
 5065		3	Movimentação de Itens da Ficha 1B	N	1:N
 5070		4	IPI e Outros Tributos na Entrada	N	01:01
-5080		2	Abertura da Ficha 1C	N	1
-5085		3	Movimentação de Itens da Ficha 1C	N	1:N
+5080	X	2	Abertura da Ficha 1C	N	1
+5085	X	3	Movimentação de Itens da Ficha 1C	N	1:N
 5090		4	Outros Tributos na Entrada	N	01:01
 5100		2	Abertura da Ficha 1D	N	1
 5105		3	Movimentação de Itens da Ficha 1D	N	1:N
@@ -51,7 +51,7 @@ reg	proc	nivel	descri	obrig	ocorr
 5350	X	4	Operações Não Geradoras de Crédito Acumulado – Ficha 6F	N	01:01
 5360	X	2	Abertura de Ficha 3B	N	Vários
 5365	X	3	Movimentação de Itens	N	1:N
-5370	X	4	IPI e Outros Tributos na Entrada	N	01:01
+5370		4	IPI e Outros Tributos na Entrada	N	01:01
 5375		4	Devolução de Saída	N	01:01
 5380	X	4	Operações Geradoras de Crédito Acumulado	N	01:01
 5385	X	5	Operações Geradoras Apuradas na Ficha 6A ou 6B	N	01:01
