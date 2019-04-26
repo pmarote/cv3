@@ -382,6 +382,56 @@ SELECT * FROM s150;
   $pr->abre_excel_sql("s150", "5150 - ABERTURA DE FICHA 2A", $sql, $col_format, $cabec, $form_final);
   
 
+$sql = "
+SELECT * FROM s085;
+";
+  $col_format = array(
+	"A:C" => "0",
+	"J:J" => "0",
+	"N:Q" => "#.##0,000000");
+  $cabec = array(
+	'Ord' => "Número da Linha do Registro s085",
+	'Ords080' => "Número da Linha do Registro s080",
+	'NUM_LANC' => "Número do Lançamento",
+	'DT_MOV' => "Data da movimentação",
+	'HIST' => "Histórico",
+	'TIP_DOC' => "Tipo do documento conforme a coluna Código Chave da tabela 4.2 ou Campo 02 do Registro 0400",
+	'SER' => "Série do documento",
+	'NUM_DOC' => "Número do documento",
+	'CFOP' => "CFOP da Operação",
+	'COD_PART' => "Código do participante conforme registro 0150.",
+	'COD_LANC' => "Código do lançamento, utilizar a tabela 6.1.
+Dígito Descrição
+1º Número do Módulo de Origem
+2º Letra da Ficha de Origem - Convertido em Número
+3º Número do Módulo de Destino
+4º Letra da Ficha de Destino - Convertido em Número
+5º Identificação do Lançamento
+6º Identificação do Lançamento",
+	'IND' => "Indicador do Movimento – preencher com:
+0 – Entrada
+1 - Saída.",
+	'COD_ITEM_OUTRA_TAB' => "Código do item controlado na ficha de origem ou destino conforme Registro 0200.",
+	'QUAN' => "Quantidade do item.",
+	'CUST_ENER' => "Custo do item",
+	'VL_ICMS' => "Valor do ICMS do item.",
+	'PERC_RATEIO' => "Percentual de rateio da Ficha 4A",
+);
+  $pr->abre_excel_sql("s085", "5085 - MOVIMENTAÇÃO DE ITENS DA FICHA 1C", $sql, $col_format, $cabec, $form_final);
+
+  
+  $sql = "
+SELECT * FROM s080;
+";
+  $col_format = array(
+	"A:A" => "0");
+  $cabec = array(
+	'Ord' => "Número da Linha do Registro s010",
+	'COD_ENERGIA' => "Código da Energia Elétrica conforme Registro 0200"
+);
+  $pr->abre_excel_sql("s080", "5080 - ABERTURA DE FICHA 1C", $sql, $col_format, $cabec, $form_final);
+  
+
   $sql = "
 SELECT * FROM s020;
 ";

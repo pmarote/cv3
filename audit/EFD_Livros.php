@@ -79,11 +79,12 @@ SELECT round(e110.ord / 10000000 - 0.49) AS mes, 'e110' AS tipo,
 
   // Planilha Comunic_D590_D500
   $sql = "
-SELECT  d590.*, d500.*, o150.*,
+SELECT  d590.*, d500.*, tab_munic.uf, tab_munic.munic, o150.*,
    round(d590.ord / 10000000 - 0.49) * 10000000 AS ordmin, round(d590.ord / 10000000 + 0.5) * 10000000 AS ordmax
    FROM d590
    LEFT OUTER JOIN d500 ON d500.ord = d590.ordD500
-   LEFT OUTER JOIN o150 ON o150.cod_part = d500.cod_part AND o150.ord > ordmin AND o150.ord < ordmax;
+   LEFT OUTER JOIN o150 ON o150.cod_part = d500.cod_part AND o150.ord > ordmin AND o150.ord < ordmax
+   LEFT OUTER JOIN tab_munic ON tab_munic.cod = o150.cod_mun;
 ";
   $col_format = array(
 	"A:B" => "0",
@@ -91,9 +92,9 @@ SELECT  d590.*, d500.*, o150.*,
 	"M:M" => "0",
 	"X:AE" => "#.##0,00",
 	"AG:AH" => "#.##0,00",
-	"AK:AK" => "0",
-	"AO:AQ" => "0",
-	"AX:AY" => "0"
+	"AM:AN" => "0",
+	"AQ:AS" => "0",
+	"AZ:BA" => "0"
 );
   $cabec = array(
 	'OrdD590' => "Número da Linha do Registro D590",
@@ -147,6 +148,8 @@ SELECT  d590.*, d500.*, o150.*,
 4 - Público
 5 - Semi-Público
 6 - Outros",
+	'uf' => "uf, conforme tabela de municípios, de acordo com cod_mun do 0150",
+	'munic' => "município, conforme tabela de municípios, de acordo com cod_mun do 0150",
 	'Ord0150' => "Número da Linha do Registro 0150",
 	'cod_part_0150' => "Código de identificação do participante no arquivo",
 	'nome' => "Nome pessoal ou empresarial do participante",
@@ -308,20 +311,21 @@ SELECT  c850.*, c800.ord,
   
   // Planilha RegSaidaC590_C500_0150
   $sql = "
-SELECT  c590.*, c500.*, o150.*,
+SELECT  c590.*, c500.*, tab_munic.uf, tab_munic.munic, o150.*,
    round(c590.ord / 10000000 - 0.49) * 10000000 AS ordmin, round(c590.ord / 10000000 + 0.5) * 10000000 AS ordmax
    FROM c590
    LEFT OUTER JOIN c500 ON c500.ord = c590.ordC500
-   LEFT OUTER JOIN o150 ON o150.cod_part = c500.cod_part AND o150.ord > ordmin AND o150.ord < ordmax;
+   LEFT OUTER JOIN o150 ON o150.cod_part = c500.cod_part AND o150.ord > ordmin AND o150.ord < ordmax
+   LEFT OUTER JOIN tab_munic ON tab_munic.cod = o150.cod_mun;
 ";
   $col_format = array(
 	"A:B" => "0",
 	"E:K" => "#.##0,00",
 	"M:M" => "0",
 	"Y:AK" => "#.##0,00",
-	"AN:AN" => "0",
-	"AR:AS" => "0",
-	"BA:BB" => "0"
+	"AP:AP" => "0",
+	"AT:AV" => "0",
+	"BC:BD" => "0"
 );
   $cabec = array(
 	'OrdC590' => "Número da Linha do Registro C590",
@@ -401,6 +405,8 @@ D´água – Tabela 4.4.2.",
 distribuição
 14 - B4b - Iluminação Pública - bulbo de
 lâmpada",
+	'uf' => "uf, conforme tabela de municípios, de acordo com cod_mun do 0150",
+	'munic' => "município, conforme tabela de municípios, de acordo com cod_mun do 0150",
 	'Ord0150' => "Número da Linha do Registro 0150",
 	'cod_part_0150' => "Código de identificação do participante no arquivo",
 	'nome' => "Nome pessoal ou empresarial do participante",
@@ -480,12 +486,14 @@ SELECT
 	  c100.vl_bc_icms, c100.vl_icms, c100.vl_bc_icms_st, c100.vl_icms_st, c100.vl_ipi,
 	  c100.vl_pis, c100.vl_cofins, c100.vl_pis_st, c100.vl_cofins_st, 
 	  c101.*,
+	  tab_munic.uf, tab_munic.munic,
 	  o150.*, 
 	  round(c190.ord / 10000000 - 0.49) * 10000000 AS ordmin, round(c190.ord / 10000000 + 0.5) * 10000000 AS ordmax
   FROM c190
   LEFT OUTER JOIN c100 ON c100.ord = c190.ordC100
   LEFT OUTER JOIN c101 ON c101.ordC100 = c100.ord
-  LEFT OUTER JOIN o150 ON o150.cod_part = c100.cod_part AND o150.ord > ordmin AND o150.ord < ordmax;
+  LEFT OUTER JOIN o150 ON o150.cod_part = c100.cod_part AND o150.ord > ordmin AND o150.ord < ordmax
+  LEFT OUTER JOIN tab_munic ON tab_munic.cod = o150.cod_mun;
 ";
   $col_format = array(
 	"A:B" => "0",
@@ -496,9 +504,9 @@ SELECT
 	"AC:AO" => "#.##0,00",
 	"AP:AQ" => "0",
 	"AR:AT" => "#.##0,00",
-	"AU:AV" => "0",
-	"AY:BA" => "0",
-	"BH:BI" => "0"
+	"AW:AX" => "0",
+	"BA:BC" => "0",
+	"BJ:BK" => "0"
 );
   $cabec = array(
 	'OrdC190' => "Número da Linha do Registro C190",
@@ -571,6 +579,8 @@ Indicador do tipo do frete:
 	'vl_fcp_uf_dest' => "valor total relativo ao fundo de combate à pobreza (fcp) da uf de destino",
 	'vl_icms_uf_dest' => "valor total do icms interestadual para a uf de destino",
 	'vl_icms_uf_rem' => "valor total do icms interestadual para a uf do remetente",
+	'uf' => "uf, conforme tabela de municípios, de acordo com cod_mun do 0150",
+	'munic' => "município, conforme tabela de municípios, de acordo com cod_mun do 0150",
 	'Ord0150' => "Número da Linha do Registro 0150",
 	'cod_part_0150' => "Código de identificação do participante no arquivo",
 	'nome' => "Nome pessoal ou empresarial do participante",

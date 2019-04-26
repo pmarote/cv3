@@ -146,6 +146,20 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	  val_ipi real, val_trib real)
 	');
 
+  // s080 - ABERTURA DE FICHA 1C
+	$db->query('CREATE TABLE s080 (
+	  ord int primary key,
+	  cod_energia)
+	');
+
+  // s085 - MOVIMENTAÇÃO DE ITENS
+	$db->query('CREATE TABLE s085 (
+	  ord int primary key, ords080 int,
+	  num_lanc int, dt_mov, hist, tip_doc int, ser, num_doc int, cfop int,
+	  cod_part text, cod_lanc int, ind int, cod_item, 
+	  quan real, cust_ener real, vl_icms real, perc_rateio real)
+	');
+
   // s150 - ABERTURA DE FICHA 2A
 	$db->query('CREATE TABLE s150 (
 	  ord int primary key,
@@ -278,6 +292,7 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	$ordo200 = 0;
 	$ords010 = 0;
 	$ords015 = 0;
+	$ords080 = 0;
 	$ords150 = 0;
 	$ords310 = 0;
 	$ords315 = 0;
@@ -420,6 +435,33 @@ EOD;
 		$insert_query = <<<EOD
 INSERT INTO s020 VALUES(
 '{$iord}', '{$ords015}', '{$campos[2]}', '{$campos[3]}'
+ )
+EOD;
+		$db->query($insert_query);
+	  }
+
+  	  if ($campos[1] == '5080') {
+		$insert_query = <<<EOD
+INSERT INTO s080 VALUES(
+'{$iord}', '{$campos[2]}'
+ )
+EOD;
+		$db->query($insert_query);
+		$ords080 = $iord;
+	  }
+
+	  if ($campos[1] == '5085') {
+	    $campos[3] = dtaSPED($campos[3]);
+		$campos[13] = str_replace(',','.',str_replace('.','',$campos[13]));
+		$campos[14] = str_replace(',','.',str_replace('.','',$campos[14]));
+		$campos[15] = str_replace(',','.',str_replace('.','',$campos[15]));
+		$campos[16] = str_replace(',','.',str_replace('.','',$campos[16]));
+		$insert_query = <<<EOD
+INSERT INTO s085 VALUES(
+'{$iord}',  '{$ords080}', '{$campos[2]}', '{$campos[3]}', '{$campos[4]}', '{$campos[5]}',
+'{$campos[6]}', '{$campos[7]}', '{$campos[8]}', '{$campos[9]}', '{$campos[10]}',
+'{$campos[11]}', '{$campos[12]}', '{$campos[13]}', '{$campos[14]}', '{$campos[15]}',
+'{$campos[16]}'
  )
 EOD;
 		$db->query($insert_query);

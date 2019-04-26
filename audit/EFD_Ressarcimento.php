@@ -66,7 +66,7 @@ SELECT c197.*,
 FROM c197
 LEFT OUTER JOIN c195 ON c195.ord = c197.ordC195
 LEFT OUTER JOIN o460 ON o460.cod_obs = c195.cod_obs  AND o460.ord > ordmin AND o460.ord < ordmax
-LEFT OUTER JOIN c100 ON c100.ord = c195.ordC100
+LEFT OUTER JOIN c100 ON c100.ord = c195.ordC190
 LEFT OUTER JOIN o150 ON o150.cod_part = c100.cod_part AND o150.ord > ordmin AND o150.ord < ordmax
 LEFT OUTER JOIN o200 ON o200.cod_item = c197.cod_item AND o200.ord > ordmin AND o200.ord < ordmax;
 ";
