@@ -17,7 +17,7 @@ function efd_dgca_simplif() {
   
   $lista_opcoes = array(
   0 => "Deleta e preenche novamente lasimca.db3 com dados de efd.db3",
-  1 => "Gera arquivo .txt a partir de lasimca.txt"
+  1 => "Gera arquivo .txt a partir de lasimca.db3"
 );
   //debug_log(print_r($lista_opcoes, True));
 
@@ -148,17 +148,18 @@ SELECT '', vvd_ca, vcp_ca, vvd_ca - vcp_ca AS resultado, (vvd_ca - vcp_ca) / vcp
 SELECT 
    CASE WHEN saidas = 0 THEN 'Nihil' ELSE
         CASE WHEN vl_red_bc > 0 THEN '2.x' ELSE
-             CASE WHEN cfop > 7000 THEN '3.1' ELSE
-	         CASE WHEN aliq_icms = 0 THEN '3.x' ELSE '1.x' END
+             CASE WHEN cfop > 7000 OR cfop BETWEEN 3201 AND 3299 OR cfop IN (5501, 5502, 6501, 6502) THEN '3.1' ELSE
+           CASE WHEN aliq_icms = 0 THEN '3.x' ELSE '1.x' END
              END
-	END
+  END
    END AS art71, * FROM
 (SELECT 
     aamm, cst_icms, aliq_icms, cfop, 
     sum(saidas) AS saidas, sum(entradas_valcon + entradas_bcicms) AS entradas,
     sum(entradas_valcon) AS entradas_valcon, sum(entradas_bcicms) AS entradas_bcicms, 
     sum(pmc_den) AS pmc_den, 
-    sum(vl_opr) AS vl_opr, sum(vl_red_bc) AS vl_red_bc, sum(vl_bc_icms) AS vl_bc_icms, sum(vl_icms) AS vl_icms, sum(vl_ipi) AS vl_ipi
+    sum(CASE WHEN cfop < 5000 THEN -vl_opr ELSE vl_opr END) AS vl_opr, sum(CASE WHEN cfop < 5000 THEN -vl_red_bc ELSE vl_red_bc END) AS vl_red_bc, 
+    sum(CASE WHEN cfop < 5000 THEN -vl_bc_icms ELSE vl_bc_icms END) AS vl_bc_icms, sum(CASE WHEN cfop < 5000 THEN -vl_icms ELSE vl_icms END) AS vl_icms, sum(CASE WHEN cfop < 5000 THEN -vl_ipi ELSE vl_ipi END) AS vl_ipi
     FROM dgca_analit
     GROUP BY aamm, cst_icms, aliq_icms, cfop) AS sel_tmp;
 ";
@@ -183,7 +184,7 @@ SELECT
 	'vl_icms' => "",
 	'vl_ipi' => ""
 );
-	$pr->abre_excel_sql('dgca_sintet', 'DGCa_sintética - Revise a primeira coluna e monte os DGCAs', $sql, $col_format, $cabec, $form_final);
+	$pr->abre_excel_sql('dgca_sintet', 'DGCa_sintética (até coluna K, resumo DGCa_analítico) - Revise a primeira coluna e monte os DGCAs - Colunas K em diante, CFOP < 5000, valores negativos', $sql, $col_format, $cabec, $form_final);
 
 	// Planilha dgca_analítica
 	$tabela = 'dgca_analit';
@@ -292,6 +293,20 @@ SELECT ord, '5330' AS reg,
     fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
 
     $sql = "
+SELECT ord, '5335' AS reg, 
+     num_decl_exp, comp_oper
+    FROM s335;
+";
+    fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
+
+    $sql = "
+SELECT ord, '5340' AS reg, 
+     data_doc_ind, num_doc_ind, ser_doc_ind, num_decl_exp_ind
+    FROM s340;
+";
+    fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
+
+    $sql = "
 SELECT ord, '5350' AS reg, 
      valor_bc, icms_deb, num_decl_exp_ind
     FROM s350;
@@ -378,9 +393,16 @@ function lasimca_do_efd() {
 
   $pr2->aud_abre_db_e_attach('efd,lasimca');
 
+//
+###################FORNECER AS VARIÁVEIS ABAIXO!!!!
+//
+  $o000_cnae = 2814301;
+  $s325_iva_utilizado = 0.8576;
+  $s325_per_med_icms = 12.0356;
+// Fim
+
   $pr2->aud_prepara("
 -- Criação das tabelas do lasimca
--- #########   FORNECER O CNAE para lasimca.o000
 -- Hipótese 0300 desc = 1, ou seja, Operações Interestaduais com alíquota 7%
 DROP TABLE IF EXISTS lasimca.dgca_final;
 CREATE TABLE lasimca.dgca_final AS
@@ -389,12 +411,32 @@ SELECT ord, dt_emissao, tip_doc, ser, num_doc, cod_part,
     avg(perc_crd_out) AS perc_crd_out, sum(valor_crd_out) AS valor_crd_out,
     cod_legal, avg(iva_utilizado) AS iva_utilizado, avg(per_med_icms) AS per_med_icms, sum(cred_est_icms) AS cred_est_icms
     FROM 
-      (SELECT c100.ord AS ord, c100.dt_doc AS dt_emissao, 31 AS tip_doc, c100.ser AS ser, c100.num_doc AS num_doc,  c100.cod_part AS cod_part, 
+      (SELECT dgca_analit.ord AS ord, c100.dt_doc AS dt_emissao, 31 AS tip_doc, c100.ser AS ser, c100.num_doc AS num_doc,  c100.cod_part AS cod_part, 
     dgca_analit.vl_opr AS valor_sai, dgca_analit.vl_bc_icms AS valor_bc, dgca_analit.aliq_icms AS aliq, dgca_analit.vl_icms AS icms_deb, 
     0 AS perc_crd_out, 0 AS valor_crd_out,
-    CASE WHEN dgca_analit.valcon_s = '+' AND dgca_analit.aliq_icms = 7 THEN 1 ELSE 0 END AS cod_legal, 
-    0.8400 AS iva_utilizado, 16.7440 AS per_med_icms,
-           round(dgca_analit.vl_opr / (1 + 0.8400) * 16.7440 / 100, 2) AS cred_est_icms
+    CASE WHEN saidas = 0 THEN 0 ELSE
+        CASE WHEN dgca_analit.vl_red_bc > 0 THEN 
+           CASE WHEN dgca_analit.aliq_icms = 12 THEN 5 ELSE
+               CASE WHEN dgca_analit.aliq_icms = 7 THEN 6 ELSE Null
+               END
+           END
+        ELSE
+            CASE WHEN dgca_analit.cfop > 7000 OR dgca_analit.cfop BETWEEN 3201 AND 3299 THEN 7 ELSE
+                CASE WHEN dgca_analit.cfop IN (5501, 5502, 6501, 6502) THEN 8 ELSE
+                    CASE WHEN dgca_analit.aliq_icms = 0 THEN 11 ELSE 
+                        CASE WHEN dgca_analit.aliq_icms = 7 THEN 1 ELSE 
+                            CASE WHEN dgca_analit.aliq_icms = 12 THEN 2 ELSE 
+                                CASE WHEN dgca_analit.aliq_icms = 4 THEN 3 ELSE Null
+                                END
+                            END
+                        END
+                   END
+                END
+            END
+        END
+    END AS cod_legal, 
+    {$s325_iva_utilizado} AS iva_utilizado, $s325_per_med_icms AS per_med_icms,
+           round(dgca_analit.vl_opr / (1 + {$s325_iva_utilizado}) * $s325_per_med_icms / 100, 2) AS cred_est_icms
           FROM dgca_analit
           LEFT OUTER JOIN  c190 ON c190.ord = dgca_analit.ord
           LEFT OUTER JOIN c100 ON c100.ord = c190.ordC100
@@ -404,7 +446,7 @@ GROUP BY ord, cod_legal;
 DELETE FROM lasimca.o000;
 INSERT INTO lasimca.o000
 SELECT ord, 'LASIMCA' AS lasimca, 1 AS cod_ver, 1 AS cod_fin, substr(dt_ini, 6, 2) || substr(dt_ini, 1, 4) AS periodo,
-    nome AS nome, cnpj AS cnpj, ie AS ie, 'CNAE' AS cnae, cod_mun AS cod_mun, ie AS ie_intima
+    nome AS nome, cnpj AS cnpj, ie AS ie, {$o000_cnae} AS cnae, cod_mun AS cod_mun, ie AS ie_intima
     FROM main.o000;
 DELETE FROM lasimca.o001;
 INSERT INTO lasimca.o001
@@ -418,10 +460,10 @@ SELECT ord, cod_part, nome, cod_pais, cnpj, ie, main.tab_munic.UF AS uf, '000000
 DELETE FROM lasimca.o300;
 INSERT INTO lasimca.o300 VALUES (Null, 1, 1, '', '71', 'I', '', '', '0', '', 'Operações Interestaduais com alíquota 7%');
 INSERT INTO lasimca.o300 VALUES (Null, 2, 2, '', '71', 'I', '', '', '0', '', 'Operações Interestaduais com alíquota 12%');
-INSERT INTO lasimca.o300 VALUES (Null, 3, 3, '', '71', 'I', '', '', '0', '', 'Operações Internas com alíquota 7%');
+INSERT INTO lasimca.o300 VALUES (Null, 3, 3, '', '71', 'I', '', '', '0', '', 'Operações Interestaduais com alíquota 4%');
 INSERT INTO lasimca.o300 VALUES (Null, 4, 4, '', '71', 'I', '', '', '0', '', 'Operações Internas');
-INSERT INTO lasimca.o300 VALUES (Null, 5, 5, '', '71', 'I', '', '', '0', '', 'Outras');
-INSERT INTO lasimca.o300 VALUES (Null, 6, 6, '', '71', 'II', '', '', '0', '', 'Redução de Base de Cálculo');
+INSERT INTO lasimca.o300 VALUES (Null, 5, 5, '', '71', 'II', '', '', '0', '', 'Redução de Base de Cálculo 12% para 8,8%');
+INSERT INTO lasimca.o300 VALUES (Null, 6, 6, '', '71', 'II', '', '', '0', '', 'Redução de Base de Cálculo 7% para 5,14%');
 INSERT INTO lasimca.o300 VALUES (Null, 7, 7, '', '71', 'III', '', '', '0', '', 'Saídas sem pagamento de Imposto - Exportação');
 INSERT INTO lasimca.o300 VALUES (Null, 8, 8, '', '71', 'III', '', '', '0', '', 'Saídas sem pagamento de Imposto - Exportação Indireta');
 INSERT INTO lasimca.o300 VALUES (Null, 9, 9, '', '71', 'III', '', '', '0', '', 'Saídas sem pagamento de Imposto - ZF Manaus');
@@ -448,12 +490,22 @@ DELETE FROM lasimca.s330;
 INSERT INTO lasimca.s330
 SELECT ord, ord, valor_bc, icms_deb
     FROM dgca_final
-    WHERE cod_legal > 0 AND (cred_est_icms - icms_deb) > 0;
+    WHERE cod_legal > 0 AND (cred_est_icms - icms_deb) > 0 AND icms_deb > 0;
+DELETE FROM lasimca.s335;
+INSERT INTO lasimca.s335
+SELECT ord, ord, Null, Null
+    FROM dgca_final
+    WHERE cod_legal IN (7, 9);
+DELETE FROM lasimca.s340;
+INSERT INTO lasimca.s340
+SELECT ord, ord, Null, Null, Null, Null
+    FROM dgca_final
+    WHERE cod_legal = 8;
 DELETE FROM lasimca.s350;
 INSERT INTO lasimca.s350
 SELECT ord, ord, valor_bc, icms_deb, Null AS num_decl_exp_ind
     FROM dgca_final
-    WHERE cod_legal = 0;
+    WHERE cod_legal = 0 OR cod_legal IS NULL OR (cred_est_icms - icms_deb) <= 0;
 DELETE FROM lasimca.s990;
 -- Será inserido s990 no final, junto com q900
 DELETE FROM lasimca.q001;
