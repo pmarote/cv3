@@ -6,7 +6,8 @@ require __DIR__ . '/../cv3.config.php';
 set_time_limit(0); // Desabilita o limite padrao de 60 segundos para processamento
 
 function versao() {
-	return "3.1.2 - 04/2019";
+	return "3.1.3 - 05/2019";
+// 3.1.3 - 05/2019 - Várias melhorias diversas, especialmente LASIMCA
 // 3.1.2 - 04/2019 - Leitura de XML e ECD
 // 3.1.1 - 03/2019 - Leitura de LASIMCA
 // 3.1.0 - 03/2019 - Combinei com todos meus softwares em /pn, habilitando para GitHub
