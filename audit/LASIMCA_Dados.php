@@ -480,13 +480,39 @@ SELECT aaaamm, '',  sum(qtd), '', '##N## Conferência: Qtd 5325 + Qtd 5350: (con
         UNION ALL
         SELECT '20' || substr(ord, 1, 4) AS aaaamm, count(*) AS qtd FROM s350)
 GROUP BY aaaamm;
+
 SELECT '';
-SELECT '', '', '', '', '##I##Abaixo, listagem constante em 9900';
+SELECT '', '', '', '', '##N##Abaixo, erros que o e-cred gera ocorrências';
+SELECT '', '', '', '', '##N##Verificar se o arquivo NÃO está em UTF-8';
+SELECT '20' || substr(ord, 1, 4), '0000', 'Valor->', cod_fin, '##N##Verificar se o campo cod_fin de 0000 está correto! 1-Normal 3-Substit' FROM o000;
+-- teste 0150 exportação que não estao com dados vazios
+-- Exemplo de registro correto: 0150|213001|SLEEVER INTERNATIONAL|02755||||||||||
+SELECT '', '', '', '', '##i##Listagem, se houver,0150 exportação que não estao com dados NÃO vazios:';
+SELECT aaaamm, '', count(cod_part) AS qtd, '', '##i##teste 0150 exportação que não estao com dados NÃO vazios  cod_parts-->', group_concat(cod_part, ', ') AS cod_parts FROM 
+    (SELECT '20' || substr(ord, 1, 4) AS aaaamm, cod_part FROM o150 
+        WHERE cod_pais <> 1058 AND 
+        (cnpj <> '' OR ie <> '' OR uf  <> '' OR cep  <> '' OR end  <> '' OR  num <> '' OR  compl  <> '' OR  bairro  <> '' OR  cod_mun  <> '' OR fone  <> '') )
+GROUP BY aaaamm;
+-- teste 0150 nacional duplicidade de combinação cnpj e ie
+SELECT '', '', '', '', '##i##Listagem, se houver, linhas de 0150 nacionais com duplicidade de combinação cnpj e ie:';
+SELECT '20' || substr(ord, 1, 4) AS aaaamm, '', count(cod_part) AS qtd, 'cod_parts-->', group_concat(cod_part, ', ') FROM o150 
+    WHERE cod_pais = 1058
+    GROUP BY aaaamm, cnpj, ie
+    HAVING qtd > 1;
+-- teste 5135 cod_part sem correspondente no 0150
+SELECT aaaamm, '', count(cod_part) AS qtd, '', '##i##cod_parts presentes em linhas de 5315 sem correspondência com linha de 0150-->', group_concat(cod_part, ', ') AS cod_parts FROM 
+    (SELECT '20' || substr(s315.ord, 1, 4) AS aaaamm, s315.cod_part AS cod_part
+        FROM s315
+        LEFT OUTER JOIN o150 ON o150.cod_part = s315.cod_part
+        WHERE o150.cod_part IS NULL
+	GROUP BY aaaamm, cod_part);
+SELECT '';
+SELECT '', '', '', '', '##i##Abaixo, listagem constante em 9900';
 SELECT '20' || substr(ord, 1, 4), reg_blc, qtd_reg_blc, '', 'Quantidade constante em 9900' FROM q900;
 SELECT '';
 SELECT 'aaaamm', 'valor_sai', 'valor_bc', 'icms_deb', '##I##DGCAs extraídos dos registros 5325 5315 5330', 'cred_est_icms', 'icms_gera';
 SELECT aaaamm, sum(valor_sai) AS valor_sai, sum(valor_bc) AS valor_bc, sum(icms_deb) AS icms_deb, 
-     cod_legal, 
+     '##i##' || cod_legal AS cod_legal, 
      sum(cred_est_icms) AS cred_est_icms, sum(icms_gera) AS icms_gera
      FROM
      (SELECT '20' || substr(s325.ord, 1, 4) AS aaaamm, 
@@ -499,7 +525,7 @@ SELECT aaaamm, sum(valor_sai) AS valor_sai, sum(valor_bc) AS valor_bc, sum(icms_
           LEFT OUTER JOIN s315 ON s315.ord = s325.Ords315
 	  LEFT OUTER JOIN o300 ON o300.cod_legal = s325.cod_legal AND o300.ord > ordmin AND o300.ord < ordmax
       UNION ALL
-      SELECT '20' || substr(s350.ord, 1, 4) AS aaaamm, 'Oper Nao Geradoras 5350-5315' AS cod_legal, Null AS cred_est_icms, Null AS icms_gera,
+      SELECT '20' || substr(s350.ord, 1, 4) AS aaaamm, 'Oper Não Geradoras 5350-5315' AS cod_legal, Null AS cred_est_icms, Null AS icms_gera,
           s315.valor_sai AS valor_sai,
           s350.valor_bc AS valor_bc, s350.icms_deb AS icms_deb, 
 	  round(s350.ord / 10000000 - 0.49) * 10000000 AS ordmin, round(s350.ord / 10000000 + 0.5) * 10000000 AS ordmax

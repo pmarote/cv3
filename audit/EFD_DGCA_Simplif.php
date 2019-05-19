@@ -292,12 +292,13 @@ SELECT ord, '5330' AS reg,
 ";
     fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
 
-    $sql = "
-SELECT ord, '5335' AS reg, 
-     num_decl_exp, comp_oper
-    FROM s335;
-";
-    fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
+// não fazer 5335 por enquanto - está dando pau nas ocorrencias
+//     $sql = "
+// SELECT ord, '5335' AS reg, 
+//      num_decl_exp, comp_oper
+//     FROM s335;
+// ";
+//     fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
 
     $sql = "
 SELECT ord, '5340' AS reg, 
@@ -451,12 +452,55 @@ SELECT ord, 'LASIMCA' AS lasimca, 1 AS cod_ver, 1 AS cod_fin, substr(dt_ini, 6, 
 DELETE FROM lasimca.o001;
 INSERT INTO lasimca.o001
 SELECT ord, 0 FROM main.o005;
+-- lasimca.o150 é baseado no efd.o150 da seguinte forma:
+--   a) Seleciona somente os cod_part necessários, ou seja, o que estao em dgca_final
+--   b) Atenção: em lasimca.o150 o campo cnpj é na verdade cnpj_cpf - o cpf estará com 14 dígitos, ou seja, três zeros 000 à esquerda
+--   c) Se o país for Brasil (cod_pais = 1058), não pode haver duplicidades de cod_part com mesmas combinações cnpj_cpf e ie
+--   d) Se o país não for Brasil (cod_pais <> 1058), não se preocupe com nada, porque todos os campos exceto cod_part, nome e cod_pais DEVEM ESTAR VAZIOS
+-- entao, não se esquecer, ao final, de converter a campo cod_part de 5315 com o código correto de lasimca.o150
+DROP TABLE IF EXISTS lasimca.o150tmp_a_b;
+CREATE TABLE lasimca.o150tmp_a_b AS
+SELECT cod_part, cod_pais, 
+    CASE WHEN cpf <> '' AND cpf > 0 THEN cpf ELSE cnpj END AS cnpj_cpf, ie
+    FROM main.o150
+    WHERE main.o150.cod_part  IN (SELECT DISTINCT cod_part FROM dgca_final);
+DROP TABLE IF EXISTS lasimca.o150tmp_c;
+CREATE TABLE lasimca.o150tmp_c AS
+SELECT cod_part, cod_pais, cnpj_cpf, ie
+    FROM lasimca.o150tmp_a_b
+    WHERE cod_pais = 1058
+    GROUP BY cnpj_cpf, ie;
+DROP TABLE IF EXISTS lasimca.o150efd_lasimca;
+CREATE TABLE lasimca.o150efd_lasimca AS
+SELECT lasimca.o150tmp_a_b.cod_part AS cod_part_efd, lasimca.o150tmp_c.cod_part AS cod_part_lasimca, 
+    lasimca.o150tmp_a_b.cod_pais AS cod_pais, o150tmp_a_b.cnpj_cpf AS cnpj_cpf, o150tmp_a_b.ie AS ie
+    FROM lasimca.o150tmp_a_b
+    LEFT OUTER JOIN lasimca.o150tmp_c ON lasimca.o150tmp_c.cnpj_cpf = lasimca.o150tmp_a_b.cnpj_cpf AND lasimca.o150tmp_c.ie = lasimca.o150tmp_a_b.ie
+    WHERE lasimca.o150tmp_a_b.cod_pais = 1058
+UNION ALL
+SELECT lasimca.o150tmp_a_b.cod_part AS cod_part_efd, lasimca.o150tmp_a_b.cod_part AS cod_part_lasimca, 
+    lasimca.o150tmp_a_b.cod_pais AS cod_pais, o150tmp_a_b.cnpj_cpf AS cnpj_cpf, o150tmp_a_b.ie AS ie
+    FROM lasimca.o150tmp_a_b
+    WHERE lasimca.o150tmp_a_b.cod_pais <> 1058;
 DELETE FROM lasimca.o150;
 INSERT INTO lasimca.o150
-SELECT ord, cod_part, nome, cod_pais, cnpj, ie, main.tab_munic.UF AS uf, '00000000' AS cep, end, num, compl, bairro, cod_mun, Null AS fone 
-     FROM main.o150
-     LEFT OUTER JOIN main.tab_munic ON main.tab_munic.cod = main.o150.cod_mun
-     WHERE main.o150.cod_part  IN (SELECT DISTINCT cod_part FROM dgca_final);
+SELECT ord, cod_part, nome, cod_pais, 
+    CASE WHEN cod_pais = 1058 THEN cnpj ELSE '' END AS cnpj, 
+    CASE WHEN cod_pais = 1058 THEN ie ELSE '' END AS  ie, 
+    CASE WHEN cod_pais = 1058 THEN uf ELSE '' END AS uf, 
+    CASE WHEN cod_pais = 1058 THEN cep ELSE '' END AS cep, 
+    CASE WHEN cod_pais = 1058 THEN end ELSE '' END AS end, 
+    CASE WHEN cod_pais = 1058 THEN num ELSE '' END AS num, 
+    CASE WHEN cod_pais = 1058 THEN compl ELSE '' END AS compl, 
+    CASE WHEN cod_pais = 1058 THEN bairro ELSE '' END AS bairro, 
+    CASE WHEN cod_pais = 1058 THEN cod_mun ELSE '' END AS cod_mun, 
+    CASE WHEN cod_pais = 1058 THEN fone ELSE '' END AS fone 
+   FROM 
+      (SELECT ord, cod_part, nome, cod_pais, CASE WHEN cpf <> '' AND cpf > 0 THEN cpf ELSE cnpj END AS cnpj, 
+            ie, main.tab_munic.UF AS uf, '00000000' AS cep, end, num, compl, bairro, cod_mun, Null AS fone 
+           FROM main.o150
+           LEFT OUTER JOIN main.tab_munic ON main.tab_munic.cod = main.o150.cod_mun
+           WHERE main.o150.cod_part  IN (SELECT DISTINCT cod_part_lasimca FROM lasimca.o150efd_lasimca));
 DELETE FROM lasimca.o300;
 INSERT INTO lasimca.o300 VALUES (Null, 1, 1, '', '71', 'I', '', '', '0', '', 'Operações Interestaduais com alíquota 7%');
 INSERT INTO lasimca.o300 VALUES (Null, 2, 2, '', '71', 'I', '', '', '0', '', 'Operações Interestaduais com alíquota 12%');
@@ -478,7 +522,10 @@ INSERT INTO lasimca.s001
 SELECT Null AS ord, 0;
 DELETE FROM lasimca.s315;
 INSERT INTO lasimca.s315
-SELECT ord, dt_emissao, tip_doc, ser, num_doc, cod_part, valor_sai, perc_crd_out, valor_crd_out FROM dgca_final;
+SELECT dgca_final.ord, dgca_final.dt_emissao, dgca_final.tip_doc, dgca_final.ser, dgca_final.num_doc, 
+    o150efd_lasimca.cod_part_lasimca AS cod_part, dgca_final.valor_sai, dgca_final.perc_crd_out, dgca_final.valor_crd_out 
+    FROM dgca_final
+    LEFT OUTER JOIN lasimca.o150efd_lasimca ON lasimca.o150efd_lasimca.cod_part_efd = dgca_final.cod_part;
 DELETE FROM lasimca.s320;
 --- INSERT INTO lasimca.s320 ... Não fazer devolução por enquanto
 DELETE FROM lasimca.s325;
@@ -491,11 +538,12 @@ INSERT INTO lasimca.s330
 SELECT ord, ord, valor_bc, icms_deb
     FROM dgca_final
     WHERE cod_legal > 0 AND (cred_est_icms - icms_deb) > 0 AND icms_deb > 0;
-DELETE FROM lasimca.s335;
-INSERT INTO lasimca.s335
-SELECT ord, ord, Null, Null
-    FROM dgca_final
-    WHERE cod_legal IN (7, 9);
+-- Vou fazer por enquanto sem 5335 está dando pau nas ocorrencias
+-- DELETE FROM lasimca.s335;
+-- INSERT INTO lasimca.s335
+-- SELECT ord, ord, Null, Null
+--     FROM dgca_final
+--     WHERE cod_legal IN (7, 9);
 DELETE FROM lasimca.s340;
 INSERT INTO lasimca.s340
 SELECT ord, ord, Null, Null, Null, Null
@@ -535,8 +583,8 @@ SELECT Null AS ord, reg_blc, qtd AS qtd_lin_0 FROM
     UNION ALL
     SELECT '5330' AS reg_blc, count(*) AS qtd FROM lasimca.s330
     UNION ALL
-    SELECT '5335' AS reg_blc, count(*) AS qtd FROM lasimca.s335
-    UNION ALL
+--    SELECT '5335' AS reg_blc, count(*) AS qtd FROM lasimca.s335
+--    UNION ALL
     SELECT '5340' AS reg_blc, count(*) AS qtd FROM lasimca.s340
     UNION ALL
     SELECT '5350' AS reg_blc, count(*) AS qtd FROM lasimca.s350
