@@ -835,6 +835,7 @@ function gera_espelhos_nfe($valor) {
 	wecho("  dfe/nfe, dfe/nfe_danfe (dados NFe), audit/conc_dfe_res (correlacao) e audit/aud_modelo (dados RES)\r\n");
 	wecho("Obs: Velocidade Média nos notebooks Thinkpad da Sefaz: 100 por segundo.\n");
 	wecho("Os arquivos serão em formato .html e estarão dentro de /Resultados/DANFes\n");
+	wecho("\nPara não entupir tudo, só são geradas 25.000 itens de DANFes no máximo, por isso, ajuste o valor mínimo de acordo.\n\n");
 	$tempo_inicio = time();
 
 	do {
@@ -881,7 +882,7 @@ SELECT nfe.*, nfe_danfe.*, conc_dfe_res.*
 	$chav_ace = -1;
 	$nomarqhtml = "arquivo_com_erro_no_nome.html";
 	while ($linha = $result->fetchArray(SQLITE3_ASSOC)) {
-		if ($i_qtd++ > 10000) break;
+		if ($i_qtd++ > 25000) break;
 		//debug_log("#{$linha['chav_ace']}#a");
 		if ($linha['chav_ace'] != $chav_ace)	{
 			//debug_log("b");
@@ -897,7 +898,7 @@ SELECT nfe.*, nfe_danfe.*, conc_dfe_res.*
 			$html = gera_nfe_html_inicio($linha, $nome_emp);
 		}
 		$html .= gera_nfe_html_item($linha);
-		if ($i_qtd == 1000) wecho("...Processados {$i_qtd} Registros...");
+		if (($i_qtd % 1000) == 0) wecho("...Processados {$i_qtd} Registros...");
 	}
 	// salva o anterior, se não for o primeiro
 	if ( $chav_ace != -1) {
@@ -905,7 +906,7 @@ SELECT nfe.*, nfe_danfe.*, conc_dfe_res.*
 		if (!file_put_contents($nomarqhtml, $html)) werro_die("erro ao salvar a página {$linha['chav_ace']}.html ..");
 	}
 	
-	wecho("\nFinalizado: Gerados {$i_qtd} DANFes em ");
+	wecho("\nFinalizado: Gerados {$i_qtd} itens de DANFes em ");
 	wecho((time() - $tempo_inicio) . " segundos\r\n");
 
 }

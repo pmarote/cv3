@@ -292,13 +292,12 @@ SELECT ord, '5330' AS reg,
 ";
     fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
 
-// não fazer 5335 por enquanto - está dando pau nas ocorrencias
-//     $sql = "
-// SELECT ord, '5335' AS reg, 
-//      num_decl_exp, comp_oper
-//     FROM s335;
-// ";
-//     fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
+    $sql = "
+SELECT ord, '5335' AS reg, 
+     num_decl_exp, comp_oper
+    FROM s335;
+";
+    fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
 
     $sql = "
 SELECT ord, '5340' AS reg, 
@@ -400,13 +399,25 @@ function lasimca_do_efd() {
   $o000_cnae = 2814301;
   $s325_iva_utilizado = 0.8576;
   $s325_per_med_icms = 12.0356;
+  $cod_fin = 3;
 // Fim
 
   $pr2->aud_prepara("
 -- Criação das tabelas do lasimca
--- Hipótese 0300 desc = 1, ou seja, Operações Interestaduais com alíquota 7%
-DROP TABLE IF EXISTS lasimca.dgca_final;
-CREATE TABLE lasimca.dgca_final AS
+-- Primeiro será criada lasimca.dgca_semifinal, com todas as hipóteses possíveis
+-- As hipóteses automáticas (campo cod_legal) atualmente são:
+--    cod_legal = 0 ? Não geradora porque campo saidas = 0
+--    cod_legal = Null ? campo saidas <> 0 mas não sei classificar, ou alíquota de 18%
+--    Hipótese 0300 desc = 1, Operações Interestaduais com alíquota 7%
+--    Hipótese 0300 desc = 2, Operações Interestaduais com alíquota 12%
+--    Hipótese 0300 desc = 3, Operações Interestaduais com alíquota 4%
+--    Hipótese 0300 desc = 5, Redução de Base de Cálculo e alíquota nominal de 12%
+--    Hipótese 0300 desc = 6, Redução de Base de Cálculo e alíquota nominal de 7%
+--    Hipótese 0300 desc = 7, Saídas sem pagamento de Imposto - Exportação
+--    Hipótese 0300 desc = 8, Saídas sem pagamento de Imposto - Exportação Indireta
+--    Hipótese 0300 desc= 11, Saídas sem pagamento de Imposto - Isenção
+DROP TABLE IF EXISTS lasimca.dgca_semifinal;
+CREATE TABLE lasimca.dgca_semifinal AS
 SELECT ord, dt_emissao, tip_doc, ser, num_doc, cod_part,
     sum(valor_sai) AS valor_sai, sum(valor_bc) AS valor_bc, avg(aliq) AS aliq, sum(icms_deb) AS icms_deb,
     avg(perc_crd_out) AS perc_crd_out, sum(valor_crd_out) AS valor_crd_out,
@@ -436,17 +447,39 @@ SELECT ord, dt_emissao, tip_doc, ser, num_doc, cod_part,
             END
         END
     END AS cod_legal, 
-    {$s325_iva_utilizado} AS iva_utilizado, $s325_per_med_icms AS per_med_icms,
-           round(dgca_analit.vl_opr / (1 + {$s325_iva_utilizado}) * $s325_per_med_icms / 100, 2) AS cred_est_icms
+    {$s325_iva_utilizado} AS iva_utilizado, {$s325_per_med_icms} AS per_med_icms,
+           round(dgca_analit.vl_opr / (1 + {$s325_iva_utilizado}) * {$s325_per_med_icms} / 100, 2) AS cred_est_icms
           FROM dgca_analit
           LEFT OUTER JOIN  c190 ON c190.ord = dgca_analit.ord
           LEFT OUTER JOIN c100 ON c100.ord = c190.ordC100
           WHERE c190.cfop > 5000
           ORDER BY dt_emissao)
 GROUP BY ord, cod_legal;
+-- Agora é necessário descobrir, afinal, quais as hipóteses cod_legal que dão crédito Acumulado, ou seja,
+-- aqueles em que na somatória de (cred_est_icms - icms_deb) são positivos
+-- Tudo o que não der, será transformado para não gerador (cod_legal = 0)
+DROP TABLE IF EXISTS lasimca.hip_cred_acum;
+CREATE TABLE lasimca.hip_cred_acum AS
+SELECT cod_legal FROM 
+    (SELECT cod_legal, sum(icms_deb), sum(cred_est_icms),  sum(cred_acum) AS cred_acum FROM 
+        (SELECT cod_legal, icms_deb, cred_est_icms, cred_est_icms - icms_deb AS cred_acum
+            FROM dgca_semifinal WHERE cod_legal <> 0)
+    GROUP BY cod_legal
+    HAVING cred_acum > 0);
+-- o dgca_final é o dgca_semifinal agrupado por Data da Emissão do Documento Fiscal, Tipo, Série, Número do Documento e Hipótese de Geração, porque não podem estar duplicados no arquivo
+-- aqui cod_legal = 0 será para qualquer hipótese não geradora de crédito acumulado!
+DROP TABLE IF EXISTS lasimca.dgca_final;
+CREATE TABLE lasimca.dgca_final AS
+SELECT ord, dt_emissao, tip_doc, ser, num_doc, cod_part, sum(valor_sai) AS valor_sai, sum(valor_bc) AS valor_bc, aliq, sum(icms_deb) AS icms_deb, perc_crd_out, sum(valor_crd_out) AS valor_crd_out, cod_legal, iva_utilizado, per_med_icms, sum(cred_est_icms) AS cred_est_icms
+    FROM 
+    (SELECT  ord, dt_emissao, tip_doc, ser, num_doc, cod_part, valor_sai, valor_bc, aliq, icms_deb, perc_crd_out, valor_crd_out, 
+        CASE WHEN hip_cred_acum.cod_legal IS Null THEN 0 ELSE hip_cred_acum.cod_legal END AS cod_legal, iva_utilizado, per_med_icms, cred_est_icms 
+        FROM dgca_semifinal
+        LEFT OUTER JOIN hip_cred_acum ON hip_cred_acum.cod_legal = dgca_semifinal.cod_legal)
+GROUP BY dt_emissao, tip_doc, ser, num_doc, cod_legal;
 DELETE FROM lasimca.o000;
 INSERT INTO lasimca.o000
-SELECT ord, 'LASIMCA' AS lasimca, 1 AS cod_ver, 1 AS cod_fin, substr(dt_ini, 6, 2) || substr(dt_ini, 1, 4) AS periodo,
+SELECT ord, 'LASIMCA' AS lasimca, 1 AS cod_ver, {$cod_fin} AS cod_fin, substr(dt_ini, 6, 2) || substr(dt_ini, 1, 4) AS periodo,
     nome AS nome, cnpj AS cnpj, ie AS ie, {$o000_cnae} AS cnae, cod_mun AS cod_mun, ie AS ie_intima
     FROM main.o000;
 DELETE FROM lasimca.o001;
@@ -532,18 +565,17 @@ DELETE FROM lasimca.s325;
 INSERT INTO lasimca.s325
 SELECT ord, ord, cod_legal, iva_utilizado, per_med_icms, cred_est_icms, (cred_est_icms - icms_deb) AS icms_gera 
     FROM dgca_final
-    WHERE cod_legal > 0 AND (cred_est_icms - icms_deb) > 0;
+    WHERE cod_legal > 0;
 DELETE FROM lasimca.s330;
 INSERT INTO lasimca.s330
 SELECT ord, ord, valor_bc, icms_deb
     FROM dgca_final
-    WHERE cod_legal > 0 AND (cred_est_icms - icms_deb) > 0 AND icms_deb > 0;
--- Vou fazer por enquanto sem 5335 está dando pau nas ocorrencias
--- DELETE FROM lasimca.s335;
--- INSERT INTO lasimca.s335
--- SELECT ord, ord, Null, Null
---     FROM dgca_final
---     WHERE cod_legal IN (7, 9);
+    WHERE cod_legal > 0 AND icms_deb > 0;
+DELETE FROM lasimca.s335;
+INSERT INTO lasimca.s335
+SELECT ord, ord, Null, Null
+    FROM dgca_final
+    WHERE cod_legal IN (7, 9);
 DELETE FROM lasimca.s340;
 INSERT INTO lasimca.s340
 SELECT ord, ord, Null, Null, Null, Null
@@ -553,7 +585,7 @@ DELETE FROM lasimca.s350;
 INSERT INTO lasimca.s350
 SELECT ord, ord, valor_bc, icms_deb, Null AS num_decl_exp_ind
     FROM dgca_final
-    WHERE cod_legal = 0 OR cod_legal IS NULL OR (cred_est_icms - icms_deb) <= 0;
+    WHERE cod_legal = 0;
 DELETE FROM lasimca.s990;
 -- Será inserido s990 no final, junto com q900
 DELETE FROM lasimca.q001;
@@ -583,8 +615,8 @@ SELECT Null AS ord, reg_blc, qtd AS qtd_lin_0 FROM
     UNION ALL
     SELECT '5330' AS reg_blc, count(*) AS qtd FROM lasimca.s330
     UNION ALL
---    SELECT '5335' AS reg_blc, count(*) AS qtd FROM lasimca.s335
---    UNION ALL
+    SELECT '5335' AS reg_blc, count(*) AS qtd FROM lasimca.s335
+    UNION ALL
     SELECT '5340' AS reg_blc, count(*) AS qtd FROM lasimca.s340
     UNION ALL
     SELECT '5350' AS reg_blc, count(*) AS qtd FROM lasimca.s350

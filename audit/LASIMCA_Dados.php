@@ -506,6 +506,21 @@ SELECT aaaamm, '', count(cod_part) AS qtd, '', '##i##cod_parts presentes em linh
         LEFT OUTER JOIN o150 ON o150.cod_part = s315.cod_part
         WHERE o150.cod_part IS NULL
 	GROUP BY aaaamm, cod_part);
+SELECT '', '', '', '', '##i##Listagem, se houver,dt_emissao, tip_doc, ser, num_doc e Hipótese de Geração duplicados:';
+SELECT aaaamm, '5315', qtd, '', 'Duplicou em: ' || dt_emissao || ' - ' || tip_doc || ' - ' || ser || ' - ' || num_doc || ' - ' || cod_legal || ' Linhas: ' || ords FROM
+    (SELECT aaaamm, group_concat(ord, ', ') AS ords, dt_emissao, tip_doc, ser, num_doc, cod_legal, count(num_doc) AS qtd
+         FROM
+         (SELECT '20' || substr(s315.ord, 1, 4) AS aaaamm, substr(s315.ord, 5, 7) + 0 AS ord, s315.dt_emissao, s315.tip_doc, s315.ser, s315.num_doc, 
+              s325.cod_legal AS cod_legal
+              FROM s325
+              LEFT OUTER JOIN s330 ON s330.Ords325 = s325.ord
+              LEFT OUTER JOIN s315 ON s315.ord = s325.Ords315
+          UNION ALL
+          SELECT  '20' || substr(s315.ord, 1, 4) AS aaaamm, substr(s315.ord, 5, 7) + 0 AS ord, s315.dt_emissao, s315.tip_doc, s315.ser, s315.num_doc, 0 AS cod_legal
+    	  FROM s350
+              LEFT OUTER JOIN s315 ON s315.ord = s350.Ords315)
+        GROUP BY aaaamm, dt_emissao, tip_doc, ser, num_doc, cod_legal
+        HAVING qtd > 1);
 SELECT '';
 SELECT '', '', '', '', '##i##Abaixo, listagem constante em 9900';
 SELECT '20' || substr(ord, 1, 4), reg_blc, qtd_reg_blc, '', 'Quantidade constante em 9900' FROM q900;
