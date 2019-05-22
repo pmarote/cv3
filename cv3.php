@@ -156,6 +156,7 @@ $btnDB3s	= new GtkButton('_Db3s e Tmp');
 $btnModelos	= new GtkButton('_Modelos');
 $btnFontes	= new GtkButton('_Fontes');
 $btnResult	= new GtkButton('_Resultados');
+$btnAbExcel  = new GtkButton('Abrir E_xcel');
 $btnAjuda	= new GtkButton('_Ajuda');
 $btnOptions	= new GtkButton('_Opções');
 //Add the buttons to a button box
@@ -165,6 +166,7 @@ $bbox->set_spacing(2);
 $bbox->add($btnAjuda);
 $bbox->add($btnFontes);
 $bbox->add($btnResult);
+$bbox->add($btnAbExcel);
 $bbox->add($btnDB3s);
 $bbox->add($btnModelos);
 $bbox->add($btnOptions);
@@ -176,6 +178,7 @@ $btnOk->connect_simple('clicked', 'clickok', $wnd);
 $btnAjuda->connect_simple('clicked', 'clickAjuda', $wnd);
 $btnFontes->connect_simple('clicked', 'clickFontes', $wnd);
 $btnResult->connect_simple('clicked', 'clickResult', $wnd);
+$btnAbExcel->connect_simple('clicked', 'clickAbExcel', $wnd);
 $btnDB3s->connect_simple('clicked', 'clickDb3_Tmp', $wnd);
 $btnModelos->connect_simple('clicked', 'clickModelos', $wnd);
 $btnOptions->connect_simple('clicked', 'clickOptions', $wnd);
@@ -392,6 +395,34 @@ function clickResult(GtkWindow $wnd) {
     $shell = new COM('WScript.Shell');
     $shell->Run('explorer "' . str_replace('/', '\\', PR_RESULTADOS) . '"');
     unset($shell);
+}
+
+function clickAbExcel(GtkWindow $wnd) {
+    $fh = opendir(PR_RESULTADOS);
+    $ftime = 0;
+    $excel_file = '';
+    while (($file = readdir($fh)) !== false) {
+      # loop through the files
+      if (mb_substr($file, -5) == '.xlsx') {
+        $iaux = filemtime(PR_RESULTADOS . '/' . $file);
+        if ($iaux > $ftime) {
+          $ftime = $iaux;
+          $excel_file = $file;
+        }
+      }
+    }
+    closedir($fh);
+    if ($excel_file <> '') {
+      wecho("\nAbrindo o mais novo arquivo excel criado em Resultados...\n\n");
+      $shell = new COM('WScript.Shell');
+      $shell->Run('excel "' . str_replace('/', '\\', PR_RESULTADOS . '/' . $excel_file) . '"');
+      unset($shell);
+    } else {
+      wecho("\nAbrindo excel vazio porque não há nenhum criado em Resultados...\n\n");
+      $shell = new COM('WScript.Shell');
+      $shell->Run('excel');
+      unset($shell);
+    }
 }
 
 function clickDb3_Tmp(GtkWindow $wnd) {
