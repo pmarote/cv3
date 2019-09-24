@@ -555,6 +555,12 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	  cod_aj_apur, descr_compl_aj, vl_aj_apur real)
 	');
   
+	// E112 - INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO ICMS
+	$db->query('CREATE TABLE E112 (
+	  ord int primary key, ordE111 int,
+	  num_da text, num_proc text, ind_proc text, proc text, txt_compl text)
+	');
+  
 	// E113 - INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO ICMS – IDENTIFICAÇÃO DOS DOCUMENTOS FISCAIS
 	$db->query('CREATE TABLE E113 (
 	  ord int primary key, ordE111 int,
@@ -669,6 +675,18 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	  cod_item, unid, qtd real, vl_unit real, vl_item real, ind_prop, cod_part, txt_compl, cod_cta, vl_item_ir)
 	');
   
+	// K100
+	$db->query('CREATE TABLE K100 (
+	  ord int primary key, 
+	  dt_inv, dt_fin)
+	');
+  
+	// K200
+	$db->query('CREATE TABLE K200 (
+	  ord int primary key, ordK100 int,
+	  dt_est, cod_item, qtd real, ind_est, cod_part)
+	');
+  
   } else {
 	if ($db = new SQLite3(PR_TMP . "/{$nomarq}.db3")) {
 	} else {
@@ -720,6 +738,7 @@ CREATE TABLE tab_munic (cod int primary key, uf text, munic text);
 	$ordG125 = 0;
 	$ordG130 = 0;
 	$ordH005 = 0;
+	$ordK100 = 0;
 	$aaaamm = '';
 	$db->query('BEGIN;'); // Conforme faq do Sqlite, acelera Insert (questao 19)
 
@@ -1737,6 +1756,16 @@ EOD;
 		$ordE111 = $iord;
 	  }
  
+	  if ($campos[1] == 'E112') {
+		$insert_query = <<<EOD
+INSERT INTO E112 VALUES(
+'{$iord}', '{$ordE111}', '{$campos[2]}', '{$campos[3]}', '{$campos[4]}',
+'{$campos[5]}', '{$campos[6]}'
+ )
+EOD;
+		$db->query($insert_query);
+	  }
+ 
 	  if ($campos[1] == 'E113') {
 	    $campos[7] = dtaSPED($campos[7]);
 		$campos[9] = str_replace(',','.',str_replace('.','',$campos[9]));
@@ -1986,6 +2015,7 @@ EOD;
 		$db->query($insert_query);
 	  }
 
+
 	  if ($campos[1] == 'H005') {
 	    $campos[2] = dtaSPED($campos[2]);
 		$campos[3] = str_replace(',','.',str_replace('.','',$campos[3]));
@@ -2009,6 +2039,30 @@ INSERT INTO H010 VALUES(
 '{$iord}', '{$ordH005}', '{$campos[2]}', '{$campos[3]}', '{$campos[4]}',
 '{$campos[5]}', '{$campos[6]}', '{$campos[7]}', '{$campos[8]}',
 '{$campos[9]}', '{$campos[10]}', '{$campos[11]}'
+ )
+EOD;
+		$db->query($insert_query);
+	  }
+
+	  if ($campos[1] == 'K100') {
+	    $campos[2] = dtaSPED($campos[2]);
+	    $campos[3] = dtaSPED($campos[3]);
+		$insert_query = <<<EOD
+INSERT INTO K100 VALUES(
+'{$iord}', '{$campos[2]}', '{$campos[3]}'
+ )
+EOD;
+		$db->query($insert_query);
+		$ordK100 = $iord;
+	  }
+
+	  if ($campos[1] == 'K200') {
+	    $campos[2] = dtaSPED($campos[2]);
+		$campos[4] = str_replace(',','.',str_replace('.','',$campos[4]));
+		$insert_query = <<<EOD
+INSERT INTO K200 VALUES(
+'{$iord}', '{$ordK100}', '{$campos[2]}', '{$campos[3]}', '{$campos[4]}',
+'{$campos[5]}', '{$campos[6]}'
  )
 EOD;
 		$db->query($insert_query);
