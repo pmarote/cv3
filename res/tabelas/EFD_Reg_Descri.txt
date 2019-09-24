@@ -10,6 +10,7 @@ reg	proc	nivel	descri
 0200	X	2	Tabela de Identificação do Item (Produtos e Serviços)
 0205	X	3	Alteração do Item
 0206	X	3	Código de produto conforme Tabela ANP (Combustíveis)
+0210		3	Consumo Específico Padronizado
 0220	X	3	Fatores de Conversão de Unidades
 0300	X	2	Cadastro de bens ou componentes do Ativo Imobilizado
 0305	X	3	Informação sobre a Utilização do Bem
@@ -82,6 +83,7 @@ C177		4	Complemento de Item - Operações com Produtos Sujeitos a Selo de Contro
 C178		4	Complemento de Item - Operações com Produtos Sujeitos a Tributação de IPI por Unidade ou Quantidade de produto
 C179		4	Complemento de Item - Informações Complementares ST (código 01)
 C190	X	3	Registro Analítico do Documento (código 01, 1B, 04 e 55)
+C191		4	Informações do Fundo de Combate à Pobreza – FCP – na NF-e (Código 55)
 C195	X	3	Complemento do Registro Analítico - Observações do Lançamento Fiscal (código 01, 1B e 55)
 C197	X	4	Outras Obrigações Tributárias, Ajustes e Informações provenientes de Documento Fiscal
 C300		2	Documento - Resumo Diário das Notas Fiscais de Venda a Consumidor (código 02)
@@ -97,6 +99,7 @@ C410	X	4	PIS e COFINS Totalizados no Dia (código 02 e 2D)
 C420	X	4	Registro dos Totalizadores Parciais da Redução Z (código 02 e 2D)
 C425		5	Resumo de itens do movimento diário (código 02 e 2D)
 C460	X	4	Documento Fiscal Emitido por ECF (código 02 e 2D)
+C465		5	Complemento do Cupom Fiscal Eletrônico Emitido por ECF - CF-e-ECF (código 60)
 C470	X	5	Itens do Documento Fiscal Emitido por ECF (código 02 e 2D)
 C490	X	4	Registro Analítico do movimento diário (código 02 e 2D)
 C495		2	Resumo Mensal de Itens do ECF por Estabelecimento (código 02 e 2D e 2E)
@@ -117,6 +120,7 @@ C890	X	3	Resumo diário de CF-e (Código 59) por equipamento SAT-CF-e
 C990		1	Encerramento do Bloco C (Documentos Fiscais I  - Mercadorias (ICMS/IPI))
 D001		1	Abertura do Bloco D (Documentos Fiscais II - Serviços (ICMS))
 D100	X	2	Nota Fiscal de Serviço de Transporte (código 07) e Conhecimentos de Transporte Rodoviário de Cargas (código 08), Conhecimento de Transporte de Cargas Avulso (Código 8B), Aquaviário de Cargas (código 09), Aéreo (código 10), Ferroviário de Cargas (código 11) e Multimodal de Cargas (código 26) e Nota Fiscal de Transporte Ferroviário de Cargas(código 27) e Conhecimento de Transporte Eletrônico - CT-e (código 57).
+D101		3	Informação complementar dos documentos fiscais quando das prestações interestaduais destinadas a consumidor final não contribuinte EC 87/15 (código 57 e 67)
 D110	X	3	Itens do documento - Nota Fiscal de Serviços de Transporte (código 07)
 D120	X	4	Complemento da Nota Fiscal de Serviços de Transporte (código 07)
 D130		3	Complemento do Conhecimento Rodoviário de Cargas (código 08) e Conhecimento de Transporte de Cargas Avulso (Código 8B)
@@ -158,7 +162,7 @@ E001		1	Abertura do Bloco E (Apuração do ICMS e do IPI)
 E100	X	2	Período de Apuração do ICMS
 E110	X	3	Apuração do ICMS - Operações Próprias
 E111	X	4	Ajuste/Benefício/Incentivo da Apuração do ICMS
-E112		5	Informações Adicionais dos Ajustes da Apuração do ICMS
+E112	X	5	Informações Adicionais dos Ajustes da Apuração do ICMS
 E113	X	5	Informações Adicionais dos Ajustes da Apuração do ICMS - Identificação dos documentos fiscais
 E115		4	Informações Adicionais da Apuração do ICMS - Valores Declaratórios
 E116	X	4	Obrigações do ICMS a Recolher - Obrigações Próprias
@@ -191,3 +195,19 @@ H005	X	2	Totais do Inventário
 H010	X	3	Inventário
 H020		4	Informação complementar do Inventário
 H990		1	Encerramento do Bloco H (Inventário Físico)
+K001		1	Abertura do Bloco K
+K100	X	2	Período de Apuração do ICMS/IPI
+K200	X	3	Estoque Escriturado
+K210		3	Desmontagem de mercadorias – Item de Origem
+K215		4	Desmontagem de mercadorias – Item de Destino
+K220		3	Outras Movimentações Internas entre Mercadorias
+K230		3	Itens Produzidos
+K235		4	Insumos Consumidos
+K250		3	Industrialização Efetuada por Terceiros – Itens Produzidos
+K255		4	Industrialização em Terceiros – Insumos Consumidos
+K260		3	Reprocessamento/Reparo de Produto/Insumo
+K265		4	Reprocessamento/Reparo – Mercadorias Consumidas e/ou Retornadas
+K270		3	Correção de Apontamento dos Registros K210, K220, K230, K250 e K260
+K275		4	Correção de Apontamento e Retorno de Insumos dos Registros K215, K220, K235, K255 e K265
+K280		3	Correção de Apontamento – Estoque Escriturado
+K990		1	Encerramento do Bloco H (Inventário Físico)
