@@ -260,7 +260,123 @@ Indicador do tipo do frete:
 
   if ($base) {
 
-    // Planilha Base para especifico
+
+
+    // Planilha Base para especifico C470
+    $sql = "
+-- Conforme manual do SPED, o CFOP de c470 sempre inicia por 5 !
+-- vl_item do c470 é sempre o valor líquido, então não há o que se falar de desconto, etc
+-- se o cupom for cancelado (c460.cod_sit = 2) o c470 não é informado
+SELECT 
+	  c470.ord AS ord, c460.ordC405 AS ordC405, '#'  AS chv_nfe, c470.ord - c470.ordC460 AS num_item, 
+	  substr(o200.cod_ncm, 1, 2) AS cod_ncm2, 
+	  substr(o200.cod_ncm, 1, 4) AS cod_ncm4, 
+	  o200.cod_ncm cod_ncm, c470.cod_item AS cod_item, 
+	  o200.descr_item AS descr_item, 
+	  NULL AS descr_compl,
+	  c470.qtd - (CASE WHEN qtd_canc > 0 THEN qtd_canc ELSE 0 END) AS qtd, c470.unid AS unid, 
+	  c470.vl_item AS vl_oper, 
+	  c470.vl_item AS vl_item, 0 AS vl_desc, 
+	  0 AS ind_mov, c470.cst_icms AS cst_icms, 
+	  c470.cfop AS cfop, cfopd.g1 AS g1, cfopd.g2 AS g2, cfopd.classe || ' ' || cfopd.descri_simplif AS cfop_descri,
+	  Null AS cod_nat, 
+	  c470.vl_item AS vl_bc_icms, c470.aliq_icms AS aliq_icms, 
+	  round(c470.vl_item * c470.aliq_icms / 100, 2) AS vl_icms, 
+	  0 AS vl_bc_icms_st, Null AS aliq_st, 
+	  0 vl_icms_st, Null AS cod_cta,
+	  c405.ord AS c405_ord, 1 AS ind_oper, 0 AS ind_emit, Null AS cod_part, 
+	  c460.cod_mod AS cod_mod, c460.cod_sit AS cod_sit, Null AS ser, c460.num_doc AS num_doc, c460.dt_doc AS dt_doc, c460.dt_doc AS dt_e_s, Null AS ind_pagto, 
+	  Null AS cod_part_o150, c460.cpf_cnpj AS cnpj_cpf,  Null AS ie, Null AS uf, c460.nom_adq AS nome, 
+	  round(c470.ord / 10000000 - 0.49) * 10000000 AS ordmin, round(c470.ord / 10000000 + 0.5) * 10000000 AS ordmax    
+  FROM c470
+  LEFT OUTER JOIN c460 ON c460.ord = c470.ordC460
+  LEFT OUTER JOIN c405 ON c405.ord = c460.ordC405
+  LEFT OUTER JOIN o200 ON o200.cod_item = c470.cod_item AND o200.ord > ordmin AND o200.ord < ordmax
+  LEFT OUTER JOIN cfopd ON cfopd.cfop = c470.cfop;
+";
+    $col_format = array(
+	"A:B" => "0",
+	"H:H" => "0",
+	"K:K" => "#.##0,000_ ;[Vermelho]-#.##0,000 ",
+	"M:M" => "#.##0,00_ ;[Vermelho]-#.##0,00 ",
+	"N:O" => "#.##0,00",
+	"Q:Q" => "000",
+	"W:AB" => "#.##0,00_ ;[Vermelho]-#.##0,00 ",
+	"AD:AD" => "0",
+	"AG:AG" => "0",
+	"AO:AQ" => "0",
+	"AT:AU" => "0",
+);
+    $cabec = array(
+	'OrdC470' => "Número da Linha do Registro C470",
+	'OrdC405_C470' => "Número da Linha do Registro C405",
+	'chv_nfe' => "Chave da Nota Fiscal Eletrônica",
+	'num_item' => "Número Sequencial do Item no Documento Fiscal",
+	'COD_NCM2' => "Primeiros 2 dígitos do Código da Nomenclatura Comum do Mercosul",
+	'COD_NCM4' => "Primeiros 4 dígitos do Código da Nomenclatura Comum do Mercosul",
+	'COD_NCM' => "Código da Nomenclatura Comum do Mercosul",
+	'cod_item' => "Código do item (campo 02 do Registro 0200)",
+	'descr_item' => "Descrição do item",
+	'descr_compl' => "Descrição complementar do item como adotado no documento fiscal",
+	'qtd_liq' => "Quantidade do item, negativo para entrada, positivo para saída",
+	'unid' => "Unidade do item (Campo 02 do registro 0190)",
+	'vl_oper' => "Negativo para entrada, total na mesma base do C190, ou seja, vl_item - vl_desc + vl_ipi + vl_icms_st",
+	'vl_item' => "Valor total do item (mercadorias ou serviços)",
+	'vl_desc' => "Valor do desconto comercial",
+	'ind_mov' => "Movimentação física do ITEM/PRODUTO: 0. SIM 1. NÃO",
+	'cst_icms_C470' => "Código da Situação Tributária referente ao ICMS, conforme a Tabela indicada no item 4.3.1",
+	'cfop' => "Código Fiscal de Operação e Prestação",
+	'g1' => "Agrupamento 1 de cfop",
+	'g2' => "Agrupamento 2 de cfop",
+	'cfop_descri' => "Classe de cfop e descrição simplificada",
+	'cod_nat' => "Código da natureza da operação (campo 02 do Registro 0400)",
+	'vl_bc_icms_c470' => "Valor da base de cálculo do ICMS",
+	'aliq_icms_c470' => "Alíquota do ICMS",
+	'vl_icms_c470' => "Valor do ICMS creditado/debitado",
+	'vl_bc_icms_st_c470' => "Valor da base de cálculo referente à substituição tributária",
+	'aliq_st_c470' => "Alíquota do ICMS da substituição tributária na unidade da federação de destino",
+	'vl_icms_st_c470' => "Valor do ICMS referente à substituição tributária",
+	'cod_cta' => "Código da conta analítica contábil debitada/creditada",
+	'OrdC405' => "Número da Linha do Registro C405",
+	'ind_oper' => "Indicador do Tipo de Operação 0-Entrada 1-Saída",
+	'ind_emit' => "Indicador do Emitente do Doc.Fiscal 0-Emissão Própria  1-Terceiros",
+	'cod_part' => "Código do participante (campo 02 do Registro 0150): - do emitente do documento ou do remetente das mercadorias, no caso de entradas; - do adquirente, no caso de saídas",
+	'cod_mod' => "Código do modelo do documento fiscal, conforme a Tabela 4.1.1",
+	'cod_sit' => "Código da situação do documento fiscal, conforme a Tabela 4.1.2
+00 - Documento Regular
+01 - Documento Regular Extemporâneo
+02 - Documento Cancelado
+03 - Documento Cancelado Extemporâneo
+04 - NF-e ou CT-e denegado
+05 - NF-e ou CT-e - Numeração Inutilizada
+06 - Documento Fiscal Complementar
+07 - Documento Fiscal Complementar Extemporâneo
+08 - Documentos Fiscal emitido com base em Regime Especial ou Norma Específica",
+	'ser' => "Série do documento fiscal",
+	'num_doc' => "Número do documento fiscal",
+	'dt_doc' => "Data da emissão do documento fiscal",
+	'dt_e_s' => "Data da entrada ou da saída",
+	'ind_pgto' => "Indicador do tipo de pagamento:
+0- À vista;
+1- A prazo;
+9- Sem pagamento.
+Obs.: A partir de 01/07/2012 passará a ser:
+Indicador do tipo de pagamento:
+0- À vista;
+1- A prazo;
+2 - Outros",
+	'cod_part_0150' => "Código de identificação do participante no arquivo",
+	'cnpj_cpf' => "CNPJ do participante appended CPF do participante",
+	'ie' => "Inscrição Estadual do participante",
+	'uf' => "UF do participante",
+	'nome' => "Nome pessoal ou empresarial do participante",
+	'ordmin' => "Uso interno do conversor, para fins de relacionamento entre tabelas",
+	'ordmax' => "Uso interno do conversor, para fins de relacionamento entre tabelas"
+);
+    $pr->abre_excel_sql('Base_EspecC470', 'Base para Especifico C470', $sql, $col_format, $cabec, $form_final);
+
+
+    // Planilha Base para especifico C170
     $sql = "
 SELECT 
 	  c170_total.ord AS ord, c170_total.ordC100 AS ordC100, '#' || c100.chv_nfe AS chv_nfe, c170_total.num_item AS num_item, 
@@ -370,9 +486,52 @@ Indicador do tipo de pagamento:
 	'ordmin' => "Uso interno do conversor, para fins de relacionamento entre tabelas",
 	'ordmax' => "Uso interno do conversor, para fins de relacionamento entre tabelas"
 );
-    $pr->abre_excel_sql('base_especifico', 'Base para Especifico', $sql, $col_format, $cabec, $form_final);
+    $pr->abre_excel_sql('Base_EspecC170', 'Base para Especifico C170', $sql, $col_format, $cabec, $form_final);
 
   }
+
+  // Conciliação C470xC490 
+  $sql = "
+SELECT ordC405, vl_oper_c490, vL_oper_c470, round(vl_oper_c470 - vL_oper_c490, 2) AS dif ,
+  Null AS vl_frt, Null AS vl_seg, Null AS vl_out_da, 
+  cfops_c490, cfops_c470, CASE WHEN cfops_c490 <> cfops_c470 THEN 'S' ELSE 'N' END AS c_dif,
+  Null AS chv_nfe
+  FROM
+    (SELECT ordC405, 
+      sum(CASE WHEN orig = 'c490' THEN vl_oper ELSE 0 END) AS vl_oper_c490,
+      sum(CASE WHEN orig = 'c470' THEN vl_oper ELSE 0 END) AS vl_oper_c470,
+      group_concat(CASE WHEN orig = 'c490' THEN cfops ELSE '' END,'') AS cfops_c490,
+      group_concat(CASE WHEN orig = 'c470' THEN cfops ELSE '' END,'') AS cfops_c470
+      FROM 
+            (SELECT ordC405, 'c490' AS orig, group_concat(cfop) AS cfops, sum(vl_opr) AS vl_oper FROM 
+	  (SELECT ordC405, 'c490' AS orig, cfop, sum(vl_opr) AS vl_opr FROM c490 GROUP BY ordC405, cfop)
+	  GROUP BY ordC405
+        UNION ALL
+        SELECT ordC405, 'c470' AS orig, group_concat(cfop) AS cfops, sum(vl_oper) AS vl_oper FROM 
+	  (SELECT c460.ordC405 AS ordC405, 'c470' AS orig, cfop, sum(vl_item) AS vl_oper FROM c470
+              LEFT OUTER JOIN c460 ON c460.ord = c470.ordC460 GROUP BY ordC405, cfop)
+	  GROUP BY ordC405)
+    GROUP BY ordC405)
+LEFT OUTER JOIN c405 ON c405.ord  = ordC405;
+";
+  $col_format = array(
+	"A:A" => "0",
+	"B:G" => "#.##0,00_ ;[Vermelho]-#.##0,00 "
+);
+    $cabec = array(
+	'OrdC405_C470' => "Número da Linha do Registro C405",
+	'vl_oper_c490' => "Valor da operação na combinação de CST_ICMS, CFOP e alíquota do ICMS, correspondente ao somatório do valor das mercadorias, despesas acessórias (frete, seguros e outras despesas acessórias), ICMS_ST  e IPI",
+	'vl_oper_c470' => "Os seguintes campos do C470: vl_item",
+	'dif' => "Diferença entre os dois campos à esquerda",
+	'vl_frt_C405' => "Valor do Frete constante no C405",
+	'vl_seg_C405' => "Valor do Frete constante no C405",
+	'vl_out_da_C405' => "Valor do Frete constante no C405",
+	'cfops_c490' => "Lista de CFOPs que compões este C405, conforme C490",
+	'cfops_c470' => "Lista de CFOPs que compões este C405, conforme C470",
+	'c_dif' => "S caso haja diferença entre cfops de c490 e c470",
+	'chv_nfe' => "Chave de Acesso (nulo)"
+);
+  $pr->abre_excel_sql('ConcC490xC470', 'Conciliação C490 x C470', $sql, $col_format, $cabec, $form_final);
 
   // Conciliação C170xC190 
   $sql = "

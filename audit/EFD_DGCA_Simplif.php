@@ -16,16 +16,35 @@ function efd_dgca_simplif() {
   $chkbuttons = array();
   
   $lista_opcoes = array(
-  0 => "Deleta e preenche novamente lasimca.db3 com dados de efd.db3",
-  1 => "Gera arquivo .txt a partir de lasimca.db3"
-);
+      0 => "Deleta e preenche novamente lasimca.db3 com dados de efd.db3",
+      1 => "Gera arquivo .txt a partir de lasimca.db3",
+      2 => "CNAE do registro 0000 7 dígitos (Exemplo: 2229301):[GtkEntry]",
+      3 => "IVA utilizado 4 casas dec (Exemplo: 0,8400):[GtkEntry]",
+      4 => "PMC utilizado 4 casas dec (Exemplo: 12,5594):[GtkEntry]",
+      5 => "Código de Finalidade reg 0000 (1 ou 3):[GtkEntry]",
+  );
+  $val_entry[2] = "0000000";
+  $val_entry[3] = "0,8400";
+  $val_entry[4] = "12,5594";
+  $val_entry[5] = "1";
+
   //debug_log(print_r($lista_opcoes, True));
 
-  foreach ($lista_opcoes as $indice => $valor) {
-    $chkbuttons[$indice] = new GtkCheckButton(str_replace('_', '__', $valor));
-    $chkbuttons[$indice]->set_active(True);
-    $dialog->vbox->pack_start($chkbuttons[$indice], false, false, 3);
-  }
+    foreach ($lista_opcoes as $indice => $valor) {
+        if (mb_strpos($valor, '[GtkEntry]') === False) {
+            if ($indice == 0) $dialog->vbox->pack_start(new GtkHSeparator(), false, false, 3);
+            $chkbuttons[$indice] = new GtkCheckButton(str_replace('_', '__', $valor));
+            $chkbuttons[$indice]->set_active(False);
+            $dialog->vbox->pack_start($chkbuttons[$indice], false, false, 3);
+        } else {
+            $hboxes[$indice] = new GtkHBox();
+            $labels[$indice] = new GtkLabel(str_replace('[GtkEntry]', '', $valor));
+            $entrys[$indice] = new GtkEntry($val_entry[$indice]);
+            $hboxes[$indice]->pack_start($labels[$indice], false, false, 0);
+            $hboxes[$indice]->pack_start($entrys[$indice], false, false, 0);
+            $dialog->vbox->pack_start($hboxes[$indice], false, false, 3);
+        }
+    }
   $dialog->add_button("Inverter Seleção", 100);
   $dialog->add_button(Gtk::STOCK_CANCEL, Gtk::RESPONSE_CANCEL);
   $dialog->add_button(Gtk::STOCK_OK, Gtk::RESPONSE_OK);
@@ -34,7 +53,7 @@ function efd_dgca_simplif() {
   do {
     $response_id = $dialog->run();
     if ($response_id == 100) {
-      foreach ($lista_opcoes as $indice => $valor) {
+      for($indice=0; $indice<=1; $indice++) {
         $chkbuttons[$indice]->set_active(!$chkbuttons[$indice]->get_active());
       }
     }
@@ -43,6 +62,10 @@ function efd_dgca_simplif() {
     $dialog->destroy();
     return;
   }
+  $val_entry[2] = $entrys[2]->get_text();
+  $val_entry[3] = $entrys[3]->get_text();
+  $val_entry[4] = $entrys[4]->get_text();
+  $val_entry[5] = $entrys[5]->get_text();
   $dialog->destroy();
 
   //debug_log("Opção0:" . ($chkbuttons[0]->get_active() ? "Sim" : "Não") . "\r" );
@@ -204,7 +227,7 @@ SELECT * FROM {$tabela};
   $pr->finaliza_excel();
 
   if ($chkbuttons[0]->get_active()) {
-    lasimca_do_efd(); // ver ao final deste arquivo php
+    lasimca_do_efd($val_entry); // ver ao final deste arquivo php
   }
 
   if ($chkbuttons[1]->get_active()) {
@@ -213,8 +236,74 @@ SELECT * FROM {$tabela};
 
 }
 
-
 function lasimca2txt() {
+    $filername = lasimca2txt_pt1();
+    // em seguida, faz as correções finais, que são
+    $pr2 = new Pr;  // classe principal, global
+    $pr2->aud_abre_db_e_attach('lasimca');
+    if (!$handler = fopen($filername, 'r')) {
+        werro_die("Nao foi possivel a leitura do arquivo {$filername}...");
+    } 
+
+    $filewname = mb_substr($filername, 0, -4) . "_final.txt";
+
+    if (!$handlew = fopen($filewname, 'w')) {
+        werro_die("Nao foi possivel a gravacao do arquivo {$filewname} - Feche o programa ou janela que está o usando");
+    } 
+
+    while(!feof($handler)) {
+        $linha = fgets($handler);
+        // correção de linhas 0150 exportação que exigem dados vazios
+        if (mb_substr($linha, 0, 5) == '0150|') $linha = str_replace("|00000000000000||  |00000000|||||0000000|", "||||||||||", $linha);
+        fputs($handlew, $linha);
+
+        if (mb_substr($linha, 0, 5) == '5001|') {
+            // se acabei de gravar o 5001, então o que vem depois são os registros 5315, 5325, 5330, 5350, etc... 
+            // então, para gravar, vamos primeiro colocar em ordem!
+            // parte 1: leitura e gravação no sqlite
+            $pr2->db->exec('DROP TABLE IF EXISTS ord_grupo5;
+  ');
+            $pr2->db->exec('CREATE TABLE ord_grupo5 (
+    ord int, dados txt);
+  ');
+            $pr2->db->exec('BEGIN;'); // Conforme faq do Sqlite, acelera Insert (questao 19)
+            do {
+                $linha = fgets($handler);
+                if (mb_substr($linha, 0, 5) == '5990|') {
+                    $grupo5_continua= False;
+                } else {
+                    $grupo5_continua= True;
+                    $iord = mb_substr($linha, 0, 11) + 0;
+                    $dados = $pr2->db->escapeString(mb_substr($linha, 13));
+                    $insert_query = <<<EOD
+INSERT INTO ord_grupo5 VALUES(
+{$iord}, '{$dados}'
+ )
+EOD;
+                    $pr2->db->exec($insert_query);
+                }
+            } while ($grupo5_continua);
+            $pr2->db->exec('COMMIT;'); // Conforme faq do Sqlite, acelera Insert (questao 19)
+            //agora indexa e salva o grupo 5 em ordem
+            $pr2->db->exec('CREATE INDEX "ord_grupo5_prim" ON ord_grupo5 (ord ASC);');
+
+            $result = $pr2->db->query('SELECT dados FROM ord_grupo5 ORDER BY ord;');
+            while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+                fputs($handlew, $row['dados']);
+            }
+
+            fputs($handlew, $linha);  // a linha 5990
+        }
+    }
+
+    fclose($handlew);   
+    fclose($handler);   
+    wecho("\nFinalizada parte 2 ");
+
+}
+
+
+function lasimca2txt_pt1() {
 
   $pr2 = new Pr;  // classe principal, global
   $pr2->carrega_dicdados();
@@ -339,8 +428,10 @@ SELECT '9999' AS reg, qtd_lin FROM q999;
     fputs($handlew, sql2txtefd($pr2, $pr2->aud_sql2array($sql)));
 
   fclose($handlew);   
-  wecho("\nFinalizado: ");
+  wecho("\nFinalizada parte 1: ");
   wecho((time() - $tempo_inicio) . " segundos\r\n");
+
+  return PR_RESULTADOS . "/{$filewname}";
 }
 
 function sql2txtefd($pr, $a_dados, $tipo = 'ca') {
@@ -364,7 +455,22 @@ function sql2txtefd($pr, $a_dados, $tipo = 'ca') {
         if (strpos($decimais, '.') === False) $decimais .= '.0';
         $decimais = ',' . substr($decimais . str_repeat('0', $dec), 2, $dec);
       }
-      if ($tipo == 'N') $valor = floor($valor);
+      if ($tipo == 'N' && !is_numeric($valor)) {
+        // há a necessidade de converter para 100% numerico. Um caso clássico é o campo 
+        // abaixo há um problema... o SPED aceita cod_part não numérico. Mas lasimca só quer cod_part numerico. Há uma correçao mais ou menos na função sql2txtefd
+        $valnum = '';
+        for($i=0; $i<mb_strlen($valor); $i++) {
+          $letra = mb_substr($valor, $i, 1);
+          $valnum .= (is_numeric($letra) ? $letra : ord($letra));
+        }
+        $valor = $valnum;
+      }
+      // abaixo mudei porque em números muito grandes estava vindo notação científica
+      //if ($tipo == 'N') $valor = floor($valor);
+      if ($tipo == 'N') {
+        $posvirg = mb_strpos($valor, '.');
+        if ($posvirg  !== False) $valor = mb_substr($valor, 0, $posvirg);
+      }
       if ($tam <> '-') {
         if ($tipo == 'C') {
           $valor = str_repeat(' ', $tam) . $valor;
@@ -384,23 +490,21 @@ function sql2txtefd($pr, $a_dados, $tipo = 'ca') {
   return $linha;
 }
 
-function lasimca_do_efd() {
+function lasimca_do_efd($val_entry) {
   
   $pr2 = new Pr;  // classe principal, global
 
-  wecho("\n\nDeletando e preenchendo novamente lasimca.db3 com dados de efd.db3:\r\n");
+  wecho("\n\nDeletando e preenchendo novamente lasimca.db3 com dados de efd.db3:\nValores Fornecidos:\nCNAE: {$val_entry[2]}\nIVA: {$val_entry[3]}\nPMC: {$val_entry[4]}\ncod_fin: {$val_entry[5]}\n");
   $tempo_inicio = time();
 
   $pr2->aud_abre_db_e_attach('efd,lasimca');
 
-//
-###################FORNECER AS VARIÁVEIS ABAIXO!!!!
-//
-  $o000_cnae = 2814301;
-  $s325_iva_utilizado = 0.8576;
-  $s325_per_med_icms = 12.0356;
-  $cod_fin = 3;
-// Fim
+  $o000_cnae = str_replace('-', '', str_replace('/', '', trim($val_entry[2])));
+  $s325_iva_utilizado = str_replace(',', '.', trim($val_entry[3])) + 0;
+  $s325_per_med_icms = str_replace(',', '.', trim($val_entry[4])) + 0;
+  $cod_fin = trim($val_entry[5]) + 0;
+
+  $limitador_red_bc = "dgca_analit.aliq_icms = 7";
 
   $pr2->aud_prepara("
 -- Criação das tabelas do lasimca
@@ -410,11 +514,12 @@ function lasimca_do_efd() {
 --    cod_legal = Null ? campo saidas <> 0 mas não sei classificar, ou alíquota de 18%
 --    Hipótese 0300 desc = 1, Operações Interestaduais com alíquota 7%
 --    Hipótese 0300 desc = 2, Operações Interestaduais com alíquota 12%
---    Hipótese 0300 desc = 3, Operações Interestaduais com alíquota 4%
---    Hipótese 0300 desc = 5, Redução de Base de Cálculo e alíquota nominal de 12%
---    Hipótese 0300 desc = 6, Redução de Base de Cálculo e alíquota nominal de 7%
+--    Hipótese 0300 desc = 3, Operações Internas com alíquota 7%
+--    Hipótese 0300 desc = 4, Operações Internas (aqui processa tudo que é diferente de 7%)
+--    Hipótese 0300 desc = 5, Outras (processado aqui em operações interestaduais com alíquotas diferentes de 7% e 12%)
+--    Hipótese 0300 desc = 6, Qualquer hipótese de Redução de Base de Cálculo, limitado por $limitador_red_bc
 --    Hipótese 0300 desc = 7, Saídas sem pagamento de Imposto - Exportação
---    Hipótese 0300 desc = 8, Saídas sem pagamento de Imposto - Exportação Indireta
+--    Hipótese 0300 desc = 8, Saídas sem pagamento de Imposto - Exportação Indireta (Desativado por enquanto, joguei pra 7)
 --    Hipótese 0300 desc= 11, Saídas sem pagamento de Imposto - Isenção
 DROP TABLE IF EXISTS lasimca.dgca_semifinal;
 CREATE TABLE lasimca.dgca_semifinal AS
@@ -426,23 +531,24 @@ SELECT ord, dt_emissao, tip_doc, ser, num_doc, cod_part,
       (SELECT dgca_analit.ord AS ord, c100.dt_doc AS dt_emissao, 31 AS tip_doc, c100.ser AS ser, c100.num_doc AS num_doc,  c100.cod_part AS cod_part, 
     dgca_analit.vl_opr AS valor_sai, dgca_analit.vl_bc_icms AS valor_bc, dgca_analit.aliq_icms AS aliq, dgca_analit.vl_icms AS icms_deb, 
     0 AS perc_crd_out, 0 AS valor_crd_out,
-    CASE WHEN saidas = 0 THEN 0 ELSE
+     CASE WHEN saidas = 0 THEN 0 ELSE
         CASE WHEN dgca_analit.vl_red_bc > 0 THEN 
-           CASE WHEN dgca_analit.aliq_icms = 12 THEN 5 ELSE
-               CASE WHEN dgca_analit.aliq_icms = 7 THEN 6 ELSE Null
-               END
-           END
+           CASE WHEN {$limitador_red_bc} THEN 6 ELSE Null END
         ELSE
             CASE WHEN dgca_analit.cfop > 7000 OR dgca_analit.cfop BETWEEN 3201 AND 3299 THEN 7 ELSE
-                CASE WHEN dgca_analit.cfop IN (5501, 5502, 6501, 6502) THEN 8 ELSE
-                    CASE WHEN dgca_analit.aliq_icms = 0 THEN 11 ELSE 
-                        CASE WHEN dgca_analit.aliq_icms = 7 THEN 1 ELSE 
-                            CASE WHEN dgca_analit.aliq_icms = 12 THEN 2 ELSE 
-                                CASE WHEN dgca_analit.aliq_icms = 4 THEN 3 ELSE Null
+                CASE WHEN dgca_analit.cfop IN (5501, 5502, 6501, 6502) THEN 7 ELSE
+                    CASE WHEN dgca_analit.aliq_icms = 0 AND dgca_analit.vl_icms = 0 THEN 11 ELSE 
+                        CASE WHEN (dgca_analit.cfop BETWEEN 6001 AND 6999) AND dgca_analit.aliq_icms = 7 THEN 1 ELSE 
+                            CASE WHEN (dgca_analit.cfop BETWEEN 6001 AND 6999) AND dgca_analit.aliq_icms = 12 THEN 2 ELSE 
+                              CASE WHEN (dgca_analit.cfop BETWEEN 5001 AND 5999) AND dgca_analit.aliq_icms = 7 THEN 3 ELSE 
+                                CASE WHEN (dgca_analit.cfop BETWEEN 5001 AND 5999) THEN 4 ELSE 
+                                  CASE WHEN (dgca_analit.cfop BETWEEN 6001 AND 6999) THEN 5 ELSE Null
+                                  END
                                 END
+                              END
                             END
                         END
-                   END
+                    END
                 END
             END
         END
@@ -468,9 +574,13 @@ SELECT cod_legal FROM
     HAVING cred_acum > 0);
 -- o dgca_final é o dgca_semifinal agrupado por Data da Emissão do Documento Fiscal, Tipo, Série, Número do Documento e Hipótese de Geração, porque não podem estar duplicados no arquivo
 -- aqui cod_legal = 0 será para qualquer hipótese não geradora de crédito acumulado!
+-- também será cod_legal = 0 quando, mesmo em hipótese geradora de crédito acumulado, cred_est_icms <= icms_deb!
 DROP TABLE IF EXISTS lasimca.dgca_final;
 CREATE TABLE lasimca.dgca_final AS
-SELECT ord, dt_emissao, tip_doc, ser, num_doc, cod_part, sum(valor_sai) AS valor_sai, sum(valor_bc) AS valor_bc, aliq, sum(icms_deb) AS icms_deb, perc_crd_out, sum(valor_crd_out) AS valor_crd_out, cod_legal, iva_utilizado, per_med_icms, sum(cred_est_icms) AS cred_est_icms
+SELECT ord, dt_emissao, tip_doc, ser, num_doc, cod_part, sum(valor_sai) AS valor_sai, sum(valor_bc) AS valor_bc, aliq, sum(icms_deb) AS icms_deb, 
+    perc_crd_out, sum(valor_crd_out) AS valor_crd_out, 
+    CASE WHEN cred_est_icms <= icms_deb THEN 0 ELSE cod_legal END AS cod_legal, 
+    iva_utilizado, per_med_icms, sum(cred_est_icms) AS cred_est_icms
     FROM 
     (SELECT  ord, dt_emissao, tip_doc, ser, num_doc, cod_part, valor_sai, valor_bc, aliq, icms_deb, perc_crd_out, valor_crd_out, 
         CASE WHEN hip_cred_acum.cod_legal IS Null THEN 0 ELSE hip_cred_acum.cod_legal END AS cod_legal, iva_utilizado, per_med_icms, cred_est_icms 
@@ -485,24 +595,37 @@ SELECT ord, 'LASIMCA' AS lasimca, 1 AS cod_ver, {$cod_fin} AS cod_fin, substr(dt
 DELETE FROM lasimca.o001;
 INSERT INTO lasimca.o001
 SELECT ord, 0 FROM main.o005;
+DROP TABLE IF EXISTS lasimca.dcga_final_cod_part_cnpj;
+CREATE TABLE lasimca.dcga_final_cod_part_cnpj AS
+SELECT cod_part, cnpj FROM
+    (SELECT DISTINCT dgca_final.cod_part AS cod_part,
+        main.o150.cnpj AS cnpj,
+        round(dgca_final.ord / 10000000 - 0.49) * 10000000 AS ordmin, round(dgca_final.ord / 10000000 + 0.5) * 10000000 AS ordmax
+        FROM dgca_final
+        LEFT OUTER JOIN main.o150 ON o150.cod_part = dgca_final.cod_part AND main.o150.ord > ordmin AND main.o150.ord < ordmax);
 -- lasimca.o150 é baseado no efd.o150 da seguinte forma:
---   a) Seleciona somente os cod_part necessários, ou seja, o que estao em dgca_final
+--   a1) - tem que haver uma linha de 0150 com o cnpj do emissor do arquivo (em 0000) - se não houver, cria
+--   a2) Seleciona somente os cod_part necessários, ou seja, o que estao em dgca_final
 --   b) Atenção: em lasimca.o150 o campo cnpj é na verdade cnpj_cpf - o cpf estará com 14 dígitos, ou seja, três zeros 000 à esquerda
 --   c) Se o país for Brasil (cod_pais = 1058), não pode haver duplicidades de cod_part com mesmas combinações cnpj_cpf e ie
 --   d) Se o país não for Brasil (cod_pais <> 1058), não se preocupe com nada, porque todos os campos exceto cod_part, nome e cod_pais DEVEM ESTAR VAZIOS
 -- entao, não se esquecer, ao final, de converter a campo cod_part de 5315 com o código correto de lasimca.o150
 DROP TABLE IF EXISTS lasimca.o150tmp_a_b;
+-- selecao dos itens a2 e b acima
+-- o item a1 acima será inserido no final deste trecho, diretamente INTO lasimca.o150
 CREATE TABLE lasimca.o150tmp_a_b AS
 SELECT cod_part, cod_pais, 
     CASE WHEN cpf <> '' AND cpf > 0 THEN cpf ELSE cnpj END AS cnpj_cpf, ie
     FROM main.o150
-    WHERE main.o150.cod_part  IN (SELECT DISTINCT cod_part FROM dgca_final);
+    WHERE main.o150.cod_part  IN (SELECT cod_part FROM lasimca.dcga_final_cod_part_cnpj);
+-- selecao do item c acima
 DROP TABLE IF EXISTS lasimca.o150tmp_c;
 CREATE TABLE lasimca.o150tmp_c AS
 SELECT cod_part, cod_pais, cnpj_cpf, ie
     FROM lasimca.o150tmp_a_b
     WHERE cod_pais = 1058
     GROUP BY cnpj_cpf, ie;
+-- a tabela abaixo é a junçao de tmp_a_b com tmp_c correlacionando cod_part_efd com o cod_part_lasimca
 DROP TABLE IF EXISTS lasimca.o150efd_lasimca;
 CREATE TABLE lasimca.o150efd_lasimca AS
 SELECT lasimca.o150tmp_a_b.cod_part AS cod_part_efd, lasimca.o150tmp_c.cod_part AS cod_part_lasimca, 
@@ -515,7 +638,15 @@ SELECT lasimca.o150tmp_a_b.cod_part AS cod_part_efd, lasimca.o150tmp_a_b.cod_par
     lasimca.o150tmp_a_b.cod_pais AS cod_pais, o150tmp_a_b.cnpj_cpf AS cnpj_cpf, o150tmp_a_b.ie AS ie
     FROM lasimca.o150tmp_a_b
     WHERE lasimca.o150tmp_a_b.cod_pais <> 1058;
+-- abaixo há um problema... o SPED aceita cod_part não numérico. Mas lasimca só quer cod_part numerico. Há uma correçao mais ou menos na função sql2txtefd
 DELETE FROM lasimca.o150;
+-- inserção do item a1 mais acima
+INSERT INTO lasimca.o150
+SELECT main.o000.ord AS ord, main.o000.cnpj AS cod_part, main.o000.nome AS nome, 1058 AS cod_pais, main.o000.cnpj AS cnpj, main.o000.ie AS ie,
+    main.o000.uf AS uf, '00000000' AS cep, Null AS end, Null AS num, Null AS compl, Null AS bairro, main.o000.cod_mun AS cod_mun, Null AS fone
+    FROM main.o000
+    WHERE main.o000.cnpj NOT IN (SELECT cod_part FROM lasimca.dcga_final_cod_part_cnpj);
+-- inserção dos demais dados de o150
 INSERT INTO lasimca.o150
 SELECT ord, cod_part, nome, cod_pais, 
     CASE WHEN cod_pais = 1058 THEN cnpj ELSE '' END AS cnpj, 
@@ -537,10 +668,10 @@ SELECT ord, cod_part, nome, cod_pais,
 DELETE FROM lasimca.o300;
 INSERT INTO lasimca.o300 VALUES (Null, 1, 1, '', '71', 'I', '', '', '0', '', 'Operações Interestaduais com alíquota 7%');
 INSERT INTO lasimca.o300 VALUES (Null, 2, 2, '', '71', 'I', '', '', '0', '', 'Operações Interestaduais com alíquota 12%');
-INSERT INTO lasimca.o300 VALUES (Null, 3, 3, '', '71', 'I', '', '', '0', '', 'Operações Interestaduais com alíquota 4%');
+INSERT INTO lasimca.o300 VALUES (Null, 3, 3, '', '71', 'I', '', '', '0', '', 'Operações Internas com alíquota 7%');
 INSERT INTO lasimca.o300 VALUES (Null, 4, 4, '', '71', 'I', '', '', '0', '', 'Operações Internas');
-INSERT INTO lasimca.o300 VALUES (Null, 5, 5, '', '71', 'II', '', '', '0', '', 'Redução de Base de Cálculo 12% para 8,8%');
-INSERT INTO lasimca.o300 VALUES (Null, 6, 6, '', '71', 'II', '', '', '0', '', 'Redução de Base de Cálculo 7% para 5,14%');
+INSERT INTO lasimca.o300 VALUES (Null, 5, 5, '', '71', 'I', '', '', '0', '', 'Outras');
+INSERT INTO lasimca.o300 VALUES (Null, 6, 6, '', '71', 'II', '', '', '0', '', 'Redução de Base de Cálculo');
 INSERT INTO lasimca.o300 VALUES (Null, 7, 7, '', '71', 'III', '', '', '0', '', 'Saídas sem pagamento de Imposto - Exportação');
 INSERT INTO lasimca.o300 VALUES (Null, 8, 8, '', '71', 'III', '', '', '0', '', 'Saídas sem pagamento de Imposto - Exportação Indireta');
 INSERT INTO lasimca.o300 VALUES (Null, 9, 9, '', '71', 'III', '', '', '0', '', 'Saídas sem pagamento de Imposto - ZF Manaus');
@@ -572,8 +703,9 @@ SELECT ord, ord, valor_bc, icms_deb
     FROM dgca_final
     WHERE cod_legal > 0 AND icms_deb > 0;
 DELETE FROM lasimca.s335;
+-- esse número 160001001001 abaixo é totalmente aleatório, é só porque há a necessidade de preenchimento de algum valor em num_decl_exp do registro 5335
 INSERT INTO lasimca.s335
-SELECT ord, ord, Null, Null
+SELECT ord, ord, 160001001001, Null
     FROM dgca_final
     WHERE cod_legal IN (7, 9);
 DELETE FROM lasimca.s340;

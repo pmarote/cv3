@@ -1096,6 +1096,40 @@ Indicador do tipo do frete:
   $pr->inicia_excel('EFD_Dados_do_EFD_Blocos_0_E_G_H');
 
   $sql = "
+SELECT * FROM K200;
+";
+  $col_format = array(
+	"A:A" => "0",
+	"C:C" => "0",
+	"D:D" => "#.##0,00");
+  $cabec = array(
+		'Ord' => "Número da Linha do Registro",
+		'OrdK100' => "Número da Linha do Registro K100",
+		'dt_est' => "Data do estoque final",
+		'cod_item' => "Código do item (campo 02 do Registro 0200)",
+		'qtd' => "Quantidade em estoque",
+		'ind_est' => "Indicador do tipo de estoque:
+0 = Estoque de propriedade do informante e em seu poder;
+1 = Estoque de propriedade do informante e em posse de terceiros;
+2 = Estoque de propriedade de terceiros e em posse do informante",
+		'cod_part' => "Código do participante (campo 02 do Registro 0150):
+- proprietário/possuidor que não seja o informante do arquivo"
+);
+  $pr->abre_excel_sql("K200", "K200 - ESTOQUE ESCRITURADO", $sql, $col_format, $cabec, $form_final);
+
+  $sql = "
+SELECT * FROM K100;
+";
+  $col_format = array(
+	"A:A" => "0");
+  $cabec = array(
+		'Ord' => "Número da Linha do Registro",
+		'dt_ini' => "Data inicial a que a apuração se refere",
+		'dt_fin' => "Data final a que a apuração se refere"
+);
+  $pr->abre_excel_sql("K100", "K100 - PERÍODO DE APURAÇÃO DO ICMS/IPI", $sql, $col_format, $cabec, $form_final);
+
+  $sql = "
 SELECT * FROM H010;
 ";
   $col_format = array(
@@ -1504,6 +1538,27 @@ SELECT * FROM E113;
 		'CHV_DOCe' => "Chave do Documento Eletrônico"
 );
   $pr->abre_excel_sql("E113", "E113 - INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO ICMS IDENTIFICAÇÃO DOS DOCUMENTOS FISCAIS", $sql, $col_format, $cabec, $form_final);
+
+  $sql = "
+SELECT * FROM E112;
+";
+  $col_format = array(
+	"A:F" => "0");
+  $cabec = array(
+		'Ord' => "Número da Linha do Registro E112",
+		'OrdE111' => "Número da Linha do Registro E111",
+		'NUM_DA' => "Número do documento de arrecadação estadual, se houver", 
+		'NUM_PROC' => "Número do processo ao qual o ajuste está vinculado, se houver", 
+		'IND_PROC' => "Indicador da origem do processo:
+0- Sefaz;
+1- Justiça Federal;
+2- Justiça Estadual;
+9- Outros", 
+		'PROC' => "Descrição resumida do processo que embasou o lançamento", 
+		'TXT_COMPL' => "Descrição complementar"
+);
+  $pr->abre_excel_sql("E112", "E112 - INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO ICMS", $sql, $col_format, $cabec, $form_final);
+
 
 
   $sql = "

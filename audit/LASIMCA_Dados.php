@@ -110,7 +110,7 @@ SELECT * FROM s340;
 SELECT * FROM s335;
 ";
   $col_format = array(
-	"A:B" => "0");
+	"A:C" => "0");
   $cabec = array(
 	'Ord' => "Número da Linha do Registro 5335",
 	'Ords325' => "Número da Linha do Registro 5325",
@@ -178,6 +178,7 @@ SELECT * FROM s315;
 ";
   $col_format = array(
 	"A:A" => "0",
+	"F:F" => "0",
 	"G:I" => "#.##0,00");
   $cabec = array(
 	'Ord' => "Número da Linha do Registro 5315",
@@ -486,27 +487,47 @@ SELECT '', '', '', '', '##N##Abaixo, erros que o e-cred gera ocorrências';
 SELECT '', '', '', '', '##N##Verificar se o arquivo NÃO está em UTF-8';
 SELECT '20' || substr(ord, 1, 4), '0000', 'Valor->', cod_fin, '##N##Verificar se o campo cod_fin de 0000 está correto! 1-Normal 3-Substit' FROM o000;
 -- teste 0150 exportação que não estao com dados vazios
--- Exemplo de registro correto: 0150|213001|SLEEVER INTERNATIONAL|02755||||||||||
-SELECT '', '', '', '', '##i##Listagem, se houver,0150 exportação que não estao com dados NÃO vazios:';
+-- Exemplo de registro correto: 0150|213001|EMPRESA|02755||||||||||
+SELECT '', '', '', '', '##I##Listagem, se houver,0150 exportação que não estao com dados NÃO vazios:';
 SELECT aaaamm, '', count(cod_part) AS qtd, '', '##i##teste 0150 exportação que não estao com dados NÃO vazios  cod_parts-->', group_concat(cod_part, ', ') AS cod_parts FROM 
     (SELECT '20' || substr(ord, 1, 4) AS aaaamm, cod_part FROM o150 
         WHERE cod_pais <> 1058 AND 
         (cnpj <> '' OR ie <> '' OR uf  <> '' OR cep  <> '' OR end  <> '' OR  num <> '' OR  compl  <> '' OR  bairro  <> '' OR  cod_mun  <> '' OR fone  <> '') )
 GROUP BY aaaamm;
 -- teste 0150 nacional duplicidade de combinação cnpj e ie
-SELECT '', '', '', '', '##i##Listagem, se houver, linhas de 0150 nacionais com duplicidade de combinação cnpj e ie:';
-SELECT '20' || substr(ord, 1, 4) AS aaaamm, '', count(cod_part) AS qtd, 'cod_parts-->', group_concat(cod_part, ', ') FROM o150 
+SELECT '', '', '', '', '##I##Listagem, se houver, linhas de 0150 nacionais com duplicidade de combinação cnpj e ie:';
+SELECT '20' || substr(ord, 1, 4) AS aaaamm, '0150', count(cod_part) AS qtd, 'cod_parts-->', group_concat(cod_part, ', ') FROM o150 
     WHERE cod_pais = 1058
     GROUP BY aaaamm, cnpj, ie
     HAVING qtd > 1;
+-- teste 0150 com duplicidade no campo cod_part
+SELECT '', '', '', '', '##I##Listagem, se houver, linhas de 0150 com duplicidade no campo cod_part:';
+SELECT '20' || substr(ord, 1, 4) AS aaaamm, '0150', count(cod_part) AS qtd, 'cnpjs-->', group_concat(cnpj, ', '), cod_part FROM o150 
+    GROUP BY cod_part
+    HAVING qtd > 1;    
+-- teste 0150 faltando o cnpj do proprio emitente do arquivo digital
+SELECT '', '', CASE WHEN contagem = 1 THEN '' ELSE contagem END AS qtd, '', 
+    CASE WHEN contagem = 0 THEN '##N##ERRO! Não há linha de 0150 com o cnpj do emissor do arquivo (em 0000)! ' ELSE 
+       CASE WHEN contagem = 1 THEN '##I##Ok! Há exatamente uma linha de 0150 com o cnpj do emissor do arquivo (em 0000)'
+       ELSE '##N##ERRO! Há mais de uma linha de 0150 com o cnpj do emissor do arquivo (em 0000)! Total de linhas: ' || contagem END
+    END AS msg
+    FROM 
+    (SELECT count(*) AS contagem FROM 
+        (SELECT o150.cnpj FROM o150 
+        LEFT OUTER JOIN o000 ON o000.cnpj = o150.cnpj
+        WHERE o000.cnpj IS Not Null));
+-- teste 5335 com num_decl_exp não preenchido
+SELECT '', '', '', '', '##I##Listagem, se houver, linhas de5335 com num_decl_exp não preenchido:';
+SELECT '20' || substr(ord, 1, 4) AS aaaamm, '5335', '', '', '##i##Reg 5335 linha ' || (substr(ord, 5, 7) + 0) || ' campo num_decl_exp não preenchido' FROM s335 
+   WHERE num_decl_exp IS Null OR num_decl_exp = 0 OR num_decl_exp = '';    
 -- teste 5135 cod_part sem correspondente no 0150
-SELECT aaaamm, '', count(cod_part) AS qtd, '', '##i##cod_parts presentes em linhas de 5315 sem correspondência com linha de 0150-->', group_concat(cod_part, ', ') AS cod_parts FROM 
+SELECT aaaamm, '', count(cod_part) AS qtd, '', '##I##cod_parts presentes em linhas de 5315 sem correspondência com linha de 0150-->', group_concat(cod_part, ', ') AS cod_parts FROM 
     (SELECT '20' || substr(s315.ord, 1, 4) AS aaaamm, s315.cod_part AS cod_part
         FROM s315
         LEFT OUTER JOIN o150 ON o150.cod_part = s315.cod_part
         WHERE o150.cod_part IS NULL
 	GROUP BY aaaamm, cod_part);
-SELECT '', '', '', '', '##i##Listagem, se houver,dt_emissao, tip_doc, ser, num_doc e Hipótese de Geração duplicados:';
+SELECT '', '', '', '', '##I##Listagem, se houver,dt_emissao, tip_doc, ser, num_doc e Hipótese de Geração duplicados:';
 SELECT aaaamm, '5315', qtd, '', 'Duplicou em: ' || dt_emissao || ' - ' || tip_doc || ' - ' || ser || ' - ' || num_doc || ' - ' || cod_legal || ' Linhas: ' || ords FROM
     (SELECT aaaamm, group_concat(ord, ', ') AS ords, dt_emissao, tip_doc, ser, num_doc, cod_legal, count(num_doc) AS qtd
          FROM
@@ -521,8 +542,12 @@ SELECT aaaamm, '5315', qtd, '', 'Duplicou em: ' || dt_emissao || ' - ' || tip_do
               LEFT OUTER JOIN s315 ON s315.ord = s350.Ords315)
         GROUP BY aaaamm, dt_emissao, tip_doc, ser, num_doc, cod_legal
         HAVING qtd > 1);
+-- teste 5235 com icms gerado em valores negativos
+SELECT '', '', '', '', '##I##Listagem, se houver,5325 com icms gerado em valores negativos:';
+SELECT  '20' || substr(ord, 1, 4) AS aaaamm, '5325', 'Valor->', icms_gera, '##N##<-- ERRO! ICMS gerado com valor negativo na linha ' || ord FROM s325
+        WHERE icms_gera < 0;
 SELECT '';
-SELECT '', '', '', '', '##i##Abaixo, listagem constante em 9900';
+SELECT '', '', '', '', '##I##Abaixo, listagem constante em 9900';
 SELECT '20' || substr(ord, 1, 4), reg_blc, qtd_reg_blc, '', 'Quantidade constante em 9900' FROM q900;
 SELECT '';
 SELECT 'aaaamm', 'valor_sai', 'valor_bc', 'icms_deb', '##I##DGCAs extraídos dos registros 5325 5315 5330', 'cred_est_icms', 'icms_gera';

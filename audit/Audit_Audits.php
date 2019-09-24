@@ -835,7 +835,7 @@ function gera_espelhos_nfe($valor) {
 	wecho("  dfe/nfe, dfe/nfe_danfe (dados NFe), audit/conc_dfe_res (correlacao) e audit/aud_modelo (dados RES)\r\n");
 	wecho("Obs: Velocidade Média nos notebooks Thinkpad da Sefaz: 100 por segundo.\n");
 	wecho("Os arquivos serão em formato .html e estarão dentro de /Resultados/DANFes\n");
-	wecho("\nPara não entupir tudo, só são geradas 25.000 itens de DANFes no máximo, por isso, ajuste o valor mínimo de acordo.\n\n");
+	wecho("\nPara não entupir tudo, só são geradas 100.000 itens de DANFes no máximo, por isso, ajuste o valor mínimo de acordo.\n\n");
 	$tempo_inicio = time();
 
 	do {
@@ -882,7 +882,7 @@ SELECT nfe.*, nfe_danfe.*, conc_dfe_res.*
 	$chav_ace = -1;
 	$nomarqhtml = "arquivo_com_erro_no_nome.html";
 	while ($linha = $result->fetchArray(SQLITE3_ASSOC)) {
-		if ($i_qtd++ > 25000) break;
+		if ($i_qtd++ > 100000) break;
 		//debug_log("#{$linha['chav_ace']}#a");
 		if ($linha['chav_ace'] != $chav_ace)	{
 			//debug_log("b");
