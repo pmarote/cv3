@@ -203,10 +203,17 @@ if ($pr->options['reinicializa'] == True) {
   principal();
 }
 
+Gtk::timeout_add(1200000, 'refresh_wecho', "\nA cada 20 minutos esta msg é mostrada para evitar que o php desligue por inatividade\n");
+
 Gtk::main();
 
 exit;
 
+function refresh_wecho($str)
+{
+  wecho($str);
+  return True;
+}
 
 function clickNovo(GtkWindow $wnd)
 {
@@ -262,7 +269,7 @@ function clickSobre(GtkWindow $wnd) {
     $dialog->set_name('Conversor3');
     $dialog->set_version(versao());	// Em base.inc.php
 
-	$dialog->set_comments("email de suporte:\npaulomarote@hotmail.com"); 
+	$dialog->set_comments("email de suporte:\npaulomarote@hotmail.com\nversão do php: ". phpversion()); 
 	$dialog->set_copyright("Origem: Grupo de Estudos NFe/SPED - DRT/13 - Guarulhos\nAutor: AFR Paulo Marote\n\n"); 
 	$dialog->set_license("Licenciamento - Esta ferramenta foi desenvolvida com base em softwares livres, de domínio público, podendo ser usada sem restrições. A base utilizada é a seguinte:\n- PHP (http://www.php.net/)\n- GTK (http://www.gtk.org/)\n- SQlite (http://www.sqlite.org/)\n\n"); 
 	$dialog->set_authors(array("AFR Paulo Marote"));
@@ -279,7 +286,8 @@ function clickDesenv_aud(GtkWindow $wnd) {
 
 function clickSublimeText(GtkWindow $wnd) {
   $shell = new COM('WScript.Shell');
-  $shell->Run(str_replace('/', '\\', PR_USR) . '\Sublime\sublime_text.exe');
+  //$shell->Run(str_replace('/', '\\', PR_USR) . '\Sublime\sublime_text.exe');
+  $shell->Run(str_replace('/', '\\', PR_USR . '/Sublime/subl.exe -a ' . PR_PATH) );
   unset($shell);
 }
 
@@ -675,6 +683,25 @@ function clickOptions(GtkWindow $wnd) {
   
 }
 
+
+function clickCv4(GtkWindow $wnd, $comando) {
+
+  //if ($item == '_Conversor') clickCv4($wnd, 'conversor');
+  //if ($item == '_Servidor')  clickCv4($wnd, 'servidor');
+  //if ($item == '_Cmd')       clickCv4($wnd, 'cmd');
+  //if (!is_dir(PR_PATH . "/src/cv4")) unset($menus['Cv_4']);
+
+  $shell = new COM('WScript.Shell');
+  $shell->CurrentDirectory = str_replace('/', '\\', PR_PATH) . '\src\cv4\bin';
+  wecho("\nAbrindo " . str_replace('/', '\\', PR_PATH) . '\src\cv4\bin\cmd_digite_sp.exe');
+  wecho("\nNão se esqueça de setar o path com sp.bat !! \n\n");
+  $shell->Run('' . str_replace('/', '\\', PR_PATH) . '\src\cv4\bin\cmd_digite_sp.exe.lnk');
+  usleep(1); // As vezes é bom dormir um pouco para dar tempo de shell->run abrir no diretório correto
+  $shell->CurrentDirectory = PR_PATH;
+  unset($shell);
+}
+
+
 // constrói o menu
 function setup_menu($vbox) {
   // definição de menu
@@ -686,10 +713,14 @@ function setup_menu($vbox) {
 							'Desenvolvimento de _Auditorias', '<hr>',
 							'_Sublime Text', 'SQLite_Man', 'NoteP_ad++', '<hr>', 'Visualiza _Logs',
 							'_Forçar Encerramento de todas as janelas do Excel'),
+    'Cv_4' => array('_Conversor', '_Servidor', '_Cmd'),
     'Au_ditorias' => array('_Parâmetros'),
     'A_juda' => array('_Ajuda', 'Visualiza _Histórico de Versões', '_Sobre...')
   );
   
+  // O menu cv4 só estará disponível se houver a pasta cv4 em src...
+  if (!is_dir(PR_PATH . "/src/cv4")) unset($menus['Cv_4']);
+
   // Opções adicionais - phps na pasta xtras - caso exista um ou mais, insere também um separador (<hr>)
   $inseriu_hr = False;
   if (file_exists('xtras/nircmd/nircmd.exe')) {
@@ -788,6 +819,11 @@ function on_menu_select($menu_item) {
   if ($item == '_Forçar Encerramento de todas as janelas do Excel') clickKillExcel($wnd);
   if (file_exists('xtras/ConsultasWeb.php')) { if ($item == 'Consultas _Web') consultasWeb($wnd); }
   if (file_exists('../_xtras/LeNFe.php')) { if ($item == 'Lê _NFe') leNFe($wnd); }
+
+  if ($item == '_Conversor') clickCv4($wnd, 'conversor');
+  if ($item == '_Servidor')  clickCv4($wnd, 'servidor');
+  if ($item == '_Cmd')       clickCv4($wnd, 'cmd');
+
   if ($item == '_Parâmetros') clickParametros($wnd);
   if (file_exists('xtras/sql.php')) { if ($item == '_SQL') sql($wnd); };
   if ($item == '_Ajuda') clickAjuda($wnd);
