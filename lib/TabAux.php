@@ -294,14 +294,16 @@ function gera_tabelas_auxiliares_xml() {
 -- É necessário antes tirar repetições de arquivos
 DROP INDEX IF EXISTS xml.arqxmlchav_ace;
 CREATE INDEX IF NOT EXISTS xml.arqxmlchav_ace ON arqxml (chav_ace ASC, tipo ASC);
+-- xml.aux_arqxml contém todas as DFes, sem repetições
 DROP TABLE IF EXISTS xml.aux_arqxml;
 CREATE TABLE xml.aux_arqxml AS 
 SELECT rowid AS id, chav_ace, tipo FROM arqxml GROUP BY chav_ace, tipo;
 DROP INDEX IF EXISTS xml.aux_arqxmlid;
 CREATE INDEX IF NOT EXISTS xml.aux_arqxmlid ON aux_arqxml (id ASC);
+-- xml.aux_det contém todos os tags det de aux_arqxml
 DROP TABLE IF EXISTS xml.aux_det;
 CREATE TABLE xml.aux_det AS
-SELECT aux_arqxml.chav_ace AS chav_ace, tag.html AS html
+SELECT aux_arqxml.chav_ace AS chav_ace, tag.inftag AS inftag, tag.html AS html
             FROM tag
             LEFT OUTER JOIN aux_arqxml ON aux_arqxml.id = tag.arqxmlrowid
             WHERE aux_arqxml.tipo = 'NFe' AND tag.tag = '<det>';
@@ -311,6 +313,10 @@ CREATE INDEX IF NOT EXISTS xml.aux_det_chav_ace ON aux_det (chav_ace ASC);
 
   $sql = <<<EOD
 -- Juntando os principais grupos de NFe, por chave de acesso
+-- Quarto SELECT: para cada chave de acesso, retorna suas tags IN ('<ide>', '<emit>', '<dest>', '<infAdic>', '<total>', '<transp>')
+-- Terceiro SELECT: com CASE, joga essas tags em cada campo, ide, emit, dest, total, transp, infAdic, lembrando que é uma linha para cada tag, que será agrupada no primeiro SELECT
+-- Segundo SELECT: Agrupa para (GROUP BY chav_ace) para montar aux1, que contém UMA linha para cada chave de acesso, com seus campos ide, emit, dest, total, transp, infAdic . Os group_concat não juntam dois conteúdos, eles apenas trazem para uma linha só, ou seja, eles juntam conteúdo com 5 linhas de espaços vazios
+-- Primeiro SELECT: Vai abrir aux1 (segundo Select), ou seja, para cada chave de acesso vai ter N linhas det, sendo que o conteúdo de chav_ace, ide, emit, dest, total, transp, infAdic se repetem
 SELECT aux1.*, aux_det.html AS det FROM 
     (SELECT chav_ace, group_concat(ide, '') AS ide, group_concat(emit, '') AS emit, group_concat(dest, '') AS dest, 
       group_concat(total, '') AS total, group_concat(transp, '') AS transp, group_concat(infAdic, '') AS infAdic FROM
@@ -327,48 +333,56 @@ SELECT aux1.*, aux_det.html AS det FROM
                 LEFT OUTER JOIN aux_arqxml ON aux_arqxml.rowid = tag.arqxmlrowid
                 WHERE aux_arqxml.tipo = 'NFe' AND tag.tag IN ('<ide>', '<emit>', '<dest>', '<infAdic>', '<total>', '<transp>') ) )
     GROUP BY chav_ace) AS aux1
-LEFT OUTER JOIN aux_det ON aux_det.chav_ace = aux1.chav_ace
-LIMIT 1;
+LEFT OUTER JOIN aux_det ON aux_det.chav_ace = aux1.chav_ace;
 EOD;
 
   $res = $pr->query_log($sql);
   $a_parametros = array();
+  $chav_ace = Null;
   while ($linha = $res->fetchArray(SQLITE3_ASSOC)) {
-    debug_log(print_r($linha, True));
-    $xml_ide     = simplexml_load_string($linha['ide']);
-    $xml_emit    = simplexml_load_string($linha['emit']);
-    $xml_dest    = simplexml_load_string($linha['dest']);
-    $xml_total   = simplexml_load_string($linha['total']);
-    $xml_transp  = simplexml_load_string($linha['transp']);
-    $xml_infAdic = simplexml_load_string($linha['infAdic']);
-    $xml_det     = simplexml_load_string($linha['det']);
-    debug_log(print_r($xml_ide, True) . print_r($xml_emit, True) . print_r($xml_dest, True) . print_r($xml_total, True) . print_r($xml_transp, True) . print_r($xml_infAdic, True) . print_r($xml_det, True) );
-    $dtaemi = substr($xml_ide->dhEmi, 0, 10);
-    $dtaentsai = substr($xml_ide->dhSaiEnt, 0, 10);
-    $insert_sql = <<<EOD
+    // debug_log(print_r($linha, True));
+    $a_xml_ide     = xml2array($linha['ide'], $pr->db);
+    $a_xml_emit    = xml2array($linha['emit'], $pr->db);
+    $a_xml_dest    = xml2array($linha['dest'], $pr->db);
+    $a_xml_total   = xml2array($linha['total'], $pr->db);
+    $a_xml_transp  = xml2array($linha['transp'], $pr->db);
+    $a_xml_infAdic = xml2array($linha['infAdic'], $pr->db);
+    $a_xml_det     = xml2array($linha['det'], $pr->db);
+    //debug_log(print_r($a_xml_ide, True) . print_r($a_xml_emit, True) . print_r($a_xml_dest, True) . print_r($a_xml_total, True) . print_r($a_xml_transp, True) . print_r($a_xml_infAdic, True) . print_r($a_xml_det, True) );
+
+    $dtaemi = substr($a_xml_ide['dhEmi'], 0, 10);
+    $dtaentsai = substr($a_xml_ide['dhSaiEnt'], 0, 10);
+    //$cnpj_origem = 
+
+    // só insere nfe_danfe as cada mudança de chav_ace, ou seja, quando aparece o primeiro item
+    if ($linha['chav_ace'] <> $chav_ace) {
+      $chav_ace = $linha['chav_ace'];
+      $insert_sql = <<<EOD
 INSERT INTO nfe_danfe VALUES(
-'{$xml_ide->mod}', '{$cnpj_origem}', '{$linha['chav_ace']}', '{$xml_ide->natOp}',
-'{$xml_emit->enderEmit->xLgr}', '{$xml_emit->enderEmit->nro}', '{$xml_emit->enderEmit->xCpl}', 
-'{$xml_emit->enderEmit->xBairro}', '{$xml_emit->enderEmit->xMun}', '{$xml_emit->enderEmit->CEP}', 
-'{$xml_emit->enderEmit->xPais}', '{$xml_emit->enderEmit->fone}', 
-'{$xml_dest->enderDest->xLgr}', '{$xml_dest->enderDest->nro}', '{$xml_dest->enderDest->xCpl}', 
-'{$xml_dest->enderDest->xBairro}', '{$xml_dest->enderDest->xMun}', '{$xml_dest->enderDest->CEP}', 
-'{$xml_dest->enderDest->xPais}', '{$xml_dest->enderDest->fone}', 
-'{$xml_transp->vol->marca}', '{$xml_transp->vol->qVol}', 
-'{$xml_total->ICMSTot->vFrete}', '{$xml_total->ICMSTot->vSeg}', '{$xml_total->ICMSTot->vDesc}', 
-'{$xml_total->ICMSTot->vII}', '{$xml_total->ICMSTot->vIPI}', '{$xml_total->ICMSTot->vOutro}', 
-'{$xml_ide->cNF}', '{$xml_transp->modFrete}', 
-'{$xml_transp->transporta->IE}', '{$xml_transp->transporta->xNome}', '{$xml_transp->transporta->xEnder}', 
-'{$xml_transp->transporta->xMun}', '{$xml_transp->transporta->UF}', '{$xml_transp->transporta->CNPJ}', 
-'{$xml_transp->vol->esp}', '{$xml_transp->vol->qVol}', 
-'{$xml_transp->vol->pesoL}', '{$xml_transp->vol->pesoB}', 
-'{$xml_infAdic->infAdFisco}', '{$xml_infAdic->infCpl}'
+'{$a_xml_ide['mod']}', '{$cnpj_origem}', '{$linha['chav_ace']}', '{$a_xml_ide['natOp']}',
+'{$a_xml_emit['enderEmit']['xLgr']}', '{$a_xml_emit['enderEmit']['nro']}', '{$a_xml_emit['enderEmit']['xCpl']}', 
+'{$a_xml_emit['enderEmit']['xBairro']}', '{$a_xml_emit['enderEmit']['xMun']}', '{$a_xml_emit['enderEmit']['CEP']}', 
+'{$a_xml_emit['enderEmit']['xPais']}', '{$a_xml_emit['enderEmit']['fone']}', 
+'{$a_xml_dest['enderDest']['xLgr']}', '{$a_xml_dest['enderDest']['nro']}', '{$a_xml_dest['enderDest']['xCpl']}', 
+'{$a_xml_dest['enderDest']['xBairro']}', '{$a_xml_dest['enderDest']['xMun']}', '{$a_xml_dest['enderDest']['CEP']}', 
+'{$a_xml_dest['enderDest']['xPais']}', '{$a_xml_dest['enderDest']['fone']}', 
+'{$a_xml_transp['vol']['marca']}', '{$a_xml_transp['vol']['qVol']}', 
+'{$a_xml_total['ICMSTot']['vFrete']}', '{$a_xml_total['ICMSTot']['vSeg']}', '{$a_xml_total['ICMSTot']['vDesc']}', 
+'{$a_xml_total['ICMSTot']['vII']}', '{$a_xml_total['ICMSTot']['vIPI']}', '{$a_xml_total['ICMSTot']['vOutro']}', 
+'{$a_xml_ide['cNF']}', '{$a_xml_transp['modFrete']}', 
+'{$a_xml_transp['transporta']['IE']}', '{$a_xml_transp['transporta']['xNome']}', '{$a_xml_transp['transporta']['xEnder']}', 
+'{$a_xml_transp['transporta']['xMun']}', '{$a_xml_transp['transporta']['UF']}', '{$a_xml_transp['transporta']['CNPJ']}', 
+'{$a_xml_transp['vol']['esp']}', '{$a_xml_transp['vol']['qVol']}', 
+'{$a_xml_transp['vol']['pesoL']}', '{$a_xml_transp['vol']['pesoB']}', 
+'{$a_xml_infAdic['infAdFisco']}', '{$a_xml_infAdic['infCpl']}'
 );
 EOD;
+      debug_log("\rInsert SQL = {$insert_sql}\r");
+    }
 
     $insert_sql = <<<EOD
 INSERT INTO nfe VALUES(
-'{$linha['chav_ace']}', '{$dtaemi}', '{$dtaentsai}', '{$xml_ide->mod}', '{$xml_ide->serie}', '{$xml_ide->nNF}', ''
+'{$linha['chav_ace']}', '{$dtaemi}', '{$dtaentsai}', '{$a_xml_ide['mod']}', '{$a_xml_ide['serie']}', '{$a_xml_ide['nNF']}', ''
 );
 
 INSERT INTO nfe
@@ -394,6 +408,30 @@ EOD;
   $pr->db->close();
 
 }
+
+
+function xml2array($xml_string, $db){
+  $sxi = new SimpleXmlIterator($xml_string);
+  return sxiToArray($sxi, $db);
+}
+
+function sxiToArray($sxi, $db){
+  $a = array();
+  for( $sxi->rewind(); $sxi->valid(); $sxi->next() ) {
+    //if(!array_key_exists($sxi->key(), $a)){
+    //  $a[$sxi->key()] = array();
+    //}
+    if($sxi->hasChildren()){
+      $a[$sxi->key()] = sxiToArray($sxi->current(), $db);
+    }
+    else{
+      $a[$sxi->key()] = $db->escapeString(strval($sxi->current()));
+    }
+  }
+  return $a;
+}
+
+
 
 function gera_tabelas_auxiliares_txt() {
 
