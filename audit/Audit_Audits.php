@@ -12,9 +12,10 @@ function audit_audits() {
 	2 => "Resumo Geral",
 	3 => "Conciliações",
 	4 => "Mapas",
-	5 => "Espelhos NFes, estilo Danfe, valor mínimo:[GtkEntry]"
+	5 => "Classificação da Operação por Chave de Acesso",
+	6 => "Espelhos NFes, estilo Danfe, valor mínimo:[GtkEntry]"
 );
-	$val_entry[5] = 5000;
+	$val_entry[6] = 5000;
 
 	$dialog = new GtkDialog('Opções', null, Gtk::DIALOG_MODAL);
 	$dialog->set_position(Gtk::WIN_POS_CENTER_ALWAYS);
@@ -56,14 +57,15 @@ function audit_audits() {
 		$dialog->destroy();
 		return;
 	}
-  	$valor_min_danfe = $entrys[5]->get_text();
+  	$valor_min_danfe = $entrys[6]->get_text();
 	$dialog->destroy();
 
 	$restricao_data_modelo = "  ";
 	// $restricao_data_modelo = " AND aaaamm BETWEEN '201004' AND '201006' ";
 
 	if ($chkbuttons[0]->get_active() || $chkbuttons[1]->get_active() || 
-		$chkbuttons[2]->get_active() || $chkbuttons[3]->get_active() || $chkbuttons[4]->get_active())
+		$chkbuttons[2]->get_active() || $chkbuttons[3]->get_active() ||
+		$chkbuttons[4]->get_active() || $chkbuttons[5]->get_active())
 		$pr->inicia_excel('Audit_Auditorias');
 
 	$form_final = '
@@ -813,11 +815,66 @@ SELECT * FROM {$tabela};
 
   }
 
+  if ($chkbuttons[5]->get_active()) {
+
+	$pr->aud_prepara("
+DROP TABLE IF EXISTS chav_ace_class;
+CREATE TABLE chav_ace_class AS
+SELECT chav_ace, group_concat(DFe_cod_sits, '') AS DFe_cod_sits, group_concat(RES_cod_sits, '') AS RES_cod_sits, 
+    group_concat(DFe_tp_opers, '') AS DFe_tp_opers, group_concat(RES_tp_opers, '') AS RES_tp_opers, 
+    group_concat(DFe_csts, '') AS DFe_csts, group_concat(RES_csts, '') AS RES_csts, 
+    group_concat(DFe_cfops, '') AS DFe_cfops, group_concat(RES_cfops, '') AS RES_cfops, 
+    group_concat(DFe_cfop_nfs, '') AS DFe_cfop_nfs, 
+    group_concat(DFe_origens, '') AS DFe_origens, group_concat(RES_origens, '') AS RES_origens
+    FROM
+    (SELECT chav_ace,
+        CASE WHEN tp_origem = 'DFe' THEN cod_sits ELSE '' END AS DFe_cod_sits,
+        CASE WHEN tp_origem = 'RES' THEN cod_sits ELSE '' END AS RES_cod_sits,
+        CASE WHEN tp_origem = 'DFe' THEN tp_opers ELSE '' END AS DFe_tp_opers,
+        CASE WHEN tp_origem = 'RES' THEN tp_opers ELSE '' END AS RES_tp_opers,
+        CASE WHEN tp_origem = 'DFe' THEN csts ELSE '' END AS DFe_csts,
+        CASE WHEN tp_origem = 'RES' THEN csts ELSE '' END AS RES_csts,
+        CASE WHEN tp_origem = 'DFe' THEN cfops ELSE '' END AS DFe_cfops,
+        CASE WHEN tp_origem = 'RES' THEN cfops ELSE '' END AS RES_cfops,
+        CASE WHEN tp_origem = 'DFe' THEN cfop_nfs ELSE '' END AS DFe_cfop_nfs,
+        CASE WHEN tp_origem = 'DFe' THEN origens ELSE '' END AS DFe_origens,
+        CASE WHEN tp_origem = 'RES' THEN origens ELSE '' END AS RES_origens
+        FROM 
+        (SELECT chav_ace, tp_origem, 
+            group_concat(cod_sit) AS cod_sits, group_concat(tp_oper) AS tp_opers, 
+            group_concat(cst) AS csts, group_concat(cfop) AS cfops, 
+            group_concat(cfop_nf) AS cfop_nfs, group_concat(origem) AS origens 
+            FROM
+            (SELECT  chav_ace, tp_origem , cod_sit, tp_oper, cst, cfop, cfop_nf, origem
+                FROM aud_modelo
+                WHERE chav_ace NOT Null)
+        GROUP BY chav_ace, tp_origem))
+GROUP BY chav_ace;
+CREATE INDEX IF NOT EXISTS chav_ace_class_chapri ON chav_ace_class (chav_ace ASC);
+");
+  
+	$tabela = 'chav_ace_class';
+	$sql = "
+SELECT * FROM {$tabela};
+";
+	$col_format = array(
+	"A:A" => "0"
+);
+	$cabec = $pr->auto_cabec($tabela);
+	
+	$pr->abre_excel_sql('chav_', 'Classificação da Operação por Chave de Acesso', $sql, $col_format, $cabec, $form_final);
+
+  }
+
+
+
+
 	if ($chkbuttons[0]->get_active() || $chkbuttons[1]->get_active() || 
-		$chkbuttons[2]->get_active() || $chkbuttons[3]->get_active() || $chkbuttons[4]->get_active())  
+		$chkbuttons[2]->get_active() || $chkbuttons[3]->get_active() || 
+		$chkbuttons[4]->get_active() || $chkbuttons[5]->get_active())  
 			$pr->finaliza_excel();
 
-  if ($chkbuttons[5]->get_active()) {
+  if ($chkbuttons[6]->get_active()) {
 	  gera_espelhos_nfe($valor_min_danfe + 0); // ver ao final deste arquivo php
 
   }
@@ -882,7 +939,7 @@ SELECT nfe.*, nfe_danfe.*, conc_dfe_res.*
 	$chav_ace = -1;
 	$nomarqhtml = "arquivo_com_erro_no_nome.html";
 	while ($linha = $result->fetchArray(SQLITE3_ASSOC)) {
-		if ($i_qtd++ > 100000) break;
+		if ($i_qtd++ > 1000000) break;
 		//debug_log("#{$linha['chav_ace']}#a");
 		if ($linha['chav_ace'] != $chav_ace)	{
 			//debug_log("b");
