@@ -1,5 +1,17 @@
 # Conversor3 - cv3
 
+## ⚠️ Disclaimer e Histórico de Uso (Desde 2010)
+
+Este repositório contém apenas **códigos de estudo e provas de conceito**, com foco em consultas SQL e na correlação de aspectos técnicos de arquivos de documentos fiscais e livros fiscais eletrônicos, elaborados estritamente para **uso genérico**.
+
+**Nota Histórica:** Este documento não estabelece qualquer regra novas. Ele é um resumo e uma consolidação formal dos avisos, diretrizes e do espírito de compartilhamento de conhecimento que **sempre pautaram e foram divulgados de forma explícita em todos os estudos e códigos deste repositório pmarote desde 2010**.
+
+Ao explorar ou utilizar os códigos aqui presentes, orientados pelo espírito da **Licença MIT**, esteja ciente de que:
+
+* **Foco Educacional e Ausência de Fins Lucrativos:** O objetivo único é o **espírito do software livre**, e o ganho mútuo de conhecimento de forma livre. Descarta-se qualquer interesse comercial, vantagem, remuneração ou qualquer compromisso profissional relacionado a este repositório.
+* **Independência de Ganhos:** Qualquer pessoa ou entidade que se inspirar nos conceitos destes estudos tem total liberdade para usar e adaptar esses conceitos em suas próprias soluções. Caso obtenha vantagem financeira com eles, os ganhos serão exclusivamente de quem os utilizou, descartando-se qualquer tipo de obrigação ao autor original.
+* **Isenção Total de Responsabilidade:** Estes não são softwares funcionais, mas sim rascunhos acadêmicos. O uso de qualquer trecho de código é de inteira responsabilidade de quem o utilizar. Não há qualquer tipo de suporte, garantia de funcionamento, tampouco responsabilidade por eventuais impactos, erros ou inconsistências fiscais decorrentes da sua aplicação prática.
+
 ## Links
 
 [Manual da EFD](https://github.com/pmarote/cv3/blob/master/res/GUIA%20PR%C3%81TICO%20EFD%20ICMS%20IPI%20-%20Vers%C3%A3o%203.0.pdf) 
